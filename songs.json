@@ -1,0 +1,216 @@
+{
+  "albums": [
+    {
+      "id": "Happiness",
+      "name": "Happiness",
+      "year": 2014,
+      "cover": "covers/Happiness.png"
+    },
+    {
+      "id": "BeNatural",
+      "name": "Be Natural",
+      "year": 2014,
+      "cover": "covers/BeNatural.png"
+    },
+    {
+      "id": "TheRed",
+      "name": "The Red",
+      "year": 2015,
+      "cover": "covers/TheRed.png"
+    },
+    {
+      "id": "TheVelvet",
+      "name": "The Velvet",
+      "year": 2016,
+      "cover": "covers/TheVelvet.png"
+    },
+    {
+      "id": "RussianRoulette",
+      "name": "Russian Roulette",
+      "year": 2016,
+      "cover": "covers/RussianRoulette.jpg"
+    },
+    {
+      "id": "Rookie",
+      "name": "Rookie",
+      "year": 2017,
+      "cover": "covers/Rookie.jpg"
+    },
+    {
+      "id": "TheRedSummer",
+      "name": "The Red Summer",
+      "year": 2017,
+      "cover": "covers/TheRedSummer.png"
+    },
+    {
+      "id": "PerfectVelvet",
+      "name": "Perfect Velvet",
+      "year": 2017,
+      "cover": "covers/PerfectVelvet.png"
+    },
+    {
+      "id": "ThePerfectRedVelvet",
+      "name": "The Perfect Red Velvet",
+      "year": 2018,
+      "cover": "covers/ThePerfectRedVelvet.png"
+    },
+    {
+      "id": "CookieJar",
+      "name": "#Cookie Jar",
+      "year": 2018,
+      "cover": "covers/CookieJar.png"
+    },
+    {
+      "id": "SummerMagic",
+      "name": "Summer Magic",
+      "year": 2018,
+      "cover": "covers/SummerMagic.png"
+    },
+    {
+      "id": "RBB",
+      "name": "RBB",
+      "year": 2018,
+      "cover": "covers/RBB.png"
+    },
+    {
+      "id": "TheReVeFestivalDay1",
+      "name": "The ReVe Festival Day 1",
+      "year": 2019,
+      "cover": "covers/TheReVeFestivalDay1.jpg"
+    },
+    {
+      "id": "TheReVeFestivalDay2",
+      "name": "The ReVe Festival Day 2",
+      "year": 2019,
+      "cover": "covers/TheReVeFestivalDay2.jpg"
+    },
+    {
+      "id": "TheReVeFestivalFinale",
+      "name": "The ReVe Festival: Finale",
+      "year": 2019,
+      "cover": "covers/TheReVeFestivalFinale.jpg"
+    },
+    {
+      "id": "Queendom",
+      "name": "Queendom",
+      "year": 2021,
+      "cover": "covers/Queendom.jpg"
+    },
+    {
+      "id": "Birthday",
+      "name": "The ReVe Festival 2022 - Birthday",
+      "year": 2022,
+      "cover": "covers/Birthday.jpg"
+    },
+    {
+      "id": "ChillKill",
+      "name": "Chill Kill",
+      "year": 2023,
+      "cover": "covers/ChillKill.jpeg"
+    }
+  ],
+  "songs": [
+    {
+      "id": 0,
+      "title": "행복(Happiness)",
+      "albumId": "Happiness",
+      "audio": "audio/happiness.m4a"
+    },
+    {
+      "id": 1,
+      "title": "Be Natural(비너추얼)",
+      "albumId": "BeNatural",
+      "audio": "audio/be_natural.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Automatic",
+      "albumId": "BeNatural",
+      "audio": "audio/automatic.mp3"
+    },
+    {
+      "id": 1,
+      "title": "DUMB DUMB",
+      "albumId": "TheRed",
+      "audio": "audio/dumb_dumb.mp3"
+    },
+    {
+      "id": 1,
+      "title": "7月7日 (One Of These Nights)",
+      "albumId": "TheVelvet",
+      "audio": "audio/one_of_these_nights.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Russian Roulette(러시안 룰렛)",
+      "albumId": "RussianRoulette",
+      "audio": "audio/russian_roulette.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Rookie",
+      "albumId": "Rookie",
+      "audio": "audio/rookie.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Red Flavor(빨간 맛)",
+      "albumId": "TheRedSummer",
+      "audio": "audio/red_flavor.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Peek-A-Boo",
+      "albumId": "PerfectVelvet",
+      "audio": "audio/peek_a_boo.mp3"
+    },
+    {
+      "id": 1,
+      "title": "Bad Boy",
+      "albumId": "ThePerfectRedVelvet",
+      "audio": "audio/bad_boy.mp3"
+    },
+    {
+      "id": 2,
+      "title": "#Cookie Jar",
+      "albumId": "CookieJar",
+      "audio": "audio/cookie_jar.mp3"
+    },
+    {
+      "id": 2,
+      "title": "Power Up",
+      "albumId": "SummerMagic",
+      "audio": "audio/power_up.mp3"
+    },
+    {
+      "id": 2,
+      "title": "RBB (Really Bad Boy)",
+      "albumId": "RBB",
+      "audio": "audio/rbb.mp3"
+    },
+    {
+      "id": 3,
+      "title": "Zimzalabim",
+      "albumId": "TheReVeFestivalDay1",
+      "audio": "audio/zimzalabim.mp3"
+    },
+    {
+      "id": 3,
+      "title": "Umpah Umpah",
+      "albumId": "TheReVeFestivalDay2",
+      "audio": "audio/umpah_umpah.mp3"
+    },
+    {
+      "id": 3,
+      "title": "Psycho",
+      "albumId": "TheReVeFestivalFinale",
+      "audio": "audio/psycho.mp3"
+    },
+    {
+      "id": 2,
+      "title": "Chill Kill",
+      "albumId": "ChillKill",
+      "audio": "audio/chill_kill.mp3"
+    }
+  ]
+}

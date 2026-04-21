@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Velvet Song Ranker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <h1>Red Velvet名曲生死鬥</h1>
+    <div id="ranking-view" class="ranking hidden">
+        <div style="
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+">
+            <button class="restart-btn" onclick="restart()">再一次</button>
+            <h2>我的貝貝愛曲</h2> 
+        </div>
+        <ol id="ranking-list"></ol>
+    </div>
+    <div id="comparison-view">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">1 / 6</div>
+        </div>
+        <div class="container">
+            <div class="song-card" id="song1" onclick="selectSong(0)">
+                <div class="cover-box">
+                    <div class="load-wrapp">
+                        <div class="load-1">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                <img id="cover1" src="" alt="Cover"></div>
+                    
+                <h3 id="title1"></h3>
+                <button class="play-btn" id="play1" onclick="togglePlay(0, event)">Play</button>
+                <audio id="audio1" preload="none"></audio>
+            </div>
+            <div class="song-card" id="song2" onclick="selectSong(1)">
+                <div class="cover-box">
+
+                <div class="load-wrapp">
+                        <div class="load-1">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                  
+                <img id="cover2" src="" alt="Cover">  </div>
+                <h3 id="title2"></h3>
+                <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
+                <audio id="audio2" preload="none"></audio>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Song data
+        let songs = [];
+
+        let maxComparisons;
+        let currentPairIndex = 0;
+        let wins = [];
+        let currentSongs = [];
+        let audios = [];
+
+        // Load songs from JSON
+        async function loadSongs() {
+            try {
+                const response = await fetch('songs.json');
+                const data = await response.json();
+                songs = data.songs.map(song => ({
+                    name: song.title,
+                    audio: song.audio,
+                    cover: data.albums.find(album => album.id === song.albumId)?.cover || 'covers/default.jpg',
+                    rating: 1200
+                }));
+                
+                // Set dynamic max comparisons based on song count
+                maxComparisons = Math.min(songs.length * 2, 50);
+                
+                wins = new Array(songs.length).fill(0);
+                init();
+            } catch (error) {
+                console.error('Error loading songs:', error);
+                alert('無法載入歌曲資料');
+            }
+        }
+
+        // Generate all pairs function moved to loadSongs
+
+        function init() {
+            const ranking = localStorage.getItem('rv_ranking');
+            if (ranking) {
+                displayRanking(JSON.parse(ranking));
+            } else {
+                loadPair();
+            }
+        }
+
+        let currentIdx1, currentIdx2;
+
+        function loadPair() {
+            if (currentPairIndex >= maxComparisons) {
+                finishRanking();
+                return;
+            }
+            // Randomly select two different songs
+            do {
+                currentIdx1 = Math.floor(Math.random() * songs.length);
+                currentIdx2 = Math.floor(Math.random() * songs.length);
+            } while (currentIdx1 === currentIdx2);
+            currentSongs = [songs[currentIdx1], songs[currentIdx2]];
+            document.getElementById('title1').textContent = currentSongs[0].name;
+            document.getElementById('cover1').src = currentSongs[0].cover;
+            document.getElementById('audio1').src = currentSongs[0].audio;
+            document.getElementById('title2').textContent = currentSongs[1].name;
+            document.getElementById('cover2').src = currentSongs[1].cover;
+            document.getElementById('audio2').src = currentSongs[1].audio;
+            document.getElementById('progress-text').textContent = `${currentPairIndex + 1} / ${maxComparisons}`;
+            const progressPercent = ((currentPairIndex + 1) / maxComparisons) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+            // Reset play buttons
+            document.getElementById('play1').innerHTML = '<i class="fas fa-play"></i>';
+            document.getElementById('play2').innerHTML = '<i class="fas fa-play"></i>';
+            audios = [document.getElementById('audio1'), document.getElementById('audio2')];
+        }
+
+        function selectSong(index) {
+            const winnerIdx = index === 0 ? currentIdx1 : currentIdx2;
+            const loserIdx = index === 0 ? currentIdx2 : currentIdx1;
+            
+            // ELO update
+            const winner = songs[winnerIdx];
+            const loser = songs[loserIdx];
+            const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
+            const expectedLoser = 1 - expectedWinner;
+            const k = 32; // K-factor
+            winner.rating += k * (1 - expectedWinner);
+            loser.rating += k * (0 - expectedLoser);
+            
+            currentPairIndex++;
+            // Stop any playing audio
+            audios.forEach((audio, i) => {
+                audio.pause();
+                audio.currentTime = 0;
+                document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+            });
+            document.body.classList.remove('playing');
+            loadPair();
+        }
+
+        function togglePlay(index, event) {
+            event.stopPropagation();
+            const audio = audios[index];
+            const btn = document.getElementById('play' + (index + 1));
+            // Stop all other audios
+            audios.forEach((a, i) => {
+                if (i !== index) {
+                    a.pause();
+                    a.currentTime = 0;
+                    document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+            if (audio.paused) {
+                audio.play();
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+                document.body.classList.add('playing');
+            } else {
+                audio.pause();
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+                document.body.classList.remove('playing');
+            }
+        }
+
+        function finishRanking() {
+            const ranked = songs.slice().sort((a, b) => b.rating - a.rating);
+            localStorage.setItem('rv_ranking', JSON.stringify(ranked));
+            displayRanking(ranked);
+        }
+
+        function displayRanking(ranked) {
+            document.getElementById('comparison-view').classList.add('hidden');
+            document.getElementById('ranking-view').classList.remove('hidden');
+            const list = document.getElementById('ranking-list');
+            list.innerHTML = '';
+            ranked.forEach((song, i) => {
+                const li = document.createElement('li');
+                li.textContent = `${i + 1} - ${song.name}`;
+                list.appendChild(li);
+            });
+        }
+
+        function restart() {
+            localStorage.removeItem('rv_ranking');
+            songs.forEach(song => song.rating = 1200);
+            currentPairIndex = 0;
+            document.getElementById('ranking-view').classList.add('hidden');
+            document.getElementById('comparison-view').classList.remove('hidden');
+            loadPair();
+        }
+
+        window.onload = loadSongs;
+    </script>
+    <footer>
+        <p>
+            This is a non-commercial, fan-made website created for entertainment purposes only. 
+            All trademarks, music, images, and other media are the property of their respective owners. 
+            Content is used under the assumption of fair use for personal and non-commercial purposes. 
+            This site is not affiliated with or endorsed by any official entities. 
+            If you are a copyright owner and have concerns regarding the use of any material, please contact us for prompt removal.
+        </p>
+    </footer>
+</body>
+</html>
