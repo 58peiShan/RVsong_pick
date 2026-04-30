@@ -61,6 +61,12 @@
             "cover": "covers/CookieJar.png"
         },
         {
+            "id": "Bloom",
+            "name": "Bloom",
+            "year": 2018,
+            "cover": "covers/Bloom.png"
+        },
+        {
             "id": "SummerMagic",
             "name": "Summer Magic",
             "year": 2018,
@@ -219,6 +225,13 @@
             "title": "Umpah Umpah",
             "albumId": "TheReVeFestivalDay2",
             "audio": "audio/umpah_umpah.mp3",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Wild Side",
+            "albumId": "Bloom",
+            "audio": "audio/wild_side.mp3",
             "isTitleSong": true
         },
         {

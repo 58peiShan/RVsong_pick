@@ -8,8 +8,96 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="config.js"></script>
+    <style>
+        #setup-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        #setup-overlay.hidden { display: none; }
+        .setup-card {
+            background: white; border-radius: 20px;
+            padding: 36px 32px; max-width: 460px; width: 92%;
+            text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        }
+        .setup-card h3 { margin: 0 0 8px; color: #FF7F50; font-size: 20px; }
+        .setup-card > p { color: #666; font-size: 14px; margin: 0 0 18px; line-height: 1.6; }
+        .setup-card .steps {
+            text-align: left; background: #fff5f5; border-radius: 10px;
+            padding: 14px 18px; margin-bottom: 18px; font-size: 13px;
+            color: #555; line-height: 1.9; border: 1px solid #ffe0e0;
+        }
+        .setup-card .steps ol { margin: 0; padding-left: 18px; }
+        .setup-card .steps a { color: #FF7F50; text-decoration: none; font-weight: 600; }
+        .setup-card .steps a:hover { text-decoration: underline; }
+        .setup-card input[type="text"] {
+            width: 100%; box-sizing: border-box;
+            padding: 12px 14px; border: 1.5px solid #eee;
+            border-radius: 10px; font-size: 14px; margin-bottom: 12px;
+            outline: none; transition: border-color 0.2s; font-family: monospace;
+        }
+        .setup-card input[type="text"]:focus { border-color: #FF9797; }
+        .setup-card .primary-btn {
+            background: linear-gradient(135deg, #FF9797, #FF7F50);
+            color: white; border: none; padding: 12px 0;
+            border-radius: 10px; font-size: 15px; font-weight: bold;
+            cursor: pointer; width: 100%; margin-bottom: 12px; transition: opacity 0.2s;
+        }
+        .setup-card .primary-btn:hover { opacity: 0.88; }
+        .setup-card .hint { font-size: 12px; color: #bbb; }
+        #loading-overlay {
+            position: fixed; inset: 0;
+            background: rgba(255,240,240,0.94);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 999;
+        }
+        #loading-overlay.hidden { display: none; }
+        #loading-overlay .spin-icon { font-size: 46px; color: #FF9797; }
+        #loading-overlay p { color: #FF7F50; font-size: 15px; margin: 14px 0 4px; font-weight: 500; }
+        #loading-overlay small { color: #bbb; font-size: 12px; }
+        .settings-btn {
+            position: fixed; bottom: 80px; right: 18px;
+            background: rgba(255,255,255,0.8); border: 1px solid #eee;
+            border-radius: 50%; width: 36px; height: 36px;
+            cursor: pointer; font-size: 15px; display: flex;
+            align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100;
+            color: #aaa; transition: color 0.2s;
+        }
+        .settings-btn:hover { color: #FF9797; }
+    </style>
 </head>
 <body>
+
+    <!-- YouTube API Key setup -->
+    <div id="setup-overlay" class="hidden">
+        <div class="setup-card">
+            <h3>🎵 設定 YouTube 串流播放</h3>
+            <p>需要免費的 YouTube Data API 金鑰來自動搜尋歌曲。<br>搜尋結果會快取，之後不需重新搜尋。</p>
+            <div class="steps">
+                <ol>
+                    <li>前往 <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+                    <li>建立專案 → 啟用「<strong>YouTube Data API v3</strong>」</li>
+                    <li>憑證 → 建立 API 金鑰</li>
+                    <li>將金鑰複製貼至下方</li>
+                </ol>
+            </div>
+            <input type="text" id="api-key-input" placeholder="貼上 API 金鑰（AIzaSy...）">
+            <button class="primary-btn" onclick="saveApiKey()">確認並開始搜尋</button>
+            <p class="hint">金鑰僅儲存在您的瀏覽器本機，不會上傳到任何伺服器。</p>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden">
+        <i class="fas fa-spinner fa-spin spin-icon"></i>
+        <p id="loading-text">正在搜尋 YouTube 歌曲...</p>
+        <small>首次使用需要一點時間，之後會直接從快取載入</small>
+    </div>
 
     <h1>我的 <span>Red Velvet</span> 主打歌</h1>
     <div id="ranking-view" class="ranking hidden">
@@ -53,7 +141,7 @@
                         </div>
                     </div>
                 <img id="cover1" src="" alt="Cover" onerror="this.src='covers/default.png'"></div>
-                    
+
                 <h3 id="title1"></h3>
                 <button class="play-btn" id="play1" onclick="togglePlay(0, event)">Play</button>
                 <audio id="audio1" preload="none"></audio>
@@ -68,7 +156,7 @@
                             <div class="line"></div>
                         </div>
                     </div>
-                  
+
                 <img id="cover2" src="" alt="Cover" onerror="this.src='covers/default.png'">  </div>
                 <h3 id="title2"></h3>
                 <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
@@ -77,16 +165,151 @@
         </div>
     </div>
 
+    <!-- Off-screen YouTube players (rendered but not visible) -->
+    <div id="yt-container" style="position:fixed;left:-9999px;top:0;width:320px;height:180px;pointer-events:none;">
+        <div id="ytPlayer0"></div>
+        <div id="ytPlayer1"></div>
+    </div>
+
+    <!-- Settings button to reset API key -->
+    <button class="settings-btn" onclick="resetApiKey()" title="重設 YouTube API 設定">
+        <i class="fas fa-cog"></i>
+    </button>
+
     <script>
         // Song data
         let songs = [];
-
         let maxComparisons;
         let currentPairIndex = 0;
         let wins = [];
         let currentSongs = [];
-        let audios = [];
         let comparisonHistory = {};
+        let currentIdx1, currentIdx2;
+
+        // Playback state — audios filled after DOM ready
+        // slotMode[i]: 'local' | 'youtube'
+        let songAudioModes = {};
+        let slotMode = [null, null];
+        let audios = [null, null];
+
+        // YouTube state
+        let ytPlayers = [null, null];
+        let ytPlayerReady = [false, false];
+        let ytPendingVideoId = [null, null];
+        let ytIdCache = {};
+        let ytApiKey = '';
+
+        // Check which songs have local audio files
+        async function buildAudioModes() {
+            await Promise.all(songs.map(async song => {
+                if (!song.audio) { songAudioModes[song.name] = 'youtube'; return; }
+                try {
+                    const controller = new AbortController();
+                    const r = await fetch(song.audio, { signal: controller.signal });
+                    controller.abort();
+                    songAudioModes[song.name] = r.ok ? 'local' : 'youtube';
+                } catch(e) {
+                    songAudioModes[song.name] = e.name === 'AbortError' ? 'local' : 'youtube';
+                }
+            }));
+        }
+
+        // Called automatically by YouTube IFrame API script
+        function onYouTubeIframeAPIReady() {
+            for (let i = 0; i < 2; i++) {
+                const idx = i;
+                ytPlayers[idx] = new YT.Player('ytPlayer' + idx, {
+                    height: '180', width: '320',
+                    playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3 },
+                    events: {
+                        onReady: () => {
+                            ytPlayerReady[idx] = true;
+                            if (ytPendingVideoId[idx]) {
+                                ytPlayers[idx].cueVideoById(ytPendingVideoId[idx]);
+                                ytPendingVideoId[idx] = null;
+                            }
+                        },
+                        onStateChange: (e) => handleYtStateChange(idx, e),
+                        onError: (e) => handleYtError(idx, e.data)
+                    }
+                });
+            }
+        }
+
+        async function handleYtError(index, code) {
+            // 150 = embedding not allowed; re-search skipping this video ID
+            if (code === 150 || code === 101) {
+                const songName = currentSongs[index]?.name;
+                if (!songName) return;
+                const badId = ytIdCache[songName];
+                delete ytIdCache[songName];
+                localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
+
+                // Search again, excluding the bad video
+                try {
+                    const q = encodeURIComponent('Red Velvet ' + songName);
+                    const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + q
+                        + '&type=video&videoEmbeddable=true&maxResults=5&key=' + ytApiKey;
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+                    if (data.items) {
+                        const next = data.items.find(item => item.id.videoId !== badId);
+                        if (next) {
+                            ytIdCache[songName] = next.id.videoId;
+                            localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
+                            cueVideo(index, next.id.videoId);
+                        }
+                    }
+                } catch(e) { console.warn('Re-search failed:', e); }
+            }
+        }
+
+        function handleYtStateChange(index, event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                const btn = document.getElementById('play' + (index + 1));
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+                document.body.classList.remove('playing');
+            }
+        }
+
+        function cueVideo(playerIndex, videoId) {
+            if (ytPlayerReady[playerIndex]) {
+                try {
+                    ytPlayers[playerIndex].cueVideoById(videoId);
+                    ytPendingVideoId[playerIndex] = null;
+                } catch(e) {
+                    ytPendingVideoId[playerIndex] = videoId;
+                }
+            } else {
+                // Will be cued once onReady fires
+                ytPendingVideoId[playerIndex] = videoId;
+            }
+        }
+
+        function stopAllVideos() {
+            for (let i = 0; i < 2; i++) {
+                if (slotMode[i] === 'local') {
+                    audios[i].pause();
+                    audios[i].currentTime = 0;
+                } else if (ytPlayers[i] && ytPlayerReady[i]) {
+                    try { ytPlayers[i].stopVideo(); } catch(e) {}
+                }
+                const btn = document.getElementById('play' + (i + 1));
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+            document.body.classList.remove('playing');
+        }
+
+        function pauseOther(activeIndex) {
+            const other = 1 - activeIndex;
+            if (slotMode[other] === 'local') {
+                audios[other].pause();
+            } else if (ytPlayers[other] && ytPlayerReady[other]) {
+                try { ytPlayers[other].pauseVideo(); } catch(e) {}
+            }
+            const otherBtn = document.getElementById('play' + (other + 1));
+            if (otherBtn) otherBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
 
         // Load songs from JSON
         async function loadSongs() {
@@ -95,19 +318,120 @@
                 const data = await response.json();
                 songs = data.songs.map(song => ({
                     name: song.title,
-                    audio: song.audio,
+                    audio: song.audio || null,
                     cover: data.albums.find(album => album.id === song.albumId)?.cover || 'covers/default.png',
                     rating: 1200
                 }));
-                
+
                 maxComparisons = Math.round(songs.length * 1.5);
-                
                 wins = new Array(songs.length).fill(0);
-                init();
+
+                // Determine which songs use local audio vs YouTube
+                await buildAudioModes();
+
+                // Load cached YouTube data
+                // Priority: config.js → localStorage → setup screen
+                ytApiKey = (typeof CONFIG !== 'undefined' && CONFIG.YOUTUBE_API_KEY)
+                    ? CONFIG.YOUTUBE_API_KEY
+                    : localStorage.getItem('rv_yt_api_key') || '';
+                if (ytApiKey) localStorage.setItem('rv_yt_api_key', ytApiKey);
+
+                // v2: added videoEmbeddable=true filter; invalidate old cache
+                const CACHE_VERSION = '2';
+                if (localStorage.getItem('rv_yt_cache_ver') !== CACHE_VERSION) {
+                    localStorage.removeItem('rv_yt_cache');
+                    localStorage.setItem('rv_yt_cache_ver', CACHE_VERSION);
+                }
+                const cached = localStorage.getItem('rv_yt_cache');
+                if (cached) ytIdCache = JSON.parse(cached);
+
+                // Only songs without local audio need YouTube
+                const needsYT = songs.filter(s => songAudioModes[s.name] === 'youtube');
+                const missingIds = needsYT.some(s => !ytIdCache[s.name]);
+
+                if (needsYT.length === 0) {
+                    // All songs have local audio, no YouTube needed
+                    init();
+                } else if (!ytApiKey) {
+                    document.getElementById('setup-overlay').classList.remove('hidden');
+                } else if (missingIds) {
+                    const ok = await searchAllSongs();
+                    if (ok) init();
+                } else {
+                    init();
+                }
             } catch (error) {
                 console.error('Error loading songs:', error);
                 alert('無法載入歌曲資料');
             }
+        }
+
+        async function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (!key) return alert('請輸入 API 金鑰');
+            ytApiKey = key;
+            localStorage.setItem('rv_yt_api_key', key);
+            document.getElementById('setup-overlay').classList.add('hidden');
+            const ok = await searchAllSongs();
+            if (ok) init();
+        }
+
+        async function searchAllSongs() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            loadingOverlay.classList.remove('hidden');
+
+            const toSearch = songs.filter(s => songAudioModes[s.name] === 'youtube' && !ytIdCache[s.name]);
+
+            for (let i = 0; i < toSearch.length; i++) {
+                const song = toSearch[i];
+                loadingText.textContent = `搜尋中 (${i + 1} / ${toSearch.length})：${song.name}`;
+                try {
+                    const q = encodeURIComponent('Red Velvet ' + song.name);
+                    const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + q + '&type=video&videoEmbeddable=true&maxResults=1&key=' + ytApiKey;
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+
+                    if (data.error) {
+                        const code = data.error.code;
+                        const msg  = data.error.errors?.[0]?.reason || data.error.message;
+                        loadingOverlay.classList.add('hidden');
+
+                        if (code === 403 && (msg.includes('quota') || msg === 'quotaExceeded' || msg === 'rateLimitExceeded')) {
+                            // Quota exhausted — still start game with local audio
+                            alert('⚠️ YouTube API 每日使用額度已達上限（' + msg + '）。\n\n有本機音樂的歌曲仍可正常播放，缺少本機音樂的歌曲今日無法試聽。\n明天額度重置後重新整理即可恢復。');
+                            localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
+                            return true; // proceed with whatever was cached
+                        }
+
+                        // Other errors (invalid key, API not enabled, etc.)
+                        alert('API 錯誤 ' + code + '（' + msg + '）\n\n請確認：\n1. API 金鑰正確\n2. 已啟用「YouTube Data API v3」\n3. 金鑰無 HTTP 來源限制（或已加入允許清單）');
+                        document.getElementById('api-key-input').value = ytApiKey;
+                        document.getElementById('setup-overlay').classList.remove('hidden');
+                        return false;
+                    }
+
+                    if (data.items && data.items.length > 0) {
+                        ytIdCache[song.name] = data.items[0].id.videoId;
+                    }
+                } catch (e) {
+                    console.error('Search failed for', song.name, e);
+                }
+                // Small delay to be gentle with quota
+                await new Promise(r => setTimeout(r, 120));
+            }
+
+            localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
+            loadingOverlay.classList.add('hidden');
+            return true;
+        }
+
+        function resetApiKey() {
+            if (!confirm('確定要重設 YouTube API 設定？\n（快取的搜尋結果將會保留）')) return;
+            localStorage.removeItem('rv_yt_api_key');
+            ytApiKey = '';
+            document.getElementById('api-key-input').value = '';
+            document.getElementById('setup-overlay').classList.remove('hidden');
         }
 
         function smartSelectPair() {
@@ -117,7 +441,6 @@
                     const key = i + '-' + j;
                     const timesCompared = comparisonHistory[key] || 0;
                     const ratingDiff = Math.abs(songs[i].rating - songs[j].rating);
-                    // 每多比一次加 500 懲罰，讓選對手盡量分散
                     const score = ratingDiff + timesCompared * 500;
                     if (score < bestScore) {
                         bestScore = score;
@@ -138,8 +461,6 @@
             }
         }
 
-        let currentIdx1, currentIdx2;
-
         function loadPair() {
             if (currentPairIndex >= maxComparisons) {
                 finishRanking();
@@ -147,30 +468,41 @@
             }
             [currentIdx1, currentIdx2] = smartSelectPair();
             currentSongs = [songs[currentIdx1], songs[currentIdx2]];
+
             document.getElementById('title1').textContent = currentSongs[0].name;
             document.getElementById('cover1').src = currentSongs[0].cover;
-            document.getElementById('audio1').src = currentSongs[0].audio;
             document.getElementById('title2').textContent = currentSongs[1].name;
             document.getElementById('cover2').src = currentSongs[1].cover;
-            document.getElementById('audio2').src = currentSongs[1].audio;
             document.getElementById('progress-text').textContent = `${currentPairIndex + 1} / ${maxComparisons}`;
             const progressPercent = ((currentPairIndex + 1) / maxComparisons) * 100;
             document.getElementById('progress-fill').style.width = progressPercent + '%';
-            // Reset play buttons
-            document.getElementById('play1').innerHTML = '<i class="fas fa-play"></i>';
-            document.getElementById('play2').innerHTML = '<i class="fas fa-play"></i>';
-            audios = [document.getElementById('audio1'), document.getElementById('audio2')];
+
+            for (let i = 0; i < 2; i++) {
+                const song = currentSongs[i];
+                const mode = songAudioModes[song.name] || 'youtube';
+                slotMode[i] = mode;
+
+                const btn = document.getElementById('play' + (i + 1));
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+
+                if (mode === 'local') {
+                    audios[i].src = song.audio;
+                    btn.style.display = '';
+                } else {
+                    const ytId = ytIdCache[song.name];
+                    btn.style.display = ytId ? '' : 'none';
+                    if (ytId) cueVideo(i, ytId);
+                }
+            }
         }
 
         function selectSong(index) {
             const winnerIdx = index === 0 ? currentIdx1 : currentIdx2;
             const loserIdx = index === 0 ? currentIdx2 : currentIdx1;
-            
-            // 記錄這對被比過
+
             const pairKey = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
             comparisonHistory[pairKey] = (comparisonHistory[pairKey] || 0) + 1;
 
-            // ELO update，K 值從 64 線性降到 16，初期快速收斂、後期穩定
             const winner = songs[winnerIdx];
             const loser = songs[loserIdx];
             const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
@@ -180,36 +512,52 @@
             loser.rating += k * (0 - expectedLoser);
 
             currentPairIndex++;
-            // Stop any playing audio
-            audios.forEach((audio, i) => {
-                audio.pause();
-                audio.currentTime = 0;
-                document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
-            });
-            document.body.classList.remove('playing');
+            stopAllVideos();
             loadPair();
         }
 
         function togglePlay(index, event) {
             event.stopPropagation();
-            const audio = audios[index];
             const btn = document.getElementById('play' + (index + 1));
-            // Stop all other audios
-            audios.forEach((a, i) => {
-                if (i !== index) {
-                    a.pause();
-                    a.currentTime = 0;
-                    document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+            const mode = slotMode[index];
+
+            if (mode === 'local') {
+                const audio = audios[index];
+                if (!audio) return;
+                if (audio.paused) {
+                    pauseOther(index);
+                    audio.play();
+                    btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.body.classList.add('playing');
+                } else {
+                    audio.pause();
+                    btn.innerHTML = '<i class="fas fa-play"></i>';
+                    document.body.classList.remove('playing');
                 }
-            });
-            if (audio.paused) {
-                audio.play();
-                btn.innerHTML = '<i class="fas fa-pause"></i>';
-                document.body.classList.add('playing');
             } else {
-                audio.pause();
-                btn.innerHTML = '<i class="fas fa-play"></i>';
-                document.body.classList.remove('playing');
+                const player = ytPlayers[index];
+                if (!player || !ytPlayerReady[index]) return;
+                const videoId = ytIdCache[currentSongs[index].name];
+                if (!videoId) return;
+
+                let state;
+                try { state = player.getPlayerState(); } catch(e) { return; }
+
+                if (state === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                    btn.innerHTML = '<i class="fas fa-play"></i>';
+                    document.body.classList.remove('playing');
+                } else {
+                    pauseOther(index);
+                    try { player.unMute(); player.setVolume(100); } catch(e) {}
+                    if (state === YT.PlayerState.CUED || state === YT.PlayerState.PAUSED) {
+                        player.playVideo();
+                    } else {
+                        player.loadVideoById(videoId);
+                    }
+                    btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.body.classList.add('playing');
+                }
             }
         }
 
@@ -275,9 +623,7 @@
             const topTempo  = top(tempoCount);
             const topVibe   = top(vibeCount);
             const topSide   = top(sideCount);
-            const topMember = top(memberCount);
 
-            // Red vs Velvet 百分比
             const total = topSongs.filter(s => songMeta[s.name]).length;
             const redPct    = Math.round(((sideCount['Red']    || 0) + (sideCount['Both'] || 0) * 0.5) / total * 100);
             const velvetPct = 100 - redPct;
@@ -286,7 +632,6 @@
                 { icon:"🎵", label:"節奏偏好",   value: tempoLabel[topTempo[0]] },
                 { icon:"✨", label:"音樂風格",   value: vibeLabel[topVibe[0]] || topVibe[0] },
                 { icon:"🔴", label:"曲風派系",   value: sideLabel[topSide[0]] },
-                // { icon:"🎤", label:"常見主唱",   value: `${topMember[0]}（前半段出現 ${topMember[1]} 次）` },
                 { icon:"📊", label:"Red / Velvet", value: `Red ${redPct}%  ·  Velvet ${velvetPct}% ` },
             ];
 
@@ -307,7 +652,6 @@
             `;
             document.getElementById('analysis-container').innerHTML = html;
 
-            // 根據 Red / Velvet 比例切換背景主題
             if (velvetPct > redPct) {
                 document.body.classList.add('theme-velvet');
                 document.body.classList.remove('theme-red');
@@ -336,6 +680,7 @@
             currentPairIndex = 0;
             comparisonHistory = {};
             document.body.classList.remove('theme-red', 'theme-velvet');
+            stopAllVideos();
             document.getElementById('ranking-view').classList.add('hidden');
             document.getElementById('comparison-view').classList.remove('hidden');
             loadPair();
@@ -349,7 +694,6 @@
             const ranked = (JSON.parse(localStorage.getItem('rv_ranking')) || []).slice(0, 15);
             const isVelvet = document.body.classList.contains('theme-velvet');
 
-            // 依主題決定配色
             const theme = isVelvet ? {
                 bg:          'linear-gradient(150deg, #1a0a2a, #3a1550)',
                 titleColor:  '#c98aff',
@@ -419,14 +763,24 @@
             }
         }
 
-        window.onload = loadSongs;
+        window.onload = () => {
+            audios = [document.getElementById('audio1'), document.getElementById('audio2')];
+            // Reset play button when local audio finishes
+            [0, 1].forEach(i => {
+                audios[i].addEventListener('ended', () => {
+                    document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+                    document.body.classList.remove('playing');
+                });
+            });
+            loadSongs();
+        };
     </script>
     <footer>
         <p>
-            This is a non-commercial, fan-made website created for entertainment purposes only. 
-            All trademarks, music, images, and other media are the property of their respective owners. 
-            Content is used under the assumption of fair use for personal and non-commercial purposes. 
-            This site is not affiliated with or endorsed by any official entities. 
+            This is a non-commercial, fan-made website created for entertainment purposes only.
+            All trademarks, music, images, and other media are the property of their respective owners.
+            Content is used under the assumption of fair use for personal and non-commercial purposes.
+            This site is not affiliated with or endorsed by any official entities.
             If you are a copyright owner and have concerns regarding the use of any material, please contact us for prompt removal.
         </p>
     </footer>
