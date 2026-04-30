@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Velvet Song Ranker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <h1>我的 <span>Red Velvet</span> 主打歌</h1>
+    <div id="ranking-view" class="ranking hidden">
+        <div style="
+        display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+">
+            <div style="display:flex;gap:8px;">
+                <button class="restart-btn" onclick="restart()">再一次</button>
+                <button class="restart-btn export-btn" id="export-btn" onclick="exportImage()">
+                    <i class="fas fa-download"></i> 儲存圖片
+                </button>
+            </div>
+            <h2>結果</h2>
+        </div>
+        <div class="ranking-container">
+            <ol id="ranking-list"></ol>
+            <div id="analysis-container"></div>
+        </div>
+    </div>
+    <div id="comparison-view">
+        <div class="progress-container">
+            <div>
+                <div>PICK ROUND</div>
+                <div class="progress-text" id="progress-text">1 / 6</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="song-card" id="song1" onclick="selectSong(0)">
+                <div class="cover-box">
+                    <div class="load-wrapp">
+                        <div class="load-1">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                <img id="cover1" src="" alt="Cover" onerror="this.src='covers/default.png'"></div>
+                    
+                <h3 id="title1"></h3>
+                <button class="play-btn" id="play1" onclick="togglePlay(0, event)">Play</button>
+                <audio id="audio1" preload="none"></audio>
+            </div>
+            <div class="song-card" id="song2" onclick="selectSong(1)">
+                <div class="cover-box">
+
+                <div class="load-wrapp">
+                        <div class="load-1">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                  
+                <img id="cover2" src="" alt="Cover" onerror="this.src='covers/default.png'">  </div>
+                <h3 id="title2"></h3>
+                <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
+                <audio id="audio2" preload="none"></audio>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Song data
+        let songs = [];
+
+        let maxComparisons;
+        let currentPairIndex = 0;
+        let wins = [];
+        let currentSongs = [];
+        let audios = [];
+        let comparisonHistory = {};
+
+        // Load songs from JSON
+        async function loadSongs() {
+            try {
+                const response = await fetch('songs.json');
+                const data = await response.json();
+                songs = data.songs.map(song => ({
+                    name: song.title,
+                    audio: song.audio,
+                    cover: data.albums.find(album => album.id === song.albumId)?.cover || 'covers/default.png',
+                    rating: 1200
+                }));
+                
+                maxComparisons = Math.round(songs.length * 1.5);
+                
+                wins = new Array(songs.length).fill(0);
+                init();
+            } catch (error) {
+                console.error('Error loading songs:', error);
+                alert('無法載入歌曲資料');
+            }
+        }
+
+        function smartSelectPair() {
+            let bestI = 0, bestJ = 1, bestScore = Infinity;
+            for (let i = 0; i < songs.length; i++) {
+                for (let j = i + 1; j < songs.length; j++) {
+                    const key = i + '-' + j;
+                    const timesCompared = comparisonHistory[key] || 0;
+                    const ratingDiff = Math.abs(songs[i].rating - songs[j].rating);
+                    // 每多比一次加 500 懲罰，讓選對手盡量分散
+                    const score = ratingDiff + timesCompared * 500;
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestI = i;
+                        bestJ = j;
+                    }
+                }
+            }
+            return [bestI, bestJ];
+        }
+
+        function init() {
+            const ranking = localStorage.getItem('rv_ranking');
+            if (ranking) {
+                displayRanking(JSON.parse(ranking));
+            } else {
+                loadPair();
+            }
+        }
+
+        let currentIdx1, currentIdx2;
+
+        function loadPair() {
+            if (currentPairIndex >= maxComparisons) {
+                finishRanking();
+                return;
+            }
+            [currentIdx1, currentIdx2] = smartSelectPair();
+            currentSongs = [songs[currentIdx1], songs[currentIdx2]];
+            document.getElementById('title1').textContent = currentSongs[0].name;
+            document.getElementById('cover1').src = currentSongs[0].cover;
+            document.getElementById('audio1').src = currentSongs[0].audio;
+            document.getElementById('title2').textContent = currentSongs[1].name;
+            document.getElementById('cover2').src = currentSongs[1].cover;
+            document.getElementById('audio2').src = currentSongs[1].audio;
+            document.getElementById('progress-text').textContent = `${currentPairIndex + 1} / ${maxComparisons}`;
+            const progressPercent = ((currentPairIndex + 1) / maxComparisons) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+            // Reset play buttons
+            document.getElementById('play1').innerHTML = '<i class="fas fa-play"></i>';
+            document.getElementById('play2').innerHTML = '<i class="fas fa-play"></i>';
+            audios = [document.getElementById('audio1'), document.getElementById('audio2')];
+        }
+
+        function selectSong(index) {
+            const winnerIdx = index === 0 ? currentIdx1 : currentIdx2;
+            const loserIdx = index === 0 ? currentIdx2 : currentIdx1;
+            
+            // 記錄這對被比過
+            const pairKey = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
+            comparisonHistory[pairKey] = (comparisonHistory[pairKey] || 0) + 1;
+
+            // ELO update，K 值從 64 線性降到 16，初期快速收斂、後期穩定
+            const winner = songs[winnerIdx];
+            const loser = songs[loserIdx];
+            const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
+            const expectedLoser = 1 - expectedWinner;
+            const k = 64 - (currentPairIndex / maxComparisons) * 48;
+            winner.rating += k * (1 - expectedWinner);
+            loser.rating += k * (0 - expectedLoser);
+
+            currentPairIndex++;
+            // Stop any playing audio
+            audios.forEach((audio, i) => {
+                audio.pause();
+                audio.currentTime = 0;
+                document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+            });
+            document.body.classList.remove('playing');
+            loadPair();
+        }
+
+        function togglePlay(index, event) {
+            event.stopPropagation();
+            const audio = audios[index];
+            const btn = document.getElementById('play' + (index + 1));
+            // Stop all other audios
+            audios.forEach((a, i) => {
+                if (i !== index) {
+                    a.pause();
+                    a.currentTime = 0;
+                    document.getElementById('play' + (i + 1)).innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+            if (audio.paused) {
+                audio.play();
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+                document.body.classList.add('playing');
+            } else {
+                audio.pause();
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+                document.body.classList.remove('playing');
+            }
+        }
+
+        function finishRanking() {
+            const ranked = songs.slice().sort((a, b) => b.rating - a.rating);
+            localStorage.setItem('rv_ranking', JSON.stringify(ranked));
+            displayRanking(ranked);
+        }
+
+        const songMeta = {
+            "행복(Happiness)":            { tempo:"fast", vibe:["bright","energetic"],       side:"Red",    members:["Wendy","Irene"] },
+            "Be Natural(비너추얼)":        { tempo:"slow", vibe:["sophisticated","cool"],     side:"Velvet", members:["Wendy","Seulgi"] },
+            "Automatic":                  { tempo:"mid",  vibe:["sophisticated","rnb"],       side:"Velvet", members:["Wendy","Irene"] },
+            "DUMB DUMB":                  { tempo:"fast", vibe:["bright","energetic"],        side:"Red",    members:["Seulgi","Joy"] },
+            "7月7日 (One Of These Nights)":{ tempo:"mid",  vibe:["emotional","sophisticated"], side:"Velvet", members:["Wendy","Irene"] },
+            "Russian Roulette(러시안 룰렛)":{ tempo:"fast", vibe:["quirky","retro"],           side:"Both",   members:["Wendy","Joy"] },
+            "Rookie":                     { tempo:"fast", vibe:["quirky","energetic"],        side:"Both",   members:["Wendy","Irene"] },
+            "Red Flavor(빨간 맛)":         { tempo:"fast", vibe:["bright","energetic"],        side:"Red",    members:["Wendy","Joy"] },
+            "Peek-A-Boo":                 { tempo:"mid",  vibe:["dark","cool"],               side:"Velvet", members:["Irene","Seulgi"] },
+            "Bad Boy":                    { tempo:"mid",  vibe:["dark","sophisticated"],      side:"Velvet", members:["Irene","Wendy"] },
+            "#Cookie Jar":                { tempo:"fast", vibe:["bright","quirky"],            side:"Red",    members:["Wendy","Joy"] },
+            "Power Up":                   { tempo:"fast", vibe:["energetic","quirky"],         side:"Red",    members:["Wendy","Irene"] },
+            "RBB (Really Bad Boy)":       { tempo:"fast", vibe:["dark","rnb"],                side:"Velvet", members:["Seulgi","Irene"] },
+            "Zimzalabim":                 { tempo:"fast", vibe:["energetic","quirky"],         side:"Both",   members:["Wendy","Seulgi"] },
+            "Umpah Umpah":                { tempo:"mid",  vibe:["bright","energetic"],         side:"Red",    members:["Wendy","Irene"] },
+            "Psycho":                     { tempo:"mid",  vibe:["dark","sophisticated"],      side:"Both",   members:["Irene","Wendy"] },
+            "Chill Kill":                 { tempo:"mid",  vibe:["dark","dreamy"],             side:"Both",   members:["Irene","Wendy"] },
+        };
+
+        const vibeLabel = {
+            bright:"明亮開朗", energetic:"活力充沛", emotional:"感性抒情",
+            sophisticated:"精緻成熟", cool:"帥氣冷酷", quirky:"個性獨特",
+            dark:"暗黑神秘", rnb:"R&B 韻味", retro:"復古懷舊", dreamy:"夢幻飄逸",
+        };
+        const tempoLabel = { fast:"快節奏", mid:"中板", slow:"慢板抒情" };
+        const sideLabel  = { Red:"活潑的 Red side", Velvet:"感性的 Velvet side", Both:"Red / Velvet 皆愛" };
+
+        function generateAnalysis(ranked) {
+            const topN    = Math.ceil(ranked.length / 2);
+            const topSongs = ranked.slice(0, topN);
+
+            const tempoCount  = {};
+            const vibeCount   = {};
+            const sideCount   = {};
+            const memberCount = {};
+
+            topSongs.forEach(song => {
+                const meta = songMeta[song.name];
+                if (!meta) return;
+                tempoCount[meta.tempo]  = (tempoCount[meta.tempo]  || 0) + 1;
+                sideCount[meta.side]    = (sideCount[meta.side]    || 0) + 1;
+                meta.vibe.forEach(v    => { vibeCount[v]   = (vibeCount[v]   || 0) + 1; });
+                meta.members.forEach(m => { memberCount[m] = (memberCount[m] || 0) + 1; });
+            });
+
+            const top = obj => Object.entries(obj).sort((a,b) => b[1]-a[1])[0];
+
+            const topTempo  = top(tempoCount);
+            const topVibe   = top(vibeCount);
+            const topSide   = top(sideCount);
+            const topMember = top(memberCount);
+
+            // Red vs Velvet 百分比
+            const total = topSongs.filter(s => songMeta[s.name]).length;
+            const redPct    = Math.round(((sideCount['Red']    || 0) + (sideCount['Both'] || 0) * 0.5) / total * 100);
+            const velvetPct = 100 - redPct;
+
+            const cards = [
+                { icon:"🎵", label:"節奏偏好",   value: tempoLabel[topTempo[0]] },
+                { icon:"✨", label:"音樂風格",   value: vibeLabel[topVibe[0]] || topVibe[0] },
+                { icon:"🔴", label:"曲風派系",   value: sideLabel[topSide[0]] },
+                // { icon:"🎤", label:"常見主唱",   value: `${topMember[0]}（前半段出現 ${topMember[1]} 次）` },
+                { icon:"📊", label:"Red / Velvet", value: `${redPct}% Red  ·  ${velvetPct}% Velvet` },
+            ];
+
+            const html = `
+                <div class="analysis-box">
+                    <div class="analysis-title">✨ 我的音樂偏好分析</div>
+                    <div class="analysis-sub">根據你排名前 ${topN} 首歌曲分析</div>
+                    <div class="analysis-cards">
+                        ${cards.map(c => `
+                            <div class="analysis-card">
+                                <span class="analysis-icon">${c.icon}</span>
+                                <span class="analysis-label">${c.label}</span>
+                                <span class="analysis-value">${c.value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('analysis-container').innerHTML = html;
+
+            // 根據 Red / Velvet 比例切換背景主題
+            if (velvetPct > redPct) {
+                document.body.classList.add('theme-velvet');
+                document.body.classList.remove('theme-red');
+            } else {
+                document.body.classList.add('theme-red');
+                document.body.classList.remove('theme-velvet');
+            }
+        }
+
+        function displayRanking(ranked) {
+            document.getElementById('comparison-view').classList.add('hidden');
+            document.getElementById('ranking-view').classList.remove('hidden');
+            const list = document.getElementById('ranking-list');
+            list.innerHTML = '';
+            ranked.forEach((song, i) => {
+                const li = document.createElement('li');
+                li.textContent = `${i + 1} - ${song.name}`;
+                list.appendChild(li);
+            });
+            generateAnalysis(ranked);
+        }
+
+        function restart() {
+            localStorage.removeItem('rv_ranking');
+            songs.forEach(song => song.rating = 1200);
+            currentPairIndex = 0;
+            comparisonHistory = {};
+            document.body.classList.remove('theme-red', 'theme-velvet');
+            document.getElementById('ranking-view').classList.add('hidden');
+            document.getElementById('comparison-view').classList.remove('hidden');
+            loadPair();
+        }
+
+        async function exportImage() {
+            const btn = document.getElementById('export-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 生成中...';
+
+            const ranked = (JSON.parse(localStorage.getItem('rv_ranking')) || []).slice(0, 15);
+            const isVelvet = document.body.classList.contains('theme-velvet');
+
+            // 依主題決定配色
+            const theme = isVelvet ? {
+                bg:          'linear-gradient(150deg, #1a0a2a, #3a1550)',
+                titleColor:  '#c98aff',
+                subtitleColor:'#e8d5f5',
+                labelColor:  '#8a6aaa',
+                itemBg:      'rgba(255,255,255,0.08)',
+                itemColor:   '#e8d5f5',
+                rankColor:   '#c98aff',
+                medalColors: ['rgba(180,120,255,0.6)', 'rgba(120,180,255,0.5)', 'rgba(160,100,220,0.5)'],
+                footerColor: '#8a6aaa',
+            } : {
+                bg:          'linear-gradient(150deg, #fff5f5, #ffc4c4)',
+                titleColor:  '#FF9797',
+                subtitleColor:'#333',
+                labelColor:  '#aaa',
+                itemBg:      'white',
+                itemColor:   '#494949',
+                rankColor:   '#FF9797',
+                medalColors: ['#ff9595', '#60dae3', '#c7a1ff'],
+                footerColor: '#ffb3b3',
+            };
+            const medalText = ['🏆', '🥈', '🥉'];
+
+            const card = document.createElement('div');
+            card.style.cssText = `
+                position: fixed; left: -9999px; top: 0;
+                width: 420px; padding: 32px;
+                background: ${theme.bg};
+                font-family: Arial, sans-serif; box-sizing: border-box;
+            `;
+            card.innerHTML = `
+                <div style="text-align:center;margin-bottom:24px;">
+                    <div style="font-size:13px;letter-spacing:3px;color:${theme.titleColor};font-weight:bold;">RED VELVET</div>
+                    <div style="font-size:20px;font-weight:bold;color:${theme.subtitleColor};margin-top:4px;">My Song Ranking</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    ${ranked.map((song, i) => `
+                        <div style="
+                            display:flex;align-items:center;gap:12px;
+                            padding:10px 14px;border-radius:12px;
+                            background:${i < 3 ? theme.medalColors[i] : theme.itemBg};
+                            box-shadow:0 2px 6px rgba(0,0,0,0.12);
+                        ">
+                            <span style="font-size:18px;min-width:28px;text-align:center;">
+                                ${i < 3 ? medalText[i] : `<span style="color:${theme.rankColor};font-weight:bold;">${i + 1}</span>`}
+                            </span>
+                            <span style="font-size:16px;color:${theme.itemColor};">${song.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="text-align:center;margin-top:20px;font-size:11px;color:${theme.footerColor};letter-spacing:1px;">
+                    RV Song Ranker by Pachi
+                </div>
+            `;
+
+            document.body.appendChild(card);
+            try {
+                const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: null });
+                const link = document.createElement('a');
+                link.download = 'rv_ranking.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } finally {
+                document.body.removeChild(card);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-download"></i> 儲存圖片';
+            }
+        }
+
+        window.onload = loadSongs;
+    </script>
+    <footer>
+        <p>
+            This is a non-commercial, fan-made website created for entertainment purposes only. 
+            All trademarks, music, images, and other media are the property of their respective owners. 
+            Content is used under the assumption of fair use for personal and non-commercial purposes. 
+            This site is not affiliated with or endorsed by any official entities. 
+            If you are a copyright owner and have concerns regarding the use of any material, please contact us for prompt removal.
+        </p>
+    </footer>
+</body>
+</html>
