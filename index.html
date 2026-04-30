@@ -11,54 +11,60 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="config.js"></script>
     <style>
-        #setup-overlay {
+        #url-manage-overlay {
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.55);
             display: flex; align-items: center; justify-content: center;
             z-index: 1000;
         }
-        #setup-overlay.hidden { display: none; }
-        .setup-card {
+        #url-manage-overlay.hidden { display: none; }
+        .url-manage-card {
             background: white; border-radius: 20px;
-            padding: 36px 32px; max-width: 460px; width: 92%;
-            text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 28px 24px; max-width: 500px; width: 94%;
+            max-height: 82vh; display: flex; flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
         }
-        .setup-card h3 { margin: 0 0 8px; color: #FF7F50; font-size: 20px; }
-        .setup-card > p { color: #666; font-size: 14px; margin: 0 0 18px; line-height: 1.6; }
-        .setup-card .steps {
-            text-align: left; background: #fff5f5; border-radius: 10px;
-            padding: 14px 18px; margin-bottom: 18px; font-size: 13px;
-            color: #555; line-height: 1.9; border: 1px solid #ffe0e0;
+        .url-manage-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 6px;
         }
-        .setup-card .steps ol { margin: 0; padding-left: 18px; }
-        .setup-card .steps a { color: #FF7F50; text-decoration: none; font-weight: 600; }
-        .setup-card .steps a:hover { text-decoration: underline; }
-        .setup-card input[type="text"] {
-            width: 100%; box-sizing: border-box;
-            padding: 12px 14px; border: 1.5px solid #eee;
-            border-radius: 10px; font-size: 14px; margin-bottom: 12px;
-            outline: none; transition: border-color 0.2s; font-family: monospace;
+        .url-manage-header h3 { margin: 0; color: #FF7F50; font-size: 18px; }
+        .url-manage-close {
+            background: none; border: none; font-size: 22px;
+            cursor: pointer; color: #bbb; line-height: 1; padding: 0;
         }
-        .setup-card input[type="text"]:focus { border-color: #FF9797; }
-        .setup-card .primary-btn {
+        .url-manage-close:hover { color: #FF9797; }
+        .url-manage-desc { color: #999; font-size: 13px; margin: 0 0 14px; line-height: 1.6; }
+        #url-song-list { overflow-y: auto; flex: 1; margin-bottom: 14px; }
+        .url-song-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 0; border-bottom: 1px solid #f5f5f5;
+        }
+        .url-song-name {
+            font-size: 13px; font-weight: 500; flex: 1; color: #333;
+            min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .url-song-status {
+            font-size: 11px; padding: 2px 7px; border-radius: 20px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .url-song-status.local  { background: #e8f5e9; color: #388e3c; }
+        .url-song-status.youtube { background: #fff3e0; color: #e65100; }
+        .url-song-status.none   { background: #fce4ec; color: #c62828; }
+        .url-song-input {
+            width: 150px; flex-shrink: 0; padding: 5px 8px;
+            border: 1.5px solid #eee; border-radius: 8px;
+            font-size: 12px; font-family: monospace; outline: none;
+            transition: border-color 0.2s;
+        }
+        .url-song-input:focus { border-color: #FF9797; }
+        .url-manage-btn {
             background: linear-gradient(135deg, #FF9797, #FF7F50);
-            color: white; border: none; padding: 12px 0;
+            color: white; border: none; padding: 11px 0;
             border-radius: 10px; font-size: 15px; font-weight: bold;
-            cursor: pointer; width: 100%; margin-bottom: 12px; transition: opacity 0.2s;
+            cursor: pointer; width: 100%; transition: opacity 0.2s; flex-shrink: 0;
         }
-        .setup-card .primary-btn:hover { opacity: 0.88; }
-        .setup-card .hint { font-size: 12px; color: #bbb; }
-        #loading-overlay {
-            position: fixed; inset: 0;
-            background: rgba(255,240,240,0.94);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            z-index: 999;
-        }
-        #loading-overlay.hidden { display: none; }
-        #loading-overlay .spin-icon { font-size: 46px; color: #FF9797; }
-        #loading-overlay p { color: #FF7F50; font-size: 15px; margin: 14px 0 4px; font-weight: 500; }
-        #loading-overlay small { color: #bbb; font-size: 12px; }
+        .url-manage-btn:hover { opacity: 0.88; }
         .settings-btn {
             position: fixed; bottom: 80px; right: 18px;
             background: rgba(255,255,255,0.8); border: 1px solid #eee;
@@ -73,30 +79,20 @@
 </head>
 <body>
 
-    <!-- YouTube API Key setup -->
-    <div id="setup-overlay" class="hidden">
-        <div class="setup-card">
-            <h3>🎵 設定 YouTube 串流播放</h3>
-            <p>需要免費的 YouTube Data API 金鑰來自動搜尋歌曲。<br>搜尋結果會快取，之後不需重新搜尋。</p>
-            <div class="steps">
-                <ol>
-                    <li>前往 <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
-                    <li>建立專案 → 啟用「<strong>YouTube Data API v3</strong>」</li>
-                    <li>憑證 → 建立 API 金鑰</li>
-                    <li>將金鑰複製貼至下方</li>
-                </ol>
+    <!-- YouTube URL management modal -->
+    <div id="url-manage-overlay" class="hidden">
+        <div class="url-manage-card">
+            <div class="url-manage-header">
+                <h3>🎬 YouTube 試聽管理</h3>
+                <button class="url-manage-close" onclick="closeUrlManage()">&#x2715;</button>
             </div>
-            <input type="text" id="api-key-input" placeholder="貼上 API 金鑰（AIzaSy...）">
-            <button class="primary-btn" onclick="saveApiKey()">確認並開始搜尋</button>
-            <p class="hint">金鑰僅儲存在您的瀏覽器本機，不會上傳到任何伺服器。</p>
+            <p class="url-manage-desc">
+                為歌曲貼上 YouTube 網址即可加入試聽。支援 youtube.com/watch?v=... 與 youtu.be/... 格式。<br>
+                設定後儲存在瀏覽器本機，不消耗任何 API 額度。
+            </p>
+            <div id="url-song-list"></div>
+            <button class="url-manage-btn" onclick="closeUrlManage()">完成</button>
         </div>
-    </div>
-
-    <!-- Loading overlay -->
-    <div id="loading-overlay" class="hidden">
-        <i class="fas fa-spinner fa-spin spin-icon"></i>
-        <p id="loading-text">正在搜尋 YouTube 歌曲...</p>
-        <small>首次使用需要一點時間，之後會直接從快取載入</small>
     </div>
 
     <h1>我的 <span>Red Velvet</span> 主打歌</h1>
@@ -171,8 +167,8 @@
         <div id="ytPlayer1"></div>
     </div>
 
-    <!-- Settings button to reset API key -->
-    <button class="settings-btn" onclick="resetApiKey()" title="重設 YouTube API 設定">
+    <!-- Settings button to manage YouTube URLs -->
+    <button class="settings-btn" onclick="openUrlManage()" title="管理 YouTube 試聽網址">
         <i class="fas fa-cog"></i>
     </button>
 
@@ -197,7 +193,20 @@
         let ytPlayerReady = [false, false];
         let ytPendingVideoId = [null, null];
         let ytIdCache = {};
-        let ytApiKey = '';
+
+        // Extract YouTube video ID from a URL or plain 11-char ID
+        function extractVideoId(input) {
+            input = (input || '').trim();
+            if (!input) return null;
+            let m = input.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            m = input.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            m = input.match(/embed\/([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            if (/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
+            return null;
+        }
 
         // Check which songs have local audio files
         async function buildAudioModes() {
@@ -236,31 +245,14 @@
             }
         }
 
-        async function handleYtError(index, code) {
-            // 150 = embedding not allowed; re-search skipping this video ID
+        function handleYtError(index, code) {
             if (code === 150 || code === 101) {
                 const songName = currentSongs[index]?.name;
                 if (!songName) return;
-                const badId = ytIdCache[songName];
                 delete ytIdCache[songName];
                 localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
-
-                // Search again, excluding the bad video
-                try {
-                    const q = encodeURIComponent('Red Velvet ' + songName);
-                    const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + q
-                        + '&type=video&videoEmbeddable=true&maxResults=5&key=' + ytApiKey;
-                    const resp = await fetch(url);
-                    const data = await resp.json();
-                    if (data.items) {
-                        const next = data.items.find(item => item.id.videoId !== badId);
-                        if (next) {
-                            ytIdCache[songName] = next.id.videoId;
-                            localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
-                            cueVideo(index, next.id.videoId);
-                        }
-                    }
-                } catch(e) { console.warn('Re-search failed:', e); }
+                const btn = document.getElementById('play' + (index + 1));
+                if (btn) btn.style.display = 'none';
             }
         }
 
@@ -281,7 +273,6 @@
                     ytPendingVideoId[playerIndex] = videoId;
                 }
             } else {
-                // Will be cued once onReady fires
                 ytPendingVideoId[playerIndex] = videoId;
             }
         }
@@ -319,6 +310,7 @@
                 songs = data.songs.map(song => ({
                     name: song.title,
                     audio: song.audio || null,
+                    ytId: song.ytId || null,
                     cover: data.albums.find(album => album.id === song.albumId)?.cover || 'covers/default.png',
                     rating: 1200
                 }));
@@ -326,112 +318,90 @@
                 maxComparisons = Math.round(songs.length * 1.5);
                 wins = new Array(songs.length).fill(0);
 
-                // Determine which songs use local audio vs YouTube
                 await buildAudioModes();
 
-                // Load cached YouTube data
-                // Priority: config.js → localStorage → setup screen
-                ytApiKey = (typeof CONFIG !== 'undefined' && CONFIG.YOUTUBE_API_KEY)
-                    ? CONFIG.YOUTUBE_API_KEY
-                    : localStorage.getItem('rv_yt_api_key') || '';
-                if (ytApiKey) localStorage.setItem('rv_yt_api_key', ytApiKey);
-
-                // v2: added videoEmbeddable=true filter; invalidate old cache
-                const CACHE_VERSION = '2';
-                if (localStorage.getItem('rv_yt_cache_ver') !== CACHE_VERSION) {
-                    localStorage.removeItem('rv_yt_cache');
-                    localStorage.setItem('rv_yt_cache_ver', CACHE_VERSION);
-                }
+                // Load cached YouTube IDs from localStorage
                 const cached = localStorage.getItem('rv_yt_cache');
-                if (cached) ytIdCache = JSON.parse(cached);
-
-                // Only songs without local audio need YouTube
-                const needsYT = songs.filter(s => songAudioModes[s.name] === 'youtube');
-                const missingIds = needsYT.some(s => !ytIdCache[s.name]);
-
-                if (needsYT.length === 0) {
-                    // All songs have local audio, no YouTube needed
-                    init();
-                } else if (!ytApiKey) {
-                    document.getElementById('setup-overlay').classList.remove('hidden');
-                } else if (missingIds) {
-                    const ok = await searchAllSongs();
-                    if (ok) init();
-                } else {
-                    init();
+                if (cached) {
+                    try { ytIdCache = JSON.parse(cached); } catch(e) { ytIdCache = {}; }
                 }
+
+                // Merge ytId from songs.json (takes precedence over localStorage)
+                songs.forEach(song => {
+                    if (song.ytId) ytIdCache[song.name] = song.ytId;
+                });
+                localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
+
+                init();
             } catch (error) {
                 console.error('Error loading songs:', error);
                 alert('無法載入歌曲資料');
             }
         }
 
-        async function saveApiKey() {
-            const key = document.getElementById('api-key-input').value.trim();
-            if (!key) return alert('請輸入 API 金鑰');
-            ytApiKey = key;
-            localStorage.setItem('rv_yt_api_key', key);
-            document.getElementById('setup-overlay').classList.add('hidden');
-            const ok = await searchAllSongs();
-            if (ok) init();
+        // YouTube URL management UI
+        function openUrlManage() {
+            renderUrlManage();
+            document.getElementById('url-manage-overlay').classList.remove('hidden');
         }
 
-        async function searchAllSongs() {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
-            loadingOverlay.classList.remove('hidden');
+        function closeUrlManage() {
+            document.getElementById('url-manage-overlay').classList.add('hidden');
+        }
 
-            const toSearch = songs.filter(s => songAudioModes[s.name] === 'youtube' && !ytIdCache[s.name]);
+        function renderUrlManage() {
+            const list = document.getElementById('url-song-list');
+            list.innerHTML = songs.map(song => {
+                const mode = songAudioModes[song.name] || 'youtube';
+                const ytId = ytIdCache[song.name] || '';
+                const statusClass = mode === 'local' ? 'local' : (ytId ? 'youtube' : 'none');
+                const statusText  = mode === 'local' ? '本機音訊' : (ytId ? 'YouTube ✓' : '未設定');
+                const safeId = ytId.replace(/"/g, '&quot;');
+                const safeName = song.name.replace(/"/g, '&quot;');
+                return `
+                    <div class="url-song-row">
+                        <span class="url-song-name" title="${safeName}">${song.name}</span>
+                        <span class="url-song-status ${statusClass}">${statusText}</span>
+                        <input class="url-song-input" type="text"
+                            placeholder="貼上 YouTube 網址"
+                            value="${safeId}"
+                            data-song="${safeName}"
+                            onchange="saveYtUrl(this.dataset.song, this.value, this)">
+                    </div>
+                `;
+            }).join('');
+        }
 
-            for (let i = 0; i < toSearch.length; i++) {
-                const song = toSearch[i];
-                loadingText.textContent = `搜尋中 (${i + 1} / ${toSearch.length})：${song.name}`;
-                try {
-                    const q = encodeURIComponent('Red Velvet ' + song.name);
-                    const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + q + '&type=video&videoEmbeddable=true&maxResults=1&key=' + ytApiKey;
-                    const resp = await fetch(url);
-                    const data = await resp.json();
-
-                    if (data.error) {
-                        const code = data.error.code;
-                        const msg  = data.error.errors?.[0]?.reason || data.error.message;
-                        loadingOverlay.classList.add('hidden');
-
-                        if (code === 403 && (msg.includes('quota') || msg === 'quotaExceeded' || msg === 'rateLimitExceeded')) {
-                            // Quota exhausted — still start game with local audio
-                            alert('⚠️ YouTube API 每日使用額度已達上限（' + msg + '）。\n\n有本機音樂的歌曲仍可正常播放，缺少本機音樂的歌曲今日無法試聽。\n明天額度重置後重新整理即可恢復。');
-                            localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
-                            return true; // proceed with whatever was cached
-                        }
-
-                        // Other errors (invalid key, API not enabled, etc.)
-                        alert('API 錯誤 ' + code + '（' + msg + '）\n\n請確認：\n1. API 金鑰正確\n2. 已啟用「YouTube Data API v3」\n3. 金鑰無 HTTP 來源限制（或已加入允許清單）');
-                        document.getElementById('api-key-input').value = ytApiKey;
-                        document.getElementById('setup-overlay').classList.remove('hidden');
-                        return false;
-                    }
-
-                    if (data.items && data.items.length > 0) {
-                        ytIdCache[song.name] = data.items[0].id.videoId;
-                    }
-                } catch (e) {
-                    console.error('Search failed for', song.name, e);
-                }
-                // Small delay to be gentle with quota
-                await new Promise(r => setTimeout(r, 120));
+        function saveYtUrl(songName, urlOrId, inputEl) {
+            const videoId = extractVideoId(urlOrId);
+            if (urlOrId.trim() && !videoId) {
+                inputEl.style.borderColor = '#e91e63';
+                return;
             }
-
+            if (videoId) {
+                ytIdCache[songName] = videoId;
+                inputEl.value = videoId;
+                inputEl.style.borderColor = '#4caf50';
+            } else {
+                delete ytIdCache[songName];
+                inputEl.style.borderColor = '#eee';
+            }
             localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
-            loadingOverlay.classList.add('hidden');
-            return true;
-        }
 
-        function resetApiKey() {
-            if (!confirm('確定要重設 YouTube API 設定？\n（快取的搜尋結果將會保留）')) return;
-            localStorage.removeItem('rv_yt_api_key');
-            ytApiKey = '';
-            document.getElementById('api-key-input').value = '';
-            document.getElementById('setup-overlay').classList.remove('hidden');
+            // Update status badge without re-rendering the whole list
+            const row = inputEl.closest('.url-song-row');
+            const badge = row.querySelector('.url-song-status');
+            const mode = songAudioModes[songName] || 'youtube';
+            if (mode === 'local') {
+                badge.className = 'url-song-status local';
+                badge.textContent = '本機音訊';
+            } else if (videoId) {
+                badge.className = 'url-song-status youtube';
+                badge.textContent = 'YouTube ✓';
+            } else {
+                badge.className = 'url-song-status none';
+                badge.textContent = '未設定';
+            }
         }
 
         function smartSelectPair() {

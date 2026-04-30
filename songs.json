@@ -127,6 +127,7 @@
             "title": "행복(Happiness)",
             "albumId": "Happiness",
             "audio": "audio/happiness.m4a",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -134,6 +135,7 @@
             "title": "Be Natural(비너추얼)",
             "albumId": "BeNatural",
             "audio": "audio/be_natural.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -141,6 +143,7 @@
             "title": "Automatic",
             "albumId": "BeNatural",
             "audio": "audio/automatic.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -148,6 +151,7 @@
             "title": "DUMB DUMB",
             "albumId": "TheRed",
             "audio": "audio/dumb_dumb.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -155,6 +159,7 @@
             "title": "7月7日 (One Of These Nights)",
             "albumId": "TheVelvet",
             "audio": "audio/one_of_these_nights.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -162,6 +167,7 @@
             "title": "Russian Roulette(러시안 룰렛)",
             "albumId": "RussianRoulette",
             "audio": "audio/russian_roulette.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -169,6 +175,7 @@
             "title": "Rookie",
             "albumId": "Rookie",
             "audio": "audio/rookie.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -176,6 +183,7 @@
             "title": "Red Flavor(빨간 맛)",
             "albumId": "TheRedSummer",
             "audio": "audio/red_flavor.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -183,6 +191,7 @@
             "title": "Peek-A-Boo",
             "albumId": "PerfectVelvet",
             "audio": "audio/peek_a_boo.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -190,6 +199,7 @@
             "title": "Bad Boy",
             "albumId": "ThePerfectRedVelvet",
             "audio": "audio/bad_boy.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -197,6 +207,7 @@
             "title": "#Cookie Jar",
             "albumId": "CookieJar",
             "audio": "audio/cookie_jar.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -204,6 +215,7 @@
             "title": "Power Up",
             "albumId": "SummerMagic",
             "audio": "audio/power_up.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -211,6 +223,7 @@
             "title": "RBB (Really Bad Boy)",
             "albumId": "RBB",
             "audio": "audio/rbb.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -218,6 +231,7 @@
             "title": "Zimzalabim",
             "albumId": "TheReVeFestivalDay1",
             "audio": "audio/zimzalabim.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -225,6 +239,7 @@
             "title": "Umpah Umpah",
             "albumId": "TheReVeFestivalDay2",
             "audio": "audio/umpah_umpah.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -232,6 +247,7 @@
             "title": "Wild Side",
             "albumId": "Bloom",
             "audio": "audio/wild_side.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -239,6 +255,7 @@
             "title": "Psycho",
             "albumId": "TheReVeFestivalFinale",
             "audio": "audio/psycho.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
@@ -246,19 +263,22 @@
             "title": "Birthday",
             "albumId": "Birthday",
             "audio": "audio/birthday.mp3",
+            "ytId": "",
             "isTitleSong": true
         },
         {
             "id": 2,
             "title": "Chill Kill",
             "albumId": "ChillKill",
-            "audio": "audio/chill_kill.mp3"
+            "audio": "audio/chill_kill.mp3",
+            "ytId": ""
         },
         {
-            "id":14,
+            "id": 14,
             "title": "Cosmic",
             "albumId": "Cosmic",
-            "audio": "audio/cosmic.mp3"
+            "audio": "audio/cosmic.mp3",
+            "ytId": ""
         }
     ]
 }
