@@ -35,7 +35,7 @@
     <div id="comparison-view">
         <div class="progress-container">
             <div>
-                <div>PICK ROUND</div>
+                <div></div>
                 <div class="progress-text" id="progress-text">1 / 6</div>
             </div>
             <div class="progress-bar">
@@ -222,11 +222,11 @@
         const songMeta = {
             "행복(Happiness)":            { tempo:"fast", vibe:["bright","energetic"],       side:"Red",    members:["Wendy","Irene"] },
             "Be Natural(비너추얼)":        { tempo:"slow", vibe:["sophisticated","cool"],     side:"Velvet", members:["Wendy","Seulgi"] },
-            "Automatic":                  { tempo:"mid",  vibe:["sophisticated","rnb"],       side:"Velvet", members:["Wendy","Irene"] },
+            "Automatic":                  { tempo:"slow",  vibe:["sophisticated","rnb"],       side:"Velvet", members:["Wendy","Irene"] },
             "DUMB DUMB":                  { tempo:"fast", vibe:["bright","energetic"],        side:"Red",    members:["Seulgi","Joy"] },
-            "7月7日 (One Of These Nights)":{ tempo:"mid",  vibe:["emotional","sophisticated"], side:"Velvet", members:["Wendy","Irene"] },
-            "Russian Roulette(러시안 룰렛)":{ tempo:"fast", vibe:["quirky","retro"],           side:"Both",   members:["Wendy","Joy"] },
-            "Rookie":                     { tempo:"fast", vibe:["quirky","energetic"],        side:"Both",   members:["Wendy","Irene"] },
+            "7月7日 (One Of These Nights)":{ tempo:"slow",  vibe:["emotional","sophisticated"],side:"Velvet", members:["Wendy","Irene"] },
+            "Russian Roulette(러시안 룰렛)":{ tempo:"fast", vibe:["quirky","retro","energetic"],side:"Red",   members:["Wendy","Joy"] },
+            "Rookie":                     { tempo:"fast", vibe:["quirky","energetic"],        side:"Red",   members:["Wendy","Irene"] },
             "Red Flavor(빨간 맛)":         { tempo:"fast", vibe:["bright","energetic"],        side:"Red",    members:["Wendy","Joy"] },
             "Peek-A-Boo":                 { tempo:"mid",  vibe:["dark","cool"],               side:"Velvet", members:["Irene","Seulgi"] },
             "Bad Boy":                    { tempo:"mid",  vibe:["dark","sophisticated"],      side:"Velvet", members:["Irene","Wendy"] },
@@ -234,9 +234,11 @@
             "Power Up":                   { tempo:"fast", vibe:["energetic","quirky"],         side:"Red",    members:["Wendy","Irene"] },
             "RBB (Really Bad Boy)":       { tempo:"fast", vibe:["dark","rnb"],                side:"Velvet", members:["Seulgi","Irene"] },
             "Zimzalabim":                 { tempo:"fast", vibe:["energetic","quirky"],         side:"Both",   members:["Wendy","Seulgi"] },
-            "Umpah Umpah":                { tempo:"mid",  vibe:["bright","energetic"],         side:"Red",    members:["Wendy","Irene"] },
-            "Psycho":                     { tempo:"mid",  vibe:["dark","sophisticated"],      side:"Both",   members:["Irene","Wendy"] },
+            "Umpah Umpah":                { tempo:"fast",  vibe:["bright","energetic"],         side:"Red",    members:["Wendy","Irene"] },
+            "Psycho":                     { tempo:"mid",  vibe:["dark","sophisticated"],      side:"Velvet",   members:["Irene","Wendy"] },
+            "Birthday":                   { tempo:"fast",  vibe:["energetic","quirky"],      side:"Both",   members:["Irene","Wendy"] },
             "Chill Kill":                 { tempo:"mid",  vibe:["dark","dreamy"],             side:"Both",   members:["Irene","Wendy"] },
+            "Cosmic":                     { tempo:"mid",  vibe:["cool","emotional","dreamy"], side:"Both",   members:["Irene","Wendy"] },
         };
 
         const vibeLabel = {
@@ -282,7 +284,7 @@
                 { icon:"✨", label:"音樂風格",   value: vibeLabel[topVibe[0]] || topVibe[0] },
                 { icon:"🔴", label:"曲風派系",   value: sideLabel[topSide[0]] },
                 // { icon:"🎤", label:"常見主唱",   value: `${topMember[0]}（前半段出現 ${topMember[1]} 次）` },
-                { icon:"📊", label:"Red / Velvet", value: `${redPct}% Red  ·  ${velvetPct}% Velvet` },
+                { icon:"📊", label:"Red / Velvet", value: `Red ${redPct}%  ·  Velvet ${velvetPct}% ` },
             ];
 
             const html = `
