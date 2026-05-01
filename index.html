@@ -7,75 +7,11 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1914398977384746"
+     crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="config.js"></script>
-    <style>
-        #url-manage-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.55);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-        }
-        #url-manage-overlay.hidden { display: none; }
-        .url-manage-card {
-            background: white; border-radius: 20px;
-            padding: 28px 24px; max-width: 500px; width: 94%;
-            max-height: 82vh; display: flex; flex-direction: column;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        }
-        .url-manage-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 6px;
-        }
-        .url-manage-header h3 { margin: 0; color: #FF7F50; font-size: 18px; }
-        .url-manage-close {
-            background: none; border: none; font-size: 22px;
-            cursor: pointer; color: #bbb; line-height: 1; padding: 0;
-        }
-        .url-manage-close:hover { color: #FF9797; }
-        .url-manage-desc { color: #999; font-size: 13px; margin: 0 0 14px; line-height: 1.6; }
-        #url-song-list { overflow-y: auto; flex: 1; margin-bottom: 14px; }
-        .url-song-row {
-            display: flex; align-items: center; gap: 8px;
-            padding: 7px 0; border-bottom: 1px solid #f5f5f5;
-        }
-        .url-song-name {
-            font-size: 13px; font-weight: 500; flex: 1; color: #333;
-            min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .url-song-status {
-            font-size: 11px; padding: 2px 7px; border-radius: 20px;
-            white-space: nowrap; flex-shrink: 0;
-        }
-        .url-song-status.local  { background: #e8f5e9; color: #388e3c; }
-        .url-song-status.youtube { background: #fff3e0; color: #e65100; }
-        .url-song-status.none   { background: #fce4ec; color: #c62828; }
-        .url-song-input {
-            width: 150px; flex-shrink: 0; padding: 5px 8px;
-            border: 1.5px solid #eee; border-radius: 8px;
-            font-size: 12px; font-family: monospace; outline: none;
-            transition: border-color 0.2s;
-        }
-        .url-song-input:focus { border-color: #FF9797; }
-        .url-manage-btn {
-            background: linear-gradient(135deg, #FF9797, #FF7F50);
-            color: white; border: none; padding: 11px 0;
-            border-radius: 10px; font-size: 15px; font-weight: bold;
-            cursor: pointer; width: 100%; transition: opacity 0.2s; flex-shrink: 0;
-        }
-        .url-manage-btn:hover { opacity: 0.88; }
-        .settings-btn {
-            position: fixed; bottom: 80px; right: 18px;
-            background: rgba(255,255,255,0.8); border: 1px solid #eee;
-            border-radius: 50%; width: 36px; height: 36px;
-            cursor: pointer; font-size: 15px; display: flex;
-            align-items: center; justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100;
-            color: #aaa; transition: color 0.2s;
-        }
-        .settings-btn:hover { color: #FF9797; }
-    </style>
 </head>
 <body>
 
@@ -95,7 +31,21 @@
         </div>
     </div>
 
-    <h1>我的 <span>Red Velvet</span> 主打歌</h1>
+    <h1 style="margin-top: 60px;">My <span>Red Velvet</span> TOP 15</h1>
+    <div id="start-screen" class="start-screen">
+        <div class="start-card">
+            <h2>Are you ready for this?</h2>
+            <p>全部歌曲約140輪，主打歌/單曲約32輪</p>
+            <label class="start-checkbox">
+                <input type="checkbox" id="title-only-toggle" onchange="setTitleOnlyMode(this.checked)">
+                <span class="toggle-switch"></span>
+                只比較主打歌
+            </label>
+            <div>
+                <button class="start-btn" onclick="beginComparison()">ZIMZALABIM！！！</button>
+            </div>
+        </div>
+    </div>
     <div id="ranking-view" class="ranking hidden">
         <div style="
         display: flex;
@@ -106,7 +56,7 @@
             <div style="display:flex;gap:8px;">
                 <button class="restart-btn" onclick="restart()">再一次</button>
                 <button class="restart-btn export-btn" id="export-btn" onclick="exportImage()">
-                    <i class="fas fa-download"></i> 儲存圖片
+                    <i class="fas fa-download"></i> Save Results
                 </button>
             </div>
             <h2>結果</h2>
@@ -168,13 +118,15 @@
     </div>
 
     <!-- Settings button to manage YouTube URLs -->
-    <button class="settings-btn" onclick="openUrlManage()" title="管理 YouTube 試聽網址">
+    <button style="display: none;" class="settings-btn" onclick="openUrlManage()" title="管理 YouTube 試聽網址">
         <i class="fas fa-cog"></i>
     </button>
 
     <script>
         // Song data
         let songs = [];
+        let activeSongs = [];
+        let titleOnlyMode = false;
         let maxComparisons;
         let currentPairIndex = 0;
         let wins = [];
@@ -312,13 +264,14 @@
                     audio: song.audio || null,
                     ytId: song.ytId || null,
                     cover: data.albums.find(album => album.id === song.albumId)?.cover || 'covers/default.png',
-                    rating: 1200
+                    rating: 1200,
+                    isTitleSong: !!song.isTitleSong
                 }));
-
-                maxComparisons = Math.round(songs.length * 1.5);
+                songs = songs.sort(() => Math.random() - 0.5);
                 wins = new Array(songs.length).fill(0);
 
                 await buildAudioModes();
+                rebuildSongPool();
 
                 // Load cached YouTube IDs from localStorage
                 const cached = localStorage.getItem('rv_yt_cache');
@@ -332,6 +285,7 @@
                 });
                 localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
 
+                rebuildSongPool();
                 init();
             } catch (error) {
                 console.error('Error loading songs:', error);
@@ -404,13 +358,45 @@
             }
         }
 
+        function getActiveSongPool() {
+            return titleOnlyMode ? songs.filter(song => song.isTitleSong) : songs;
+        }
+
+        function rebuildSongPool() {
+            activeSongs = getActiveSongPool();
+            maxComparisons = Math.round(activeSongs.length * 1.5);
+            if (maxComparisons < 1 && activeSongs.length >= 2) {
+                maxComparisons = 1;
+            }
+        }
+
+        function setTitleOnlyMode(enabled) {
+            titleOnlyMode = enabled;
+            localStorage.setItem('rv_title_only', JSON.stringify(enabled));
+        }
+
+        function beginComparison() {
+            rebuildSongPool();
+            if (activeSongs.length < 2) {
+                alert('目前沒有足夠的歌曲可比較，請確認資料是否正確。');
+                return;
+            }
+            currentPairIndex = 0;
+            comparisonHistory = {};
+            songs.forEach(song => song.rating = 1200);
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('comparison-view').classList.remove('hidden');
+            document.getElementById('ranking-view').classList.add('hidden');
+            loadPair();
+        }
+
         function smartSelectPair() {
             let bestI = 0, bestJ = 1, bestScore = Infinity;
-            for (let i = 0; i < songs.length; i++) {
-                for (let j = i + 1; j < songs.length; j++) {
+            for (let i = 0; i < activeSongs.length; i++) {
+                for (let j = i + 1; j < activeSongs.length; j++) {
                     const key = i + '-' + j;
                     const timesCompared = comparisonHistory[key] || 0;
-                    const ratingDiff = Math.abs(songs[i].rating - songs[j].rating);
+                    const ratingDiff = Math.abs(activeSongs[i].rating - activeSongs[j].rating);
                     const score = ratingDiff + timesCompared * 500;
                     if (score < bestScore) {
                         bestScore = score;
@@ -423,21 +409,18 @@
         }
 
         function init() {
-            const ranking = localStorage.getItem('rv_ranking');
-            if (ranking) {
-                displayRanking(JSON.parse(ranking));
-            } else {
-                loadPair();
-            }
+            document.getElementById('comparison-view').classList.add('hidden');
+            document.getElementById('ranking-view').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
         }
 
         function loadPair() {
-            if (currentPairIndex >= maxComparisons) {
+            if (activeSongs.length < 2 || currentPairIndex >= maxComparisons) {
                 finishRanking();
                 return;
             }
             [currentIdx1, currentIdx2] = smartSelectPair();
-            currentSongs = [songs[currentIdx1], songs[currentIdx2]];
+            currentSongs = [activeSongs[currentIdx1], activeSongs[currentIdx2]];
 
             document.getElementById('title1').textContent = currentSongs[0].name;
             document.getElementById('cover1').src = currentSongs[0].cover;
@@ -473,8 +456,8 @@
             const pairKey = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
             comparisonHistory[pairKey] = (comparisonHistory[pairKey] || 0) + 1;
 
-            const winner = songs[winnerIdx];
-            const loser = songs[loserIdx];
+            const winner = activeSongs[winnerIdx];
+            const loser = activeSongs[loserIdx];
             const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
             const expectedLoser = 1 - expectedWinner;
             const k = 64 - (currentPairIndex / maxComparisons) * 48;
@@ -532,7 +515,7 @@
         }
 
         function finishRanking() {
-            const ranked = songs.slice().sort((a, b) => b.rating - a.rating);
+            const ranked = activeSongs.slice().sort((a, b) => b.rating - a.rating);
             localStorage.setItem('rv_ranking', JSON.stringify(ranked));
             displayRanking(ranked);
         }
@@ -632,6 +615,7 @@
         }
 
         function displayRanking(ranked) {
+            document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('comparison-view').classList.add('hidden');
             document.getElementById('ranking-view').classList.remove('hidden');
             const list = document.getElementById('ranking-list');
@@ -649,8 +633,10 @@
             songs.forEach(song => song.rating = 1200);
             currentPairIndex = 0;
             comparisonHistory = {};
+            rebuildSongPool();
             document.body.classList.remove('theme-red', 'theme-velvet');
             stopAllVideos();
+            document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('ranking-view').classList.add('hidden');
             document.getElementById('comparison-view').classList.remove('hidden');
             loadPair();
@@ -734,6 +720,10 @@
         }
 
         window.onload = () => {
+            titleOnlyMode = JSON.parse(localStorage.getItem('rv_title_only') || 'false');
+            const titleToggle = document.getElementById('title-only-toggle');
+            if (titleToggle) titleToggle.checked = titleOnlyMode;
+
             audios = [document.getElementById('audio1'), document.getElementById('audio2')];
             // Reset play button when local audio finishes
             [0, 1].forEach(i => {
