@@ -541,6 +541,70 @@
       "isTitleSong": true
     },
     {
+      "id": 2,
+      "title": "봐 Look",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "_ySMeIbXnVo",
+      "isTitleSong": false
+    },
+    {
+      "id": 3,
+      "title": "I Just",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "ZQj5O0loEqE",
+      "isTitleSong": false
+    },
+    {
+      "id": 4,
+      "title": "Kingdom Come",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "xOdjjCxyMr4",
+      "isTitleSong": false
+    },
+    {
+      "id": 5,
+      "title": "My Second Date",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "D9iGG2anQik",
+      "isTitleSong": false
+    },
+    {
+      "id": 6,
+      "title": "Attaboy",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "UCNkX-uOa1I",
+      "isTitleSong": false
+    },
+    {
+      "id": 7,
+      "title": "Perfect 10",
+      "albumId": "PerfectVelvet",
+      "audio": "audio/perfect10.mp3",
+      "ytId": "",
+      "isTitleSong": false
+    },
+    {
+      "id": 8,
+      "title": "About Love",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "TXQ-N2IuK_Y",
+      "isTitleSong": false
+    },
+    {
+      "id": 9,
+      "title": "Moonlight Melody",
+      "albumId": "PerfectVelvet",
+      "audio": "",
+      "ytId": "i3uMwVzw7iw",
+      "isTitleSong": false
+    },
+    {
       "id": 1,
       "title": "Bad Boy",
       "albumId": "ThePerfectRedVelvet",
@@ -550,12 +614,36 @@
     },
     {
       "id": 2,
+      "title": "All Right",
+      "albumId": "ThePerfectRedVelvet",
+      "audio": "",
+      "ytId": "hU411ONfzPI",
+      "isTitleSong": false
+    },
+    {
+      "id": 2,
       "title": "#Cookie Jar",
       "albumId": "CookieJar",
       "audio": "audio/cookie_jar.mp3",
       "ytId": "",
       "isTitleSong": true
     },
+  {
+    "id": 2,
+    "title": "Aitai-tai",
+    "albumId": "CookieJar",
+    "audio": "",
+    "ytId": "oHxSVAHq66s",
+    "isTitleSong": false
+  },
+  {
+    "id": 3,
+    "title": "'Cause it's you",
+    "albumId": "CookieJar",
+    "audio": "",
+    "ytId": "WgC22S_hxXo",
+    "isTitleSong": false
+  },
     {
       "id": 2,
       "title": "Power Up",
@@ -566,12 +654,83 @@
     },
     {
       "id": 2,
+      "title": "한 여름의 크리스마스(With You)",
+      "albumId": "SummerMagic",
+      "audio": "",
+      "ytId": "t0t402C7AZ0",
+      "isTitleSong": false
+    },
+    {
+      "id": 3,
+      "title": "Mr.E",
+      "albumId": "SummerMagic",
+      "audio": "",
+      "ytId": "9NTs3Wjiw0A",
+      "isTitleSong": false
+    },
+    {
+      "id": 4,
+      "title": "Mosquito",
+      "albumId": "SummerMagic",
+      "audio": "",
+      "ytId": "1J0sHr0n9YM",
+      "isTitleSong": false
+    },
+    {
+      "id": 5,
+      "title": "Hit That Drum",
+      "albumId": "SummerMagic",
+      "audio": "",
+      "ytId": "9w02c8tgLMI",
+      "isTitleSong": false
+    },
+    {
+      "id": 6,
+      "title": "Blue Lemonade",
+      "albumId": "SummerMagic",
+      "audio": "",
+      "ytId": "bH5rlpk70Ro",
+      "isTitleSong": false
+    },
+    {
+      "id": 2,
       "title": "RBB (Really Bad Boy)",
       "albumId": "RBB",
       "audio": "audio/rbb.mp3",
       "ytId": "",
       "isTitleSong": true
-    },
+    },{
+    "id": 2,
+    "title": "Butterflies",
+    "albumId": "RBB",
+    "audio": "",
+    "ytId": "zFeUigPlYQc",
+    "isTitleSong": false
+  },
+  {
+    "id": 3,
+    "title": "So Good",
+    "albumId": "RBB",
+    "audio": "",
+    "ytId": "gO851aacQmA",
+    "isTitleSong": false
+  },
+  {
+    "id": 4,
+    "title": "멋있게 (Sassy Me)",
+    "albumId": "RBB",
+    "audio": "",
+    "ytId": "RYk75DQOPkY",
+    "isTitleSong": false
+  },
+  {
+    "id": 5,
+    "title": "Taste",
+    "albumId": "RBB",
+    "audio": "",
+    "ytId": "BvqMQPItDh0",
+    "isTitleSong": false
+  },
     {
       "id": 3,
       "title": "Zimzalabim",
@@ -706,14 +865,6 @@
       "albumId": "Cosmic",
       "audio": "",
       "ytId": "4cWdrpEktV4",
-      "isTitleSong": false
-    },
-    {
-      "id": 14,
-      "title": "Perfect 10",
-      "albumId": "PerfectVelvet",
-      "audio": "audio/perfect10.mp3",
-      "ytId": "",
       "isTitleSong": false
     }
   ]
