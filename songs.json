@@ -141,6 +141,69 @@
       "audio": "audio/chill_kill.mp3",
       "ytId": ""
     },
+  {
+    "id": 2,
+    "title": "Knock Knock (Who’s There?)",
+    "albumId": "ChillKill",
+    "audio": "",
+    "ytId": "PEn3Hhw0oSE"
+  },
+  {
+    "id": 3,
+    "title": "Underwater",
+    "albumId": "ChillKill",
+    "audio": "",
+    "ytId": "dLF7Fb_1akE"
+  },
+  {
+    "id": 4,
+    "title": "Will I Ever See You Again?",
+    "albumId": "ChillKill",
+    "audio": "audio/will_i_ever_see_you_again.mp3",
+    "ytId": "r1qrCjndZo0"
+  },
+  {
+    "id": 5,
+    "title": "Nightmare",
+    "albumId": "ChillKill",
+    "audio": "audio/nightmare.mp3",
+    "ytId": ""
+  },
+  {
+    "id": 6,
+    "title": "Iced Coffee",
+    "albumId": "ChillKill",
+    "audio": "audio/iced_coffee.mp3",
+    "ytId": ""
+  },
+  {
+    "id": 7,
+    "title": "One Kiss",
+    "albumId": "ChillKill",
+    "audio": "",
+    "ytId": "y76SIbswrY4"
+  },
+  {
+    "id": 8,
+    "title": "Bulldozer",
+    "albumId": "ChillKill",
+    "audio": "audio/bulldozer.mp3",
+    "ytId": ""
+  },
+  {
+    "id": 9,
+    "title": "Wings",
+    "albumId": "ChillKill",
+    "audio": "audio/wings.mp3",
+    "ytId": ""
+  },
+  {
+    "id": 10,
+    "title": "Scenery",
+    "albumId": "ChillKill",
+    "audio": "audio/scenery.mp3",
+    "ytId": ""
+  },
     {
       "id": 0,
       "title": "행복(Happiness)",
