@@ -16,6 +16,155 @@ body {
     transition: background-image 0.3s ease;
 }
 
+        #url-manage-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        #url-manage-overlay.hidden { display: none; }
+        .url-manage-card {
+            background: white; border-radius: 20px;
+            padding: 28px 24px; max-width: 500px; width: 94%;
+            max-height: 82vh; display: flex; flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        }
+        .url-manage-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 6px;
+        }
+        .url-manage-header h3 { margin: 0; color: #FF7F50; font-size: 18px; }
+        .url-manage-close {
+            background: none; border: none; font-size: 22px;
+            cursor: pointer; color: #bbb; line-height: 1; padding: 0;
+        }
+        .url-manage-close:hover { color: #FF9797; }
+        .url-manage-desc { color: #999; font-size: 13px; margin: 0 0 14px; line-height: 1.6; }
+        #url-song-list { overflow-y: auto; flex: 1; margin-bottom: 14px; }
+        .url-song-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 0; border-bottom: 1px solid #f5f5f5;
+        }
+        .url-song-name {
+            font-size: 13px; font-weight: 500; flex: 1; color: #333;
+            min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .url-song-status {
+            font-size: 11px; padding: 2px 7px; border-radius: 20px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .url-song-status.local  { background: #e8f5e9; color: #388e3c; }
+        .url-song-status.youtube { background: #fff3e0; color: #e65100; }
+        .url-song-status.none   { background: #fce4ec; color: #c62828; }
+        .url-song-input {
+            width: 150px; flex-shrink: 0; padding: 5px 8px;
+            border: 1.5px solid #eee; border-radius: 8px;
+            font-size: 12px; font-family: monospace; outline: none;
+            transition: border-color 0.2s;
+        }
+        .url-song-input:focus { border-color: #FF9797; }
+        .url-manage-btn {
+            background: linear-gradient(135deg, #FF9797, #FF7F50);
+            color: white; border: none; padding: 11px 0;
+            border-radius: 10px; font-size: 15px; font-weight: bold;
+            cursor: pointer; width: 100%; transition: opacity 0.2s; flex-shrink: 0;
+        }
+        .url-manage-btn:hover { opacity: 0.88; }
+        .settings-btn {
+            position: fixed; bottom: 80px; right: 18px;
+            background: rgba(255,255,255,0.8); border: 1px solid #eee;
+            border-radius: 50%; width: 36px; height: 36px;
+            cursor: pointer; font-size: 15px; display: flex;
+            align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100;
+            color: #aaa; transition: color 0.2s;
+        }
+        .settings-btn:hover { color: #FF9797; }
+        .hidden { display: none !important; }
+        .start-screen {
+            width: 100%;
+            min-height: calc(100vh - 300px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .start-card {
+            width: min(520px, 100%);
+            background: rgba(255,255,255,0.92);
+            border-radius: 24px;
+            padding: 32px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .start-card h2 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .start-card p {
+            margin: 0 0 24px;
+            color: #666;
+            line-height: 1.7;
+        }
+        .start-checkbox {
+            display: inline-flex;
+            align-items: center;
+            line-height: 26px;
+            gap: 10px;
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+        .start-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .start-checkbox .toggle-switch {
+            width: 46px;
+            height: 26px;
+            border-radius: 999px;
+            background: #e3e3e3;
+            position: relative;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+        .start-checkbox .toggle-switch::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            transition: transform 0.2s ease;
+        }
+        .start-checkbox input[type="checkbox"]:checked + .toggle-switch {
+            background: #FF7F50;
+        }
+        .start-checkbox input[type="checkbox"]:checked + .toggle-switch::after {
+            transform: translateX(20px);
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #FF9797, #FF7F50);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(255,151,116,0.25);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .start-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
 @keyframes gradientPulse {
     0% {
         background-image: linear-gradient(30deg, #e09494, #df7777);
@@ -387,7 +536,10 @@ body.playing .song-card:has(.fas.fa-pause) .load-wrapp{
         padding: 0 16px;
         margin-bottom: 10px;
     }
-
+.start-screen{
+    width: unset;
+    padding: 15px;
+}
     .container {
         flex-direction: column;
         align-items: center;
