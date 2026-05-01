@@ -141,69 +141,69 @@
       "audio": "audio/chill_kill.mp3",
       "ytId": ""
     },
-  {
-    "id": 2,
-    "title": "Knock Knock (Who’s There?)",
-    "albumId": "ChillKill",
-    "audio": "",
-    "ytId": "PEn3Hhw0oSE"
-  },
-  {
-    "id": 3,
-    "title": "Underwater",
-    "albumId": "ChillKill",
-    "audio": "",
-    "ytId": "dLF7Fb_1akE"
-  },
-  {
-    "id": 4,
-    "title": "Will I Ever See You Again?",
-    "albumId": "ChillKill",
-    "audio": "audio/will_i_ever_see_you_again.mp3",
-    "ytId": "r1qrCjndZo0"
-  },
-  {
-    "id": 5,
-    "title": "Nightmare",
-    "albumId": "ChillKill",
-    "audio": "audio/nightmare.mp3",
-    "ytId": ""
-  },
-  {
-    "id": 6,
-    "title": "Iced Coffee",
-    "albumId": "ChillKill",
-    "audio": "audio/iced_coffee.mp3",
-    "ytId": ""
-  },
-  {
-    "id": 7,
-    "title": "One Kiss",
-    "albumId": "ChillKill",
-    "audio": "",
-    "ytId": "y76SIbswrY4"
-  },
-  {
-    "id": 8,
-    "title": "Bulldozer",
-    "albumId": "ChillKill",
-    "audio": "audio/bulldozer.mp3",
-    "ytId": ""
-  },
-  {
-    "id": 9,
-    "title": "Wings",
-    "albumId": "ChillKill",
-    "audio": "audio/wings.mp3",
-    "ytId": ""
-  },
-  {
-    "id": 10,
-    "title": "Scenery",
-    "albumId": "ChillKill",
-    "audio": "audio/scenery.mp3",
-    "ytId": ""
-  },
+    {
+      "id": 2,
+      "title": "Knock Knock (Who’s There?)",
+      "albumId": "ChillKill",
+      "audio": "",
+      "ytId": "PEn3Hhw0oSE"
+    },
+    {
+      "id": 3,
+      "title": "Underwater",
+      "albumId": "ChillKill",
+      "audio": "",
+      "ytId": "dLF7Fb_1akE"
+    },
+    {
+      "id": 4,
+      "title": "Will I Ever See You Again?",
+      "albumId": "ChillKill",
+      "audio": "audio/will_i_ever_see_you_again.mp3",
+      "ytId": "r1qrCjndZo0"
+    },
+    {
+      "id": 5,
+      "title": "Nightmare",
+      "albumId": "ChillKill",
+      "audio": "audio/nightmare.mp3",
+      "ytId": ""
+    },
+    {
+      "id": 6,
+      "title": "Iced Coffee",
+      "albumId": "ChillKill",
+      "audio": "audio/iced_coffee.mp3",
+      "ytId": ""
+    },
+    {
+      "id": 7,
+      "title": "One Kiss",
+      "albumId": "ChillKill",
+      "audio": "",
+      "ytId": "y76SIbswrY4"
+    },
+    {
+      "id": 8,
+      "title": "Bulldozer",
+      "albumId": "ChillKill",
+      "audio": "audio/bulldozer.mp3",
+      "ytId": ""
+    },
+    {
+      "id": 9,
+      "title": "Wings",
+      "albumId": "ChillKill",
+      "audio": "audio/wings.mp3",
+      "ytId": ""
+    },
+    {
+      "id": 10,
+      "title": "Scenery",
+      "albumId": "ChillKill",
+      "audio": "audio/scenery.mp3",
+      "ytId": ""
+    },
     {
       "id": 0,
       "title": "행복(Happiness)",
@@ -237,6 +237,38 @@
       "isTitleSong": true
     },
     {
+      "id": 3,
+      "title": "Somethin Kinda Crazy",
+      "albumId": "IceCreamCake",
+      "audio": "",
+      "ytId": "CE2bTNQJNUg",
+      "isTitleSong": false
+    },
+    {
+      "id": 4,
+      "title": "Stupid Cupid",
+      "albumId": "IceCreamCake",
+      "audio": "",
+      "ytId": "hBM6kyJBjAM",
+      "isTitleSong": false
+    },
+    {
+      "id": 5,
+      "title": "Take It Slow",
+      "albumId": "IceCreamCake",
+      "audio": "",
+      "ytId": "XOgjMJzY104",
+      "isTitleSong": false
+    },
+    {
+      "id": 6,
+      "title": "사탕 Candy",
+      "albumId": "IceCreamCake",
+      "audio": "",
+      "ytId": "kyoQ4OAN7Pc",
+      "isTitleSong": false
+    },
+    {
       "id": 1,
       "title": "Rebirth",
       "albumId": "Rebirth",
@@ -264,8 +296,8 @@
       "id": 3,
       "title": "Campfire",
       "albumId": "TheRed",
-      "audio": "audio/campfire.mp3",
-      "ytId": "xfwI5WzTXWU",
+      "audio": "",
+      "ytId": "z8ves7pW-xA",
       "isTitleSong": false
     },
     {
@@ -304,8 +336,8 @@
       "id": 8,
       "title": "Don't U Wait No More",
       "albumId": "TheRed",
-      "audio": "audio/dont_u_wait_no_more.mp3",
-      "ytId": "W9gnE4BdWgA",
+      "audio": "",
+      "ytId": "gumPi1yX9q0",
       "isTitleSong": false
     },
     {
@@ -392,8 +424,8 @@
       "id": 4,
       "title": "Sunny Afternoon",
       "albumId": "RussianRoulette",
-      "audio": "audio/sunny_afternoon.mp3",
-      "ytId": "Z-v3mj8M0UI",
+      "audio": "",
+      "ytId": "HXCA79LO3bg",
       "isTitleSong": false
     },
     {
@@ -467,6 +499,38 @@
       "audio": "audio/red_flavor.mp3",
       "ytId": "",
       "isTitleSong": true
+    },
+    {
+      "id": 2,
+      "title": "You Better Know",
+      "albumId": "TheRedSummer",
+      "audio": "audio/you_better_know.mp3",
+      "ytId": "",
+      "isTitleSong": false
+    },
+    {
+      "id": 3,
+      "title": "Zoo",
+      "albumId": "TheRedSummer",
+      "audio": "",
+      "ytId": "i5cHkhGoL5U",
+      "isTitleSong": false
+    },
+    {
+      "id": 4,
+      "title": "여름빛 Mojito",
+      "albumId": "TheRedSummer",
+      "audio": "",
+      "ytId": "6rub7UTAwz0",
+      "isTitleSong": false
+    },
+    {
+      "id": 5,
+      "title": "Hear The Sea",
+      "albumId": "TheRedSummer",
+      "audio": "",
+      "ytId": "xOpEzig9LzE",
+      "isTitleSong": false
     },
     {
       "id": 1,
@@ -548,38 +612,38 @@
       "ytId": "",
       "isTitleSong": true
     },
-  {
-    "id": 2,
-    "title": "BYE BYE",
-    "albumId": "Birthday",
-    "audio": "",
-    "ytId": "fS_nKJqiE9I",
-    "isTitleSong": false
-  },
-  {
-    "id": 3,
-    "title": "On A Ride",
-    "albumId": "Birthday",
-    "audio": "",
-    "ytId": "C0OnprN0BAE",
-    "isTitleSong": false
-  },
-  {
-    "id": 4,
-    "title": "ZOOM",
-    "albumId": "Birthday",
-    "audio": "",
-    "ytId": "4fNmuCG6TVc",
-    "isTitleSong": false
-  },
-  {
-    "id": 5,
-    "title": "Celebrate",
-    "albumId": "Birthday",
-    "audio": "",
-    "ytId": "j8eSEbFnu2M",
-    "isTitleSong": false
-  },
+    {
+      "id": 2,
+      "title": "BYE BYE",
+      "albumId": "Birthday",
+      "audio": "",
+      "ytId": "fS_nKJqiE9I",
+      "isTitleSong": false
+    },
+    {
+      "id": 3,
+      "title": "On A Ride",
+      "albumId": "Birthday",
+      "audio": "",
+      "ytId": "C0OnprN0BAE",
+      "isTitleSong": false
+    },
+    {
+      "id": 4,
+      "title": "ZOOM",
+      "albumId": "Birthday",
+      "audio": "",
+      "ytId": "4fNmuCG6TVc",
+      "isTitleSong": false
+    },
+    {
+      "id": 5,
+      "title": "Celebrate",
+      "albumId": "Birthday",
+      "audio": "",
+      "ytId": "j8eSEbFnu2M",
+      "isTitleSong": false
+    },
     {
       "id": 3,
       "title": "Queendom",
@@ -600,16 +664,16 @@
       "id": 2,
       "title": "Sunflower",
       "albumId": "Cosmic",
-      "audio": "audio/sunflower.mp3",
-      "ytId": "",
+      "audio": "",
+      "ytId": "Npk2MnIhnXg",
       "isTitleSong": false
     },
     {
       "id": 3,
       "title": "Last Drop",
       "albumId": "Cosmic",
-      "audio": "audio/last_drop.mp3",
-      "ytId": "",
+      "audio": "",
+      "ytId": "pCsyyQoyEDU",
       "isTitleSong": false
     },
     {
@@ -617,7 +681,7 @@
       "title": "Love Arcade",
       "albumId": "Cosmic",
       "audio": "",
-      "ytId": "",
+      "ytId": "dzkh80VtKzQ",
       "isTitleSong": false
     },
     {
@@ -625,7 +689,7 @@
       "title": "Bubble",
       "albumId": "Cosmic",
       "audio": "",
-      "ytId": "",
+      "ytId": "A_f7nEpxH6s",
       "isTitleSong": false
     },
     {
