@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Velvet Song Ranker</title>
+    <meta name="description" content="Red Velvet 歌曲排名工具，透過兩兩比較排序出你最愛的歌曲。An interactive tool that ranks your favorite Red Velvet songs using pairwise comparisons.">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -32,21 +33,56 @@
     </div>
 
     <h1 style="margin-top: 60px;">My <span>Red Velvet</span> TOP 15</h1>
-    <div id="start-screen" class="start-screen">
-        <div class="start-card">
+    <section id="start-screen" class="about-section">
+        <div class="about-card">
+            <p class="about-desc">
+                這是專為 Red Velvet 粉絲設計的歌曲排名工具。
+                運用 ELO 評分系統，幫助你客觀地找出自己最愛的 Red Velvet 歌曲排名。
+                從主打歌到收錄曲，全面涵蓋 Red Velvet 歷年的音樂作品。
+            </p>
+          
+            <h2 class="about-subtitle">如何使用</h2>
+            <ol class="about-steps">
+                <li>選擇比較模式：全部歌曲、只比主打歌，或只比收錄曲</li>
+                <li>每輪從兩首歌中點選你更喜歡的那一首</li>
+                <li>完成後獲得個人歌曲排名與音樂偏好分析（Red / Velvet 比例、曲風偏好等）</li>
+                <li>可儲存結果圖片，分享給其他Reveluv</li>
+            </ol>
             <h2>Are you ready for this?</h2>
-            <p>全部歌曲約140輪，主打歌/單曲約32輪</p>
-            <label class="start-checkbox">
-                <input type="checkbox" id="title-only-toggle" onchange="setTitleOnlyMode(this.checked)">
-                <span class="toggle-switch"></span>
-                只比較主打歌
-            </label>
+            <div id="continue-area" class="hidden">
+                <button class="continue-btn" onclick="continueComparison()">
+                    <i class="fas fa-play"></i> 繼續上次的比較
+                </button>
+                <p id="continue-hint" class="continue-hint"></p>
+                <p class="continue-divider">── 或重新開始 ──</p>
+            </div>
+            <div class="mode-selector">
+                <label class="mode-option">
+                    <input type="radio" name="song-mode" value="all" onchange="setSongMode('all')">
+                    <span>全部歌曲 All songs</span>
+                </label>
+                <label class="mode-option">
+                    <input type="radio" name="song-mode" value="title" onchange="setSongMode('title')">
+                    <span>只比主打歌 Title songs</span>
+                </label>
+                <label class="mode-option">
+                    <input type="radio" name="song-mode" value="bside" onchange="setSongMode('bside')">
+                    <span>只比收錄曲 B-side songs</span>
+                </label>
+            </div>
+            <p id="mode-hint" class="mode-hint"></p>
             <div>
-                <button class="start-btn" onclick="beginComparison()">ZIMZALABIM！！！</button>
+                <button class="start-btn" onclick="beginComparison()">ZIMZALABIM！！！！！</button>
             </div>
         </div>
-    </div>
-    <div id="ranking-view" class="ranking hidden">
+    </section>
+    <!-- <div class="start-screen">
+        
+        <div class="start-card">
+            
+        </div>
+    </div> -->
+    <div id="ranking-view" class="ranking">
         <div style="
         display: flex;
     flex-direction: row-reverse;
@@ -126,7 +162,7 @@
         // Song data
         let songs = [];
         let activeSongs = [];
-        let titleOnlyMode = false;
+        let songMode = 'all'; // 'all' | 'title' | 'bside'
         let maxComparisons;
         let currentPairIndex = 0;
         let wins = [];
@@ -286,6 +322,7 @@
                 localStorage.setItem('rv_yt_cache', JSON.stringify(ytIdCache));
 
                 rebuildSongPool();
+                updateModeHint();
                 init();
             } catch (error) {
                 console.error('Error loading songs:', error);
@@ -358,24 +395,91 @@
             }
         }
 
+        // Progress persistence
+        function saveProgress() {
+            const session = {
+                songMode,
+                songOrder: activeSongs.map(s => s.name),
+                ratings: Object.fromEntries(activeSongs.map(s => [s.name, s.rating])),
+                comparisonHistory: { ...comparisonHistory },
+                currentPairIndex,
+                maxComparisons
+            };
+            localStorage.setItem('rv_progress', JSON.stringify(session));
+        }
+
+        function clearProgress() {
+            localStorage.removeItem('rv_progress');
+        }
+
+        function getSavedProgress() {
+            try {
+                const raw = localStorage.getItem('rv_progress');
+                if (!raw) return null;
+                const s = JSON.parse(raw);
+                return (s.currentPairIndex > 0 && s.currentPairIndex < s.maxComparisons) ? s : null;
+            } catch(e) { return null; }
+        }
+
+        function restoreProgress(saved) {
+            songMode = saved.songMode || 'all';
+            const radio = document.querySelector(`input[name="song-mode"][value="${songMode}"]`);
+            if (radio) radio.checked = true;
+            updateModeHint();
+
+            songs.forEach(s => {
+                if (saved.ratings[s.name] !== undefined) s.rating = saved.ratings[s.name];
+            });
+
+            rebuildSongPool();
+            const nameToSong = Object.fromEntries(activeSongs.map(s => [s.name, s]));
+            const reordered = saved.songOrder.map(n => nameToSong[n]).filter(Boolean);
+            if (reordered.length >= 2) activeSongs = reordered;
+
+            comparisonHistory = saved.comparisonHistory || {};
+            currentPairIndex = saved.currentPairIndex;
+            maxComparisons = saved.maxComparisons;
+        }
+
+        function continueComparison() {
+            const saved = getSavedProgress();
+            if (!saved) { beginComparison(); return; }
+            restoreProgress(saved);
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('comparison-view').style.display = 'block';
+            loadPair();
+        }
+
         function getActiveSongPool() {
-            return titleOnlyMode ? songs.filter(song => song.isTitleSong) : songs;
+            if (songMode === 'title') return songs.filter(s => s.isTitleSong);
+            if (songMode === 'bside') return songs.filter(s => !s.isTitleSong);
+            return songs;
         }
 
         function rebuildSongPool() {
             activeSongs = getActiveSongPool();
             maxComparisons = Math.round(activeSongs.length * 1.5);
-            if (maxComparisons < 1 && activeSongs.length >= 2) {
-                maxComparisons = 1;
-            }
+            if (maxComparisons < 1 && activeSongs.length >= 2) maxComparisons = 1;
         }
 
-        function setTitleOnlyMode(enabled) {
-            titleOnlyMode = enabled;
-            localStorage.setItem('rv_title_only', JSON.stringify(enabled));
+        function setSongMode(mode) {
+            songMode = mode;
+            localStorage.setItem('rv_song_mode', mode);
+            updateModeHint();
+        }
+
+        function updateModeHint() {
+            const counts = {
+                all:   Math.round(songs.length * 1.5),
+                title: Math.round(songs.filter(s => s.isTitleSong).length * 1.5),
+                bside: Math.round(songs.filter(s => !s.isTitleSong).length * 1.5),
+            };
+            const el = document.getElementById('mode-hint');
+            if (el) el.textContent = `約 ${counts[songMode]} 輪比較`;
         }
 
         function beginComparison() {
+            clearProgress();
             rebuildSongPool();
             if (activeSongs.length < 2) {
                 alert('目前沒有足夠的歌曲可比較，請確認資料是否正確。');
@@ -385,7 +489,7 @@
             comparisonHistory = {};
             songs.forEach(song => song.rating = 1200);
             document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('comparison-view').classList.remove('hidden');
+            document.getElementById('comparison-view').style.display = 'block';
             document.getElementById('ranking-view').classList.add('hidden');
             loadPair();
         }
@@ -409,8 +513,17 @@
         }
 
         function init() {
-            document.getElementById('comparison-view').classList.add('hidden');
-            document.getElementById('ranking-view').classList.add('hidden');
+            const saved = getSavedProgress();
+            const area = document.getElementById('continue-area');
+            const hint = document.getElementById('continue-hint');
+            if (saved) {
+                area.classList.remove('hidden');
+                const modeText = saved.songMode === 'title' ? '主打歌' : saved.songMode === 'bside' ? '收錄曲' : '全部歌曲';
+                hint.textContent = `上次進度：${saved.currentPairIndex} / ${saved.maxComparisons} 輪（${modeText}）`;
+            } else {
+                area.classList.add('hidden');
+            }
+            document.getElementById('comparison-view').style.display = 'none';
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
@@ -466,6 +579,7 @@
 
             currentPairIndex++;
             stopAllVideos();
+            saveProgress();
             loadPair();
         }
 
@@ -515,6 +629,7 @@
         }
 
         function finishRanking() {
+            clearProgress();
             const ranked = activeSongs.slice().sort((a, b) => b.rating - a.rating);
             localStorage.setItem('rv_ranking', JSON.stringify(ranked));
             displayRanking(ranked);
@@ -616,8 +731,9 @@
 
         function displayRanking(ranked) {
             document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('comparison-view').classList.add('hidden');
+            document.getElementById('comparison-view').style.display = 'none';
             document.getElementById('ranking-view').classList.remove('hidden');
+            document.getElementById('ranking-view').style.display = 'block';
             const list = document.getElementById('ranking-list');
             list.innerHTML = '';
             ranked.forEach((song, i) => {
@@ -629,6 +745,7 @@
         }
 
         function restart() {
+            clearProgress();
             localStorage.removeItem('rv_ranking');
             songs.forEach(song => song.rating = 1200);
             currentPairIndex = 0;
@@ -638,6 +755,7 @@
             stopAllVideos();
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('ranking-view').classList.add('hidden');
+            document.getElementById('comparison-view').style.display = 'block';
             document.getElementById('comparison-view').classList.remove('hidden');
             loadPair();
         }
@@ -720,9 +838,9 @@
         }
 
         window.onload = () => {
-            titleOnlyMode = JSON.parse(localStorage.getItem('rv_title_only') || 'false');
-            const titleToggle = document.getElementById('title-only-toggle');
-            if (titleToggle) titleToggle.checked = titleOnlyMode;
+            songMode = localStorage.getItem('rv_song_mode') || 'all';
+            const radio = document.querySelector(`input[name="song-mode"][value="${songMode}"]`);
+            if (radio) radio.checked = true;
 
             audios = [document.getElementById('audio1'), document.getElementById('audio2')];
             // Reset play button when local audio finishes
@@ -735,6 +853,9 @@
             loadSongs();
         };
     </script>
+
+    
+
     <footer>
         <p>
             This is a non-commercial, fan-made website created for entertainment purposes only.
