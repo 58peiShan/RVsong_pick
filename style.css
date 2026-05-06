@@ -314,6 +314,26 @@ h1 > span {
     z-index: 1;
     display: none;
 }
+.undo-area {
+    text-align: center;
+    margin-top: 14px;
+    height: 36px;
+}
+.undo-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid #e0e0e0;
+    border-radius: 999px;
+    padding: 7px 20px;
+    font-size: 13px;
+    color: #aaa;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.undo-btn:hover {
+    background: white;
+    color: #ff9797;
+    border-color: #ff9797;
+}
 .container {
     display: flex;
     justify-content: space-around;

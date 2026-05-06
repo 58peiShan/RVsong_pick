@@ -41,7 +41,7 @@
                 從主打歌到收錄曲，全面涵蓋 Red Velvet 歷年的音樂作品。
             </p>
           
-            <h2 class="about-subtitle">如何使用</h2>
+            <h2 class="about-subtitle">How to Start</h2>
             <ol class="about-steps">
                 <li>選擇比較模式：全部歌曲、只比主打歌，或只比收錄曲</li>
                 <li>每輪從兩首歌中點選你更喜歡的那一首</li>
@@ -144,6 +144,11 @@
                 <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
                 <audio id="audio2" preload="none"></audio>
             </div>
+        </div>
+        <div class="undo-area">
+            <button id="undo-btn" class="undo-btn" onclick="undoLastChoice()" style="display:none;">
+                <i class="fas fa-rotate-left"></i> 回上一選擇
+            </button>
         </div>
     </div>
 
@@ -442,6 +447,8 @@
         }
 
         function continueComparison() {
+            undoState = null;
+            document.getElementById('undo-btn').style.display = 'none';
             const saved = getSavedProgress();
             if (!saved) { beginComparison(); return; }
             restoreProgress(saved);
@@ -479,6 +486,7 @@
         }
 
         function beginComparison() {
+            undoState = null;
             clearProgress();
             rebuildSongPool();
             if (activeSongs.length < 2) {
@@ -527,12 +535,9 @@
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        function loadPair() {
-            if (activeSongs.length < 2 || currentPairIndex >= maxComparisons) {
-                finishRanking();
-                return;
-            }
-            [currentIdx1, currentIdx2] = smartSelectPair();
+        let undoState = null;
+
+        function renderPair() {
             currentSongs = [activeSongs[currentIdx1], activeSongs[currentIdx2]];
 
             document.getElementById('title1').textContent = currentSongs[0].name;
@@ -562,25 +567,72 @@
             }
         }
 
+        function loadPair() {
+            if (activeSongs.length < 2 || currentPairIndex >= maxComparisons) {
+                finishRanking();
+                return;
+            }
+            [currentIdx1, currentIdx2] = smartSelectPair();
+            renderPair();
+        }
+
         function selectSong(index) {
             const winnerIdx = index === 0 ? currentIdx1 : currentIdx2;
-            const loserIdx = index === 0 ? currentIdx2 : currentIdx1;
+            const loserIdx  = index === 0 ? currentIdx2 : currentIdx1;
+            const pairKey   = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
 
-            const pairKey = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
+            // Save snapshot for undo (before any mutation)
+            undoState = {
+                idx1: currentIdx1,
+                idx2: currentIdx2,
+                rating1: activeSongs[currentIdx1].rating,
+                rating2: activeSongs[currentIdx2].rating,
+                pairKey,
+                prevPairCount: comparisonHistory[pairKey] || 0,
+                prevPairIndex: currentPairIndex
+            };
+            document.getElementById('undo-btn').style.display = '';
+
             comparisonHistory[pairKey] = (comparisonHistory[pairKey] || 0) + 1;
 
             const winner = activeSongs[winnerIdx];
-            const loser = activeSongs[loserIdx];
+            const loser  = activeSongs[loserIdx];
             const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
-            const expectedLoser = 1 - expectedWinner;
+            const expectedLoser  = 1 - expectedWinner;
             const k = 64 - (currentPairIndex / maxComparisons) * 48;
             winner.rating += k * (1 - expectedWinner);
-            loser.rating += k * (0 - expectedLoser);
+            loser.rating  += k * (0 - expectedLoser);
 
             currentPairIndex++;
             stopAllVideos();
             saveProgress();
             loadPair();
+        }
+
+        function undoLastChoice() {
+            if (!undoState) return;
+
+            // Restore ratings
+            activeSongs[undoState.idx1].rating = undoState.rating1;
+            activeSongs[undoState.idx2].rating = undoState.rating2;
+
+            // Restore comparison history
+            if (undoState.prevPairCount === 0) {
+                delete comparisonHistory[undoState.pairKey];
+            } else {
+                comparisonHistory[undoState.pairKey] = undoState.prevPairCount;
+            }
+
+            // Restore pair and index
+            currentIdx1 = undoState.idx1;
+            currentIdx2 = undoState.idx2;
+            currentPairIndex = undoState.prevPairIndex;
+            undoState = null;
+
+            document.getElementById('undo-btn').style.display = 'none';
+            stopAllVideos();
+            renderPair();
+            saveProgress();
         }
 
         function togglePlay(index, event) {
@@ -745,6 +797,7 @@
         }
 
         function restart() {
+            undoState = null;
             clearProgress();
             localStorage.removeItem('rv_ranking');
             songs.forEach(song => song.rating = 1200);

@@ -1,871 +1,882 @@
 {
-  "albums": [
-    {
-      "id": "Happiness",
-      "name": "Happiness",
-      "year": 2014,
-      "cover": "covers/Happiness.png"
-    },
-    {
-      "id": "BeNatural",
-      "name": "Be Natural",
-      "year": 2014,
-      "cover": "covers/BeNatural.png"
-    },
-    {
-      "id": "IceCreamCake",
-      "name": "Ice Cream Cake",
-      "year": 2015,
-      "cover": "covers/IceCreamCake.png"
-    },
-    {
-      "id": "TheRed",
-      "name": "The Red",
-      "year": 2015,
-      "cover": "covers/TheRed.png"
-    },
-    {
-      "id": "TheVelvet",
-      "name": "The Velvet",
-      "year": 2016,
-      "cover": "covers/TheVelvet.png"
-    },
-    {
-      "id": "RussianRoulette",
-      "name": "Russian Roulette",
-      "year": 2016,
-      "cover": "covers/RussianRoulette.jpg"
-    },
-    {
-      "id": "Rookie",
-      "name": "Rookie",
-      "year": 2017,
-      "cover": "covers/Rookie.jpg"
-    },
-    {
-      "id": "Rebirth",
-      "name": "Rebirth",
-      "year": 2017,
-      "cover": "covers/rebirth.png"
-    },
-    {
-      "id": "TheRedSummer",
-      "name": "The Red Summer",
-      "year": 2017,
-      "cover": "covers/TheRedSummer.png"
-    },
-    {
-      "id": "PerfectVelvet",
-      "name": "Perfect Velvet",
-      "year": 2017,
-      "cover": "covers/PerfectVelvet.png"
-    },
-    {
-      "id": "ThePerfectRedVelvet",
-      "name": "The Perfect Red Velvet",
-      "year": 2018,
-      "cover": "covers/ThePerfectRedVelvet.png"
-    },
-    {
-      "id": "CookieJar",
-      "name": "#Cookie Jar",
-      "year": 2018,
-      "cover": "covers/CookieJar.png"
-    },
-    {
-      "id": "Bloom",
-      "name": "Bloom",
-      "year": 2018,
-      "cover": "covers/Bloom.jpeg"
-    },
-    {
-      "id": "SummerMagic",
-      "name": "Summer Magic",
-      "year": 2018,
-      "cover": "covers/SummerMagic.png"
-    },
-    {
-      "id": "RBB",
-      "name": "RBB",
-      "year": 2018,
-      "cover": "covers/RBB.png"
-    },
-    {
-      "id": "TheReVeFestivalDay1",
-      "name": "The ReVe Festival Day 1",
-      "year": 2019,
-      "cover": "covers/TheReVeFestivalDay1.jpg"
-    },
-    {
-      "id": "TheReVeFestivalDay2",
-      "name": "The ReVe Festival Day 2",
-      "year": 2019,
-      "cover": "covers/TheReVeFestivalDay2.jpg"
-    },
-    {
-      "id": "TheReVeFestivalFinale",
-      "name": "The ReVe Festival: Finale",
-      "year": 2019,
-      "cover": "covers/TheReVeFestivalFinale.jpg"
-    },
-    {
-      "id": "Queendom",
-      "name": "Queendom",
-      "year": 2021,
-      "cover": "covers/Queendom.jpg"
-    },
-    {
-      "id": "Birthday",
-      "name": "The ReVe Festival 2022 - Birthday",
-      "year": 2022,
-      "cover": "covers/Birthday.jpeg"
-    },
-    {
-      "id": "ChillKill",
-      "name": "Chill Kill",
-      "year": 2023,
-      "cover": "covers/ChillKill.jpeg"
-    },
-    {
-      "id": "Cosmic",
-      "name": "Cosmic",
-      "year": 2024,
-      "cover": "covers/Cosmic.jpeg"
-    }
-  ],
-  "songs": [
-    {
-      "id": 2,
-      "title": "Chill Kill",
-      "albumId": "ChillKill",
-      "audio": "audio/chill_kill.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 2,
-      "title": "Knock Knock (Who’s There?)",
-      "albumId": "ChillKill",
-      "audio": "",
-      "ytId": "PEn3Hhw0oSE"
-    },
-    {
-      "id": 3,
-      "title": "Underwater",
-      "albumId": "ChillKill",
-      "audio": "",
-      "ytId": "dLF7Fb_1akE"
-    },
-    {
-      "id": 4,
-      "title": "Will I Ever See You Again?",
-      "albumId": "ChillKill",
-      "audio": "audio/will_i_ever_see_you_again.mp3",
-      "ytId": "r1qrCjndZo0"
-    },
-    {
-      "id": 5,
-      "title": "Nightmare",
-      "albumId": "ChillKill",
-      "audio": "audio/nightmare.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 6,
-      "title": "Iced Coffee",
-      "albumId": "ChillKill",
-      "audio": "audio/iced_coffee.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 7,
-      "title": "One Kiss",
-      "albumId": "ChillKill",
-      "audio": "",
-      "ytId": "y76SIbswrY4"
-    },
-    {
-      "id": 8,
-      "title": "Bulldozer",
-      "albumId": "ChillKill",
-      "audio": "audio/bulldozer.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 9,
-      "title": "Wings",
-      "albumId": "ChillKill",
-      "audio": "audio/wings.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 10,
-      "title": "Scenery",
-      "albumId": "ChillKill",
-      "audio": "audio/scenery.mp3",
-      "ytId": ""
-    },
-    {
-      "id": 0,
-      "title": "행복(Happiness)",
-      "albumId": "Happiness",
-      "audio": "audio/happiness.m4a",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 1,
-      "title": "Be Natural(비너추얼)",
-      "albumId": "BeNatural",
-      "audio": "audio/be_natural.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 1,
-      "title": "Automatic",
-      "albumId": "BeNatural",
-      "audio": "audio/automatic.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 1,
-      "title": "Ice Cream Cake",
-      "albumId": "IceCreamCake",
-      "audio": "audio/ice_cream_cake.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 3,
-      "title": "Somethin Kinda Crazy",
-      "albumId": "IceCreamCake",
-      "audio": "",
-      "ytId": "CE2bTNQJNUg",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Stupid Cupid",
-      "albumId": "IceCreamCake",
-      "audio": "",
-      "ytId": "hBM6kyJBjAM",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Take It Slow",
-      "albumId": "IceCreamCake",
-      "audio": "",
-      "ytId": "XOgjMJzY104",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "사탕 Candy",
-      "albumId": "IceCreamCake",
-      "audio": "",
-      "ytId": "kyoQ4OAN7Pc",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Rebirth",
-      "albumId": "Rebirth",
-      "audio": "audio/rebirth.mp3",
-      "ytId": "PymBJq0MirE",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "DUMB DUMB",
-      "albumId": "TheRed",
-      "audio": "audio/dumb_dumb.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "Huff n Puff",
-      "albumId": "TheRed",
-      "audio": "",
-      "ytId": "JPgf4LMh5uA",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Campfire",
-      "albumId": "TheRed",
-      "audio": "",
-      "ytId": "z8ves7pW-xA",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Red Dress",
-      "albumId": "TheRed",
-      "audio": "audio/red_dress.mp3",
-      "ytId": "nn2_wckNqG4",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Oh Boy",
-      "albumId": "TheRed",
-      "audio": "audio/oh_boy.mp3",
-      "ytId": "_cm_ooNTmkw",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "Lady's Room",
-      "albumId": "TheRed",
-      "audio": "audio/ladys_room.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 7,
-      "title": "Time Slip",
-      "albumId": "TheRed",
-      "audio": "audio/time_slip.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 8,
-      "title": "Don't U Wait No More",
-      "albumId": "TheRed",
-      "audio": "",
-      "ytId": "gumPi1yX9q0",
-      "isTitleSong": false
-    },
-    {
-      "id": 9,
-      "title": "Day 1",
-      "albumId": "TheRed",
-      "audio": "audio/day_1.mp3",
-      "ytId": "rwzXDehdwEo",
-      "isTitleSong": false
-    },
-    {
-      "id": 10,
-      "title": "Cool World",
-      "albumId": "TheRed",
-      "audio": "audio/cool_world.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "7月7日 (One Of These Nights)",
-      "albumId": "TheVelvet",
-      "audio": "audio/one_of_these_nights.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "Cool Hot Sweet Love",
-      "albumId": "TheVelvet",
-      "audio": "audio/cool_hot_sweet_love.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Light Me Up",
-      "albumId": "TheVelvet",
-      "audio": "audio/light_me_up.mp3",
-      "ytId": "mo2u4he_dP4",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "First Time",
-      "albumId": "TheVelvet",
-      "audio": "audio/first_time.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Rose Scent Breeze",
-      "albumId": "TheVelvet",
-      "audio": "audio/rose_scent_breeze.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Russian Roulette(러시안 룰렛)",
-      "albumId": "RussianRoulette",
-      "audio": "audio/russian_roulette.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "Lucky Girl",
-      "albumId": "RussianRoulette",
-      "audio": "",
-      "ytId": "no3cKBBJseo",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Bad Dracula",
-      "albumId": "RussianRoulette",
-      "audio": "audio/bad_dracula.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Sunny Afternoon",
-      "albumId": "RussianRoulette",
-      "audio": "",
-      "ytId": "HXCA79LO3bg",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Fool",
-      "albumId": "RussianRoulette",
-      "audio": "audio/fool.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "Some Love",
-      "albumId": "RussianRoulette",
-      "audio": "audio/some_love.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 7,
-      "title": "My Dear",
-      "albumId": "RussianRoulette",
-      "audio": "audio/my_dear.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Rookie",
-      "albumId": "Rookie",
-      "audio": "audio/rookie.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "Little Little",
-      "albumId": "Rookie",
-      "audio": "",
-      "ytId": "mvfVLlXQ0Dw",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Happily Ever After",
-      "albumId": "Rookie",
-      "audio": "",
-      "ytId": "YFMYOydGbwE",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Talk To Me(말을 해)",
-      "albumId": "Rookie",
-      "audio": "",
-      "ytId": "ka3jEZqWaJE",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Body Talk",
-      "albumId": "Rookie",
-      "audio": "audio/body_talk.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Red Flavor(빨간 맛)",
-      "albumId": "TheRedSummer",
-      "audio": "audio/red_flavor.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "You Better Know",
-      "albumId": "TheRedSummer",
-      "audio": "audio/you_better_know.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Zoo",
-      "albumId": "TheRedSummer",
-      "audio": "",
-      "ytId": "i5cHkhGoL5U",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "여름빛 Mojito",
-      "albumId": "TheRedSummer",
-      "audio": "",
-      "ytId": "6rub7UTAwz0",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Hear The Sea",
-      "albumId": "TheRedSummer",
-      "audio": "",
-      "ytId": "xOpEzig9LzE",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Peek-A-Boo",
-      "albumId": "PerfectVelvet",
-      "audio": "audio/peek_a_boo.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "봐 Look",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "_ySMeIbXnVo",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "I Just",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "ZQj5O0loEqE",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Kingdom Come",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "xOdjjCxyMr4",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "My Second Date",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "D9iGG2anQik",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "Attaboy",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "UCNkX-uOa1I",
-      "isTitleSong": false
-    },
-    {
-      "id": 7,
-      "title": "Perfect 10",
-      "albumId": "PerfectVelvet",
-      "audio": "audio/perfect10.mp3",
-      "ytId": "",
-      "isTitleSong": false
-    },
-    {
-      "id": 8,
-      "title": "About Love",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "TXQ-N2IuK_Y",
-      "isTitleSong": false
-    },
-    {
-      "id": 9,
-      "title": "Moonlight Melody",
-      "albumId": "PerfectVelvet",
-      "audio": "",
-      "ytId": "i3uMwVzw7iw",
-      "isTitleSong": false
-    },
-    {
-      "id": 1,
-      "title": "Bad Boy",
-      "albumId": "ThePerfectRedVelvet",
-      "audio": "audio/bad_boy.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "All Right",
-      "albumId": "ThePerfectRedVelvet",
-      "audio": "",
-      "ytId": "hU411ONfzPI",
-      "isTitleSong": false
-    },
-    {
-      "id": 2,
-      "title": "#Cookie Jar",
-      "albumId": "CookieJar",
-      "audio": "audio/cookie_jar.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-  {
-    "id": 2,
-    "title": "Aitai-tai",
-    "albumId": "CookieJar",
-    "audio": "",
-    "ytId": "oHxSVAHq66s",
-    "isTitleSong": false
-  },
-  {
-    "id": 3,
-    "title": "'Cause it's you",
-    "albumId": "CookieJar",
-    "audio": "",
-    "ytId": "WgC22S_hxXo",
-    "isTitleSong": false
-  },
-    {
-      "id": 2,
-      "title": "Power Up",
-      "albumId": "SummerMagic",
-      "audio": "audio/power_up.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "한 여름의 크리스마스(With You)",
-      "albumId": "SummerMagic",
-      "audio": "",
-      "ytId": "t0t402C7AZ0",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Mr.E",
-      "albumId": "SummerMagic",
-      "audio": "",
-      "ytId": "9NTs3Wjiw0A",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Mosquito",
-      "albumId": "SummerMagic",
-      "audio": "",
-      "ytId": "1J0sHr0n9YM",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Hit That Drum",
-      "albumId": "SummerMagic",
-      "audio": "",
-      "ytId": "9w02c8tgLMI",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "Blue Lemonade",
-      "albumId": "SummerMagic",
-      "audio": "",
-      "ytId": "bH5rlpk70Ro",
-      "isTitleSong": false
-    },
-    {
-      "id": 2,
-      "title": "RBB (Really Bad Boy)",
-      "albumId": "RBB",
-      "audio": "audio/rbb.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },{
-    "id": 2,
-    "title": "Butterflies",
-    "albumId": "RBB",
-    "audio": "",
-    "ytId": "zFeUigPlYQc",
-    "isTitleSong": false
-  },
-  {
-    "id": 3,
-    "title": "So Good",
-    "albumId": "RBB",
-    "audio": "",
-    "ytId": "gO851aacQmA",
-    "isTitleSong": false
-  },
-  {
-    "id": 4,
-    "title": "멋있게 (Sassy Me)",
-    "albumId": "RBB",
-    "audio": "",
-    "ytId": "RYk75DQOPkY",
-    "isTitleSong": false
-  },
-  {
-    "id": 5,
-    "title": "Taste",
-    "albumId": "RBB",
-    "audio": "",
-    "ytId": "BvqMQPItDh0",
-    "isTitleSong": false
-  },
-    {
-      "id": 3,
-      "title": "Zimzalabim",
-      "albumId": "TheReVeFestivalDay1",
-      "audio": "audio/zimzalabim.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 3,
-      "title": "Umpah Umpah",
-      "albumId": "TheReVeFestivalDay2",
-      "audio": "audio/umpah_umpah.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 3,
-      "title": "Wild Side",
-      "albumId": "Bloom",
-      "audio": "audio/wildside.mp3",
-      "ytId": "boI1jQyqvsc",
-      "isTitleSong": true
-    },
-    {
-      "id": 3,
-      "title": "Psycho",
-      "albumId": "TheReVeFestivalFinale",
-      "audio": "audio/psycho.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 3,
-      "title": "Birthday",
-      "albumId": "Birthday",
-      "audio": "audio/birthday.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "BYE BYE",
-      "albumId": "Birthday",
-      "audio": "",
-      "ytId": "fS_nKJqiE9I",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "On A Ride",
-      "albumId": "Birthday",
-      "audio": "",
-      "ytId": "C0OnprN0BAE",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "ZOOM",
-      "albumId": "Birthday",
-      "audio": "",
-      "ytId": "4fNmuCG6TVc",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Celebrate",
-      "albumId": "Birthday",
-      "audio": "",
-      "ytId": "j8eSEbFnu2M",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Queendom",
-      "albumId": "Queendom",
-      "audio": "audio/queendom.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 14,
-      "title": "Cosmic",
-      "albumId": "Cosmic",
-      "audio": "audio/cosmic.mp3",
-      "ytId": "",
-      "isTitleSong": true
-    },
-    {
-      "id": 2,
-      "title": "Sunflower",
-      "albumId": "Cosmic",
-      "audio": "",
-      "ytId": "Npk2MnIhnXg",
-      "isTitleSong": false
-    },
-    {
-      "id": 3,
-      "title": "Last Drop",
-      "albumId": "Cosmic",
-      "audio": "",
-      "ytId": "pCsyyQoyEDU",
-      "isTitleSong": false
-    },
-    {
-      "id": 4,
-      "title": "Love Arcade",
-      "albumId": "Cosmic",
-      "audio": "",
-      "ytId": "dzkh80VtKzQ",
-      "isTitleSong": false
-    },
-    {
-      "id": 5,
-      "title": "Bubble",
-      "albumId": "Cosmic",
-      "audio": "",
-      "ytId": "A_f7nEpxH6s",
-      "isTitleSong": false
-    },
-    {
-      "id": 6,
-      "title": "Night Drive",
-      "albumId": "Cosmic",
-      "audio": "audio/night_drive.mp3",
-      "ytId": "qWmjOjqEx6E",
-      "isTitleSong": false
-    },
-    {
-      "id": 7,
-      "title": "Sweet Dreams",
-      "albumId": "Cosmic",
-      "audio": "",
-      "ytId": "4cWdrpEktV4",
-      "isTitleSong": false
-    }
-  ]
+    "albums": [
+        {
+            "id": "Happiness",
+            "name": "Happiness",
+            "year": 2014,
+            "cover": "covers/Happiness.png"
+        },
+        {
+            "id": "BeNatural",
+            "name": "Be Natural",
+            "year": 2014,
+            "cover": "covers/BeNatural.png"
+        },
+        {
+            "id": "IceCreamCake",
+            "name": "Ice Cream Cake",
+            "year": 2015,
+            "cover": "covers/IceCreamCake.png"
+        },
+        {
+            "id": "TheRed",
+            "name": "The Red",
+            "year": 2015,
+            "cover": "covers/TheRed.png"
+        },
+        {
+            "id": "TheVelvet",
+            "name": "The Velvet",
+            "year": 2016,
+            "cover": "covers/TheVelvet.png"
+        },
+        {
+            "id": "RussianRoulette",
+            "name": "Russian Roulette",
+            "year": 2016,
+            "cover": "covers/RussianRoulette.jpg"
+        },
+        {
+            "id": "Rookie",
+            "name": "Rookie",
+            "year": 2017,
+            "cover": "covers/Rookie.jpg"
+        },
+        {
+            "id": "Rebirth",
+            "name": "Rebirth",
+            "year": 2017,
+            "cover": "covers/rebirth.png"
+        },
+        {
+            "id": "TheRedSummer",
+            "name": "The Red Summer",
+            "year": 2017,
+            "cover": "covers/TheRedSummer.png"
+        },
+        {
+            "id": "PerfectVelvet",
+            "name": "Perfect Velvet",
+            "year": 2017,
+            "cover": "covers/PerfectVelvet.png"
+        },
+        {
+            "id": "ThePerfectRedVelvet",
+            "name": "The Perfect Red Velvet",
+            "year": 2018,
+            "cover": "covers/ThePerfectRedVelvet.png"
+        },
+        {
+            "id": "CookieJar",
+            "name": "#Cookie Jar",
+            "year": 2018,
+            "cover": "covers/CookieJar.png"
+        },
+        {
+            "id": "Bloom",
+            "name": "Bloom",
+            "year": 2018,
+            "cover": "covers/Bloom.jpeg"
+        },
+        {
+            "id": "SummerMagic",
+            "name": "Summer Magic",
+            "year": 2018,
+            "cover": "covers/SummerMagic.png"
+        },
+        {
+            "id": "RBB",
+            "name": "RBB",
+            "year": 2018,
+            "cover": "covers/RBB.png"
+        },
+        {
+            "id": "TheReVeFestivalDay1",
+            "name": "The ReVe Festival Day 1",
+            "year": 2019,
+            "cover": "covers/TheReVeFestivalDay1.jpg"
+        },
+        {
+            "id": "TheReVeFestivalDay2",
+            "name": "The ReVe Festival Day 2",
+            "year": 2019,
+            "cover": "covers/TheReVeFestivalDay2.jpg"
+        },
+        {
+            "id": "TheReVeFestivalFinale",
+            "name": "The ReVe Festival: Finale",
+            "year": 2019,
+            "cover": "covers/TheReVeFestivalFinale.jpg"
+        },
+        {
+            "id": "Queendom",
+            "name": "Queendom",
+            "year": 2021,
+            "cover": "covers/Queendom.jpg"
+        },
+        {
+            "id": "Birthday",
+            "name": "The ReVe Festival 2022 - Birthday",
+            "year": 2022,
+            "cover": "covers/Birthday.jpeg"
+        },
+        {
+            "id": "ChillKill",
+            "name": "Chill Kill",
+            "year": 2023,
+            "cover": "covers/ChillKill.jpeg"
+        },
+        {
+            "id": "Cosmic",
+            "name": "Cosmic",
+            "year": 2024,
+            "cover": "covers/Cosmic.jpeg"
+        }
+    ],
+    "songs": [
+        {
+            "id": 2,
+            "title": "Chill Kill",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "xlyrt5eAtKI",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Knock Knock (Who’s There?)",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "PEn3Hhw0oSE",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Underwater",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "dLF7Fb_1akE",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Will I Ever See You Again?",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "r1qrCjndZo0",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Nightmare",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "MW1jBSmWzsM",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Iced Coffee",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "Q02RoRVJOVs",
+            "isTitleSong": false
+        },
+        {
+            "id": 7,
+            "title": "One Kiss",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "y76SIbswrY4",
+            "isTitleSong": false
+        },
+        {
+            "id": 8,
+            "title": "Bulldozer",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "vEGtJYhFohs",
+            "isTitleSong": false
+        },
+        {
+            "id": 9,
+            "title": "Wings",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "3-9QLo-6J_s",
+            "isTitleSong": false
+        },
+        {
+            "id": 10,
+            "title": "Scenery",
+            "albumId": "ChillKill",
+            "audio": "",
+            "ytId": "6heSrTv5auk",
+            "isTitleSong": false
+        },
+        {
+            "id": 0,
+            "title": "행복(Happiness)",
+            "albumId": "Happiness",
+            "audio": "",
+            "ytId": "JFgv8bKfxEs",
+            "isTitleSong": true
+        },
+        {
+            "id": 1,
+            "title": "Be Natural(비너추얼)",
+            "albumId": "BeNatural",
+            "audio": "",
+            "ytId": "QpAn9ryoB4Y",
+            "isTitleSong": true
+        },
+        {
+            "id": 1,
+            "title": "Automatic",
+            "albumId": "BeNatural",
+            "audio": "",
+            "ytId": "px2Q47O0_eE",
+            "isTitleSong": true
+        },
+        {
+            "id": 1,
+            "title": "Ice Cream Cake",
+            "albumId": "IceCreamCake",
+            "audio": "",
+            "ytId": "glXgSSOKlls",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Somethin Kinda Crazy",
+            "albumId": "IceCreamCake",
+            "audio": "",
+            "ytId": "CE2bTNQJNUg",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Stupid Cupid",
+            "albumId": "IceCreamCake",
+            "audio": "",
+            "ytId": "hBM6kyJBjAM",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Take It Slow",
+            "albumId": "IceCreamCake",
+            "audio": "",
+            "ytId": "XOgjMJzY104",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "사탕 Candy",
+            "albumId": "IceCreamCake",
+            "audio": "",
+            "ytId": "kyoQ4OAN7Pc",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Rebirth",
+            "albumId": "Rebirth",
+            "audio": "",
+            "ytId": "PymBJq0MirE",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "DUMB DUMB",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "XGdbaEDVWp0",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Huff n Puff",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "JPgf4LMh5uA",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Campfire",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "z8ves7pW-xA",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Red Dress",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "nn2_wckNqG4",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Oh Boy",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "_cm_ooNTmkw",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Lady's Room",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "fqVGBEf7jDY",
+            "isTitleSong": false
+        },
+        {
+            "id": 7,
+            "title": "Time Slip",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "-wcUyjmgYWY",
+            "isTitleSong": false
+        },
+        {
+            "id": 8,
+            "title": "Don't U Wait No More",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "gumPi1yX9q0",
+            "isTitleSong": false
+        },
+        {
+            "id": 9,
+            "title": "Day 1",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "rwzXDehdwEo",
+            "isTitleSong": false
+        },
+        {
+            "id": 10,
+            "title": "Cool World",
+            "albumId": "TheRed",
+            "audio": "",
+            "ytId": "EqGz3TowPe4",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "7月7日 (One Of These Nights)",
+            "albumId": "TheVelvet",
+            "audio": "",
+            "ytId": "9xWiro_tS1k",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Cool Hot Sweet Love",
+            "albumId": "TheVelvet",
+            "audio": "",
+            "ytId": "GUqfSvBv7Og",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Light Me Up",
+            "albumId": "TheVelvet",
+            "audio": "",
+            "ytId": "mo2u4he_dP4",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "First Time",
+            "albumId": "TheVelvet",
+            "audio": "",
+            "ytId": "C3ABS4fZ35k",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Rose Scent Breeze",
+            "albumId": "TheVelvet",
+            "audio": "",
+            "ytId": "oYQHPSNlo5M",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Russian Roulette(러시안 룰렛)",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "QslJYDX3o8s",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Lucky Girl",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "no3cKBBJseo",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Bad Dracula",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "LrPfgYkvhUg",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Sunny Afternoon",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "HXCA79LO3bg",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Fool",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "nicenIS8RPM",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Some Love",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "F9JhUiEKtz8",
+            "isTitleSong": false
+        },
+        {
+            "id": 7,
+            "title": "My Dear",
+            "albumId": "RussianRoulette",
+            "audio": "",
+            "ytId": "wnN8eho8WAg",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Rookie",
+            "albumId": "Rookie",
+            "audio": "",
+            "ytId": "J0h8-OTC38I",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Little Little",
+            "albumId": "Rookie",
+            "audio": "",
+            "ytId": "mvfVLlXQ0Dw",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Happily Ever After",
+            "albumId": "Rookie",
+            "audio": "",
+            "ytId": "YFMYOydGbwE",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Talk To Me(말을 해)",
+            "albumId": "Rookie",
+            "audio": "",
+            "ytId": "ka3jEZqWaJE",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Body Talk",
+            "albumId": "Rookie",
+            "audio": "",
+            "ytId": "Oo_NIdBUzMU",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Red Flavor(빨간 맛)",
+            "albumId": "TheRedSummer",
+            "audio": "",
+            "ytId": "WyiIGEHQP8o",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "You Better Know",
+            "albumId": "TheRedSummer",
+            "audio": "",
+            "ytId": "86suvlS1pGM",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Zoo",
+            "albumId": "TheRedSummer",
+            "audio": "",
+            "ytId": "i5cHkhGoL5U",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "여름빛 Mojito",
+            "albumId": "TheRedSummer",
+            "audio": "",
+            "ytId": "6rub7UTAwz0",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Hear The Sea",
+            "albumId": "TheRedSummer",
+            "audio": "",
+            "ytId": "xOpEzig9LzE",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Peek-A-Boo",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "dp1KCxEvgAU",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "봐 Look",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "_ySMeIbXnVo",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "I Just",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "ZQj5O0loEqE",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Kingdom Come",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "xOdjjCxyMr4",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "My Second Date",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "D9iGG2anQik",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Attaboy",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "UCNkX-uOa1I",
+            "isTitleSong": false
+        },
+        {
+            "id": 7,
+            "title": "Perfect 10",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "9_GNzyAFMEk",
+            "isTitleSong": false
+        },
+        {
+            "id": 8,
+            "title": "About Love",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "TXQ-N2IuK_Y",
+            "isTitleSong": false
+        },
+        {
+            "id": 9,
+            "title": "Moonlight Melody",
+            "albumId": "PerfectVelvet",
+            "audio": "",
+            "ytId": "i3uMwVzw7iw",
+            "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Bad Boy",
+            "albumId": "ThePerfectRedVelvet",
+            "audio": "",
+            "ytId": "J_CFBjAyPWE",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "All Right",
+            "albumId": "ThePerfectRedVelvet",
+            "audio": "",
+            "ytId": "hU411ONfzPI",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "#Cookie Jar",
+            "albumId": "CookieJar",
+            "audio": "",
+            "ytId": "rRgTMs_bGuI",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Aitai-tai",
+            "albumId": "CookieJar",
+            "audio": "",
+            "ytId": "oHxSVAHq66s",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "'Cause it's you",
+            "albumId": "CookieJar",
+            "audio": "",
+            "ytId": "WgC22S_hxXo",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "Power Up",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "ZXyToCnqOU0",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "한 여름의 크리스마스(With You)",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "t0t402C7AZ0",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Mr.E",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "9NTs3Wjiw0A",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Mosquito",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "1J0sHr0n9YM",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Hit That Drum",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "9w02c8tgLMI",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Blue Lemonade",
+            "albumId": "SummerMagic",
+            "audio": "",
+            "ytId": "bH5rlpk70Ro",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "RBB (Really Bad Boy)",
+            "albumId": "RBB",
+            "audio": "",
+            "ytId": "IWJUPY-2EIM",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Butterflies",
+            "albumId": "RBB",
+            "audio": "",
+            "ytId": "zFeUigPlYQc",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "So Good",
+            "albumId": "RBB",
+            "audio": "",
+            "ytId": "gO851aacQmA",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "멋있게 (Sassy Me)",
+            "albumId": "RBB",
+            "audio": "",
+            "ytId": "RYk75DQOPkY",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Taste",
+            "albumId": "RBB",
+            "audio": "",
+            "ytId": "BvqMQPItDh0",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Zimzalabim",
+            "albumId": "TheReVeFestivalDay1",
+            "audio": "",
+            "ytId": "7zyvJw9P4Ao",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Umpah Umpah",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "e0psQMmlzW0",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Wild Side",
+            "albumId": "Bloom",
+            "audio": "",
+            "ytId": "boI1jQyqvsc",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Psycho",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "uR8Mrt1IpXg",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Birthday",
+            "albumId": "Birthday",
+            "audio": "",
+            "ytId": "KNBQzjS4ahI",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "BYE BYE",
+            "albumId": "Birthday",
+            "audio": "",
+            "ytId": "fS_nKJqiE9I",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "On A Ride",
+            "albumId": "Birthday",
+            "audio": "",
+            "ytId": "C0OnprN0BAE",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "ZOOM",
+            "albumId": "Birthday",
+            "audio": "",
+            "ytId": "4fNmuCG6TVc",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Celebrate",
+            "albumId": "Birthday",
+            "audio": "",
+            "ytId": "j8eSEbFnu2M",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Queendom",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "IpQizSNgiOo",
+            "isTitleSong": true
+        },
+        {
+            "id": 14,
+            "title": "Cosmic",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "j8GBT-UFgrc",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Sunflower",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "Npk2MnIhnXg",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Last Drop",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "pCsyyQoyEDU",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Love Arcade",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "dzkh80VtKzQ",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Bubble",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "A_f7nEpxH6s",
+            "isTitleSong": false
+        },
+        {
+            "id": 6,
+            "title": "Night Drive",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "qWmjOjqEx6E",
+            "isTitleSong": false
+        },
+        {
+            "id": 7,
+            "title": "Sweet Dreams",
+            "albumId": "Cosmic",
+            "audio": "",
+            "ytId": "4cWdrpEktV4",
+            "isTitleSong": false
+        }
+    ]
 }
