@@ -760,6 +760,14 @@
         },
         {
             "id": 3,
+            "title": "Ladies Night",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "7zLBQLvOty0",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
             "title": "Wild Side",
             "albumId": "Bloom",
             "audio": "",
@@ -772,6 +780,14 @@
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
             "ytId": "uR8Mrt1IpXg",
+            "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Bing Bing",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "BQouHXkPLFw",
             "isTitleSong": true
         },
         {
