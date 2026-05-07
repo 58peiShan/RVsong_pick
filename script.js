@@ -1,5 +1,6 @@
-// Song data
+﻿// Song data
 let songs = [];
+let songMeta = {};
 let activeSongs = [];
 let songMode = 'all'; // 'all' | 'title' | 'bside'
 let maxComparisons;
@@ -132,8 +133,12 @@ function pauseOther(activeIndex) {
 // Load songs from JSON
 async function loadSongs() {
     try {
-        const response = await fetch('songs.json');
+        const [response, metaResponse] = await Promise.all([
+            fetch('songs.json'),
+            fetch('songMeta.json')
+        ]);
         const data = await response.json();
+        songMeta = await metaResponse.json();
         songs = data.songs.map(song => ({
             name: song.title,
             audio: song.audio || null,
@@ -521,133 +526,6 @@ function finishRanking() {
     displayRanking(ranked);
 }
 
-const songMeta = {
-    // ── Title songs ──
-    "행복(Happiness)":              { tempo:"fast", vibe:["bright","energetic"],          side:"Red",    album:"Happiness" },
-    "Be Natural(비너추얼)":          { tempo:"slow", vibe:["sophisticated","cool"],         side:"Velvet", album:"Be Natural" },
-    "Automatic":                    { tempo:"slow", vibe:["sophisticated","rnb"],           side:"Velvet", album:"Be Natural" },
-    "Ice Cream Cake":               { tempo:"fast", vibe:["bright","quirky","energetic"],   side:"Red",    album:"Ice Cream Cake" },
-    "DUMB DUMB":                    { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red" },
-    "7月7日 (One Of These Nights)":  { tempo:"slow", vibe:["emotional","sophisticated"],    side:"Velvet", album:"The Velvet" },
-    "Russian Roulette(러시안 룰렛)":  { tempo:"fast", vibe:["quirky","retro","energetic"],   side:"Red",    album:"Russian Roulette" },
-    "Rookie":                       { tempo:"fast", vibe:["quirky","energetic"],            side:"Red",    album:"Rookie" },
-    "Red Flavor(빨간 맛)":           { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red Summer" },
-    "Peek-A-Boo":                   { tempo:"mid",  vibe:["dark","cool"],                  side:"Velvet", album:"Perfect Velvet" },
-    "Bad Boy":                      { tempo:"mid",  vibe:["dark","sophisticated"],          side:"Velvet", album:"The Perfect Red Velvet" },
-    "#Cookie Jar":                  { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"#Cookie Jar" },
-    "Wild Side":                    { tempo:"mid",  vibe:["dark","quirky","cool"],          side:"Velvet", album:"Bloom" },
-    "Power Up":                     { tempo:"fast", vibe:["energetic","quirky"],            side:"Red",    album:"Summer Magic" },
-    "RBB (Really Bad Boy)":         { tempo:"fast", vibe:["dark","rnb"],                   side:"Velvet", album:"RBB" },
-    "Zimzalabim":                   { tempo:"fast", vibe:["energetic","quirky"],            side:"Both",   album:"The ReVe Festival Day 1" },
-    "Umpah Umpah":                  { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The ReVe Festival Day 2" },
-    "Psycho":                       { tempo:"mid",  vibe:["dark","sophisticated"],          side:"Velvet", album:"The ReVe Festival: Finale" },
-    "Queendom":                     { tempo:"mid",  vibe:["emotional","energetic"],         side:"Both",   album:"Queendom" },
-    "Feel My Rhythm":               { tempo:"mid",  vibe:["emotional","dreamy"],            side:"Both",   album:"The ReVe Festival 2022 - Feel My Rhythm" },
-    "Birthday":                     { tempo:"fast", vibe:["energetic","quirky"],            side:"Both",   album:"The ReVe Festival 2022 - Birthday" },
-    "Chill Kill":                   { tempo:"mid",  vibe:["dark","dreamy"],                 side:"Both",   album:"Chill Kill" },
-    "Cosmic":                       { tempo:"mid",  vibe:["cool","emotional","dreamy"],     side:"Both",   album:"Cosmic" },
-
-    // ── Ice Cream Cake (2015) b-sides ──
-    "Somethin Kinda Crazy":         { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"Ice Cream Cake" },
-    "Stupid Cupid":                 { tempo:"fast", vibe:["retro","bright"],                side:"Red",    album:"Ice Cream Cake" },
-    "Take It Slow":                 { tempo:"mid",  vibe:["rnb","sophisticated"],           side:"Velvet", album:"Ice Cream Cake" },
-    "사탕 Candy":                   { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"Ice Cream Cake" },
-
-    // ── The Red (2015) b-sides ──
-    "Rebirth":                      { tempo:"mid",  vibe:["quirky","energetic"],            side:"Velvet", album:"Rebirth" },
-    "Huff n Puff":                  { tempo:"fast", vibe:["energetic","quirky"],            side:"Red",    album:"The Red" },
-    "Campfire":                     { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"The Red" },
-    "Red Dress":                    { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red" },
-    "Oh Boy":                       { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"The Red" },
-    "Lady's Room":                  { tempo:"mid",  vibe:["sophisticated","cool"],          side:"Velvet", album:"The Red" },
-    "Time Slip":                    { tempo:"slow", vibe:["dreamy","emotional"],            side:"Velvet", album:"The Red" },
-    "Don't U Wait No More":         { tempo:"slow", vibe:["rnb","sophisticated"],           side:"Velvet", album:"The Red" },
-    "Day 1":                        { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"The Red" },
-    "Cool World":                   { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red" },
-
-    // ── The Velvet (2016) b-sides ──
-    "Cool Hot Sweet Love":          { tempo:"mid",  vibe:["sophisticated","cool"],          side:"Velvet", album:"The Velvet" },
-    "Light Me Up":                  { tempo:"slow",  vibe:["sophisticated","emotional"],    side:"Red",    album:"The Velvet" },
-    "First Time":                   { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"The Velvet" },
-    "Rose Scent Breeze":            { tempo:"slow", vibe:["dreamy","sophisticated"],        side:"Velvet", album:"The Velvet" },
-
-    // ── Russian Roulette (2016) b-sides ──
-    "Lucky Girl":                   { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"Russian Roulette" },
-    "Bad Dracula":                  { tempo:"fast", vibe:["quirky","energetic"],            side:"Red",    album:"Russian Roulette" },
-    "Sunny Afternoon":              { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"Russian Roulette" },
-    "Fool":                         { tempo:"mid",  vibe:["rnb","emotional"],               side:"Velvet", album:"Russian Roulette" },
-    "Some Love":                    { tempo:"slow", vibe:["emotional","sophisticated"],     side:"Velvet", album:"Russian Roulette" },
-    "My Dear":                      { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"Russian Roulette" },
-
-    // ── Rookie (2017) b-sides ──
-    "Little Little":                { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"Rookie" },
-    "Happily Ever After":           { tempo:"slow", vibe:["dreamy","emotional"],            side:"Velvet", album:"Rookie" },
-    "Talk To Me(말을 해)":           { tempo:"mid",  vibe:["rnb","sophisticated"],           side:"Velvet", album:"Rookie" },
-    "Body Talk":                    { tempo:"mid",  vibe:["energetic","cool"],              side:"Both",   album:"Rookie" },
-
-    // ── The Red Summer (2017) b-sides ──
-    "You Better Know":              { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red Summer" },
-    "Zoo":                          { tempo:"fast", vibe:["quirky","energetic"],            side:"Red",    album:"The Red Summer" },
-    "여름빛 Mojito":                { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The Red Summer" },
-    "Hear The Sea":                 { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"The Red Summer" },
-
-    // ── Perfect Velvet (2017) b-sides ──
-    "봐 Look":                      { tempo:"mid",  vibe:["cool","sophisticated"],          side:"Velvet", album:"Perfect Velvet" },
-    "I Just":                       { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"Perfect Velvet" },
-    "Kingdom Come":                 { tempo:"mid",  vibe:["dark","sophisticated"],          side:"Velvet", album:"Perfect Velvet" },
-    "My Second Date":               { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"Perfect Velvet" },
-    "Attaboy":                      { tempo:"mid",  vibe:["dark","cool"],                  side:"Velvet", album:"Perfect Velvet" },
-    "Perfect 10":                   { tempo:"mid",  vibe:["sophisticated","rnb"],           side:"Velvet", album:"Perfect Velvet" },
-    "About Love":                   { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"Perfect Velvet" },
-    "Moonlight Melody":             { tempo:"slow", vibe:["dreamy","sophisticated"],        side:"Velvet", album:"Perfect Velvet" },
-
-    // ── The Perfect Red Velvet (2018) b-side ──
-    "All Right":                    { tempo:"mid",  vibe:["rnb","sophisticated"],           side:"Velvet", album:"The Perfect Red Velvet" },
-
-    // ── #Cookie Jar (2018) b-sides ──
-    "Aitai-tai":                    { tempo:"fast", vibe:["bright","quirky"],               side:"Red",    album:"#Cookie Jar" },
-    "'Cause it's you":              { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"#Cookie Jar" },
-
-    // ── Summer Magic (2018) b-sides ──
-    "한 여름의 크리스마스(With You)":  { tempo:"slow", vibe:["emotional","dreamy"],           side:"Velvet", album:"Summer Magic" },
-    "Mr.E":                         { tempo:"fast", vibe:["energetic","quirky"],            side:"Both",   album:"Summer Magic" },
-    "Mosquito":                     { tempo:"fast", vibe:["quirky","energetic"],            side:"Red",    album:"Summer Magic" },
-    "Hit That Drum":                { tempo:"fast", vibe:["energetic","bright"],            side:"Red",    album:"Summer Magic" },
-    "Blue Lemonade":                { tempo:"mid",  vibe:["bright","cool"],                side:"Red",    album:"Summer Magic" },
-
-    // ── RBB (2018) b-sides ──
-    "Butterflies":                  { tempo:"slow", vibe:["emotional","dreamy"],            side:"Velvet", album:"RBB" },
-    "So Good":                      { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"RBB" },
-    "멋있게 (Sassy Me)":             { tempo:"fast", vibe:["quirky","bright"],               side:"Red",    album:"RBB" },
-    "Taste":                        { tempo:"slow", vibe:["rnb","sophisticated"],           side:"Velvet", album:"RBB" },
-
-    // ── The ReVe Festival 2022 – Birthday b-sides ──
-    "BYE BYE":                      { tempo:"mid",  vibe:["emotional","rnb","quirky"],      side:"Velvet", album:"The ReVe Festival 2022 - Birthday" },
-    "On A Ride":                    { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The ReVe Festival 2022 - Birthday" },
-    "Ladies Night":                 { tempo:"fast", vibe:["energetic","bright"],            side:"Red",    album:"The ReVe Festival Day 2" },
-    "ZOOM":                         { tempo:"fast", vibe:["quirky","bright"],               side:"Red",    album:"The ReVe Festival 2022 - Birthday" },
-    "Celebrate":                    { tempo:"fast", vibe:["bright","energetic"],            side:"Red",    album:"The ReVe Festival 2022 - Birthday" },
-    "Bing Bing":                    { tempo:"fast", vibe:["energetic","quirky"],            side:"Red",    album:"The ReVe Festival: Finale" },
-
-    // ── Chill Kill (2023) b-sides ──
-    "Knock Knock (Who's There?)":   { tempo:"mid",  vibe:["quirky","dark"],                side:"Both",   album:"Chill Kill" },
-    "Underwater":                   { tempo:"slow", vibe:["dreamy","emotional"],            side:"Velvet", album:"Chill Kill" },
-    "Will I Ever See You Again?":   { tempo:"mid",  vibe:["emotional","dreamy"],            side:"Velvet", album:"Chill Kill" },
-    "Nightmare":                    { tempo:"mid",  vibe:["dark","energetic"],              side:"Both",   album:"Chill Kill" },
-    "Iced Coffee":                  { tempo:"mid",  vibe:["cool","sophisticated"],          side:"Velvet", album:"Chill Kill" },
-    "One Kiss":                     { tempo:"slow", vibe:["rnb","sophisticated"],           side:"Velvet", album:"Chill Kill" },
-    "Bulldozer":                    { tempo:"fast", vibe:["energetic","dark"],              side:"Red",    album:"Chill Kill" },
-    "Wings":                        { tempo:"mid",  vibe:["emotional","dreamy"],            side:"Both",   album:"Chill Kill" },
-    "Scenery":                      { tempo:"slow", vibe:["retro","emotional"],             side:"Velvet", album:"Chill Kill" },
-
-    // ── Cosmic (2024) b-sides ──
-    "Sunflower":                    { tempo:"mid",  vibe:["emotional","bright"],            side:"Both",   album:"Cosmic" },
-    "Last Drop":                    { tempo:"slow", vibe:["dark","sophisticated"],          side:"Velvet", album:"Cosmic" },
-    "Love Arcade":                  { tempo:"fast", vibe:["retro","bright"],                side:"Red",    album:"Cosmic" },
-    "Bubble":                       { tempo:"mid",  vibe:["dreamy","bright"],               side:"Both",   album:"Cosmic" },
-    "Night Drive":                  { tempo:"mid",  vibe:["emotional","sophisticated"],     side:"Velvet", album:"Cosmic" },
-    "Sweet Dreams":                 { tempo:"slow", vibe:["dreamy","emotional"],            side:"Velvet", album:"Cosmic" },
-};
 
 const vibeLabel = {
     bright:"明亮開朗", energetic:"活力充沛", emotional:"感性抒情",
