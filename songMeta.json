@@ -15,6 +15,7 @@
     "Power Up":                     { "tempo": "fast", "vibe": ["energetic","quirky"],            "side": "Red",    "album": "Summer Magic" },
     "RBB (Really Bad Boy)":         { "tempo": "fast", "vibe": ["dark","rnb"],                   "side": "Velvet", "album": "RBB" },
     "Zimzalabim":                   { "tempo": "fast", "vibe": ["energetic","quirky"],            "side": "Both",   "album": "The ReVe Festival Day 1" },
+    "Sunny Side Up!":               { "tempo": "fast", "vibe": ["sophisticated","rnb"],           "side": "Velvet", "album": "The ReVe Festival Day 1" },
     "Umpah Umpah":                  { "tempo": "fast", "vibe": ["bright","energetic"],            "side": "Red",    "album": "The ReVe Festival Day 2" },
     "Psycho":                       { "tempo": "mid",  "vibe": ["dark","sophisticated"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
     "Queendom":                     { "tempo": "mid",  "vibe": ["emotional","energetic"],         "side": "Both",   "album": "Queendom" },
