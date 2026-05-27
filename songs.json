@@ -752,6 +752,14 @@
         },
         {
             "id": 3,
+            "title": "Sunny Side Up!",
+            "albumId": "TheReVeFestivalDay1",
+            "audio": "",
+            "ytId": "2QbenuWsG8o",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
             "title": "Umpah Umpah",
             "albumId": "TheReVeFestivalDay2",
             "audio": "",

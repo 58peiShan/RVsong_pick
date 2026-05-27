@@ -1,6 +1,11 @@
 ﻿// Song data
 let songs = [];
 let songMeta = {};
+let feedbackMessages = [];
+let specialFeedback = {};
+let shownSpecialFeedback = new Set();
+let choicesSinceFeedback = 0;
+let nextFeedbackAt = 5;
 let activeSongs = [];
 let songMode = 'all'; // 'all' | 'title' | 'bside'
 let maxComparisons;
@@ -133,12 +138,16 @@ function pauseOther(activeIndex) {
 // Load songs from JSON
 async function loadSongs() {
     try {
-        const [response, metaResponse] = await Promise.all([
+        const [response, metaResponse, feedbackResponse] = await Promise.all([
             fetch('songs.json'),
-            fetch('songMeta.json')
+            fetch('songMeta.json'),
+            fetch('feedback.json')
         ]);
         const data = await response.json();
         songMeta = await metaResponse.json();
+        const feedbackData = await feedbackResponse.json();
+        feedbackMessages = feedbackData.messages || [];
+        specialFeedback  = feedbackData.specialFeedback || {};
         songs = data.songs.map(song => ({
             name: song.title,
             audio: song.audio || null,
@@ -326,6 +335,9 @@ function updateModeHint() {
 
 function beginComparison() {
     undoState = null;
+    choicesSinceFeedback = 0;
+    nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
+    shownSpecialFeedback = new Set();
     clearProgress();
     rebuildSongPool();
     if (activeSongs.length < 2) {
@@ -443,9 +455,31 @@ function selectSong(index) {
     loser.rating  += k * (0 - expectedLoser);
 
     currentPairIndex++;
+    const winnerName = activeSongs[winnerIdx].name;
+    const specialMsgs = specialFeedback[winnerName];
+    if (specialMsgs?.length && !shownSpecialFeedback.has(winnerName)) {
+        showFeedback(specialMsgs[Math.floor(Math.random() * specialMsgs.length)]);
+        shownSpecialFeedback.add(winnerName);
+    } else if (songMode === 'all') {
+        choicesSinceFeedback++;
+        if (choicesSinceFeedback >= nextFeedbackAt && feedbackMessages.length > 0) {
+            showFeedback(feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)]);
+            choicesSinceFeedback = 0;
+            nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
+        }
+    }
     stopAllVideos();
     saveProgress();
     loadPair();
+}
+
+function showFeedback(msg) {
+    const el = document.getElementById('feedback-msg');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('active');
+    void el.offsetWidth;
+    el.classList.add('active');
 }
 
 function undoLastChoice() {
