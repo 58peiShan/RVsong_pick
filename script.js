@@ -458,7 +458,7 @@ function selectSong(index) {
     currentPairIndex++;
     const winnerName = activeSongs[winnerIdx].name;
     const specialMsgs = specialFeedback[winnerName];
-    if (specialMsgs?.length && !shownSpecialFeedback.has(winnerName)) {
+    if (songMode === 'all' && specialMsgs?.length && !shownSpecialFeedback.has(winnerName)) {
         showFeedback(specialMsgs[Math.floor(Math.random() * specialMsgs.length)]);
         shownSpecialFeedback.add(winnerName);
     } else if (songMode === 'all') {
