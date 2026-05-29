@@ -145,6 +145,7 @@ async function loadSongs() {
         ]);
         const data = await response.json();
         songMeta = await metaResponse.json();
+        buildAlbumMarquee(data.albums);
         const feedbackData = await feedbackResponse.json();
         feedbackMessages = feedbackData.messages || [];
         specialFeedback  = feedbackData.specialFeedback || {};
@@ -301,7 +302,7 @@ function continueComparison() {
     if (!saved) { beginComparison(); return; }
     restoreProgress(saved);
     document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('comparison-view').style.display = 'block';
+    showScreen(document.getElementById('comparison-view'));
     loadPair();
 }
 
@@ -348,8 +349,8 @@ function beginComparison() {
     comparisonHistory = {};
     songs.forEach(song => song.rating = 1200);
     document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('comparison-view').style.display = 'block';
     document.getElementById('ranking-view').classList.add('hidden');
+    showScreen(document.getElementById('comparison-view'));
     loadPair();
 }
 
@@ -383,7 +384,7 @@ function init() {
         area.classList.add('hidden');
     }
     document.getElementById('comparison-view').style.display = 'none';
-    document.getElementById('start-screen').classList.remove('hidden');
+    showScreen(document.getElementById('start-screen'));
 }
 
 let undoState = null;
@@ -471,6 +472,61 @@ function selectSong(index) {
     stopAllVideos();
     saveProgress();
     loadPair();
+}
+
+function showScreen(el) {
+    el.classList.remove('hidden');
+    if (el.id !== 'start-screen') el.style.display = 'block';
+    el.classList.remove('screen-enter');
+    void el.offsetWidth;
+    el.classList.add('screen-enter');
+}
+
+function goToStart() {
+    stopAllVideos();
+    document.getElementById('comparison-view').style.display = 'none';
+    document.getElementById('ranking-view').classList.add('hidden');
+    showScreen(document.getElementById('start-screen'));
+    const saved = getSavedProgress();
+    const area = document.getElementById('continue-area');
+    const hint = document.getElementById('continue-hint');
+    if (saved) {
+        area.classList.remove('hidden');
+        const modeText = saved.songMode === 'title' ? '主打歌' : saved.songMode === 'bside' ? '收錄曲' : '全部歌曲';
+        hint.textContent = `上次進度：${saved.currentPairIndex} / ${saved.maxComparisons} 輪（${modeText}）`;
+    } else {
+        area.classList.add('hidden');
+    }
+}
+
+function openYouTubePlaylist() {
+    const ranked = JSON.parse(localStorage.getItem('rv_ranking') || '[]');
+    const videoIds = ranked
+        .map(song => ytIdCache[song.name])
+        .filter(Boolean)
+        .slice(0, 50); // YouTube watch_videos 上限
+
+    const btn = document.getElementById('yt-playlist-btn');
+
+    if (videoIds.length === 0) {
+        btn.textContent = '沒有可用的影片連結';
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fab fa-youtube"></i> YouTube 播放清單';
+        }, 2000);
+        return;
+    }
+
+    const url = `https://www.youtube.com/watch_videos?video_ids=${videoIds.join(',')}`;
+    window.open(url, '_blank');
+}
+
+function buildAlbumMarquee(albums) {
+    const track = document.getElementById('marquee-track');
+    if (!track || !albums?.length) return;
+    const imgs = albums.map(a =>
+        `<img src="${a.cover}" alt="${a.name}" title="${a.name}" onerror="this.style.display='none'">`
+    ).join('');
+    track.innerHTML = imgs + imgs;
 }
 
 function showFeedback(msg) {
@@ -635,8 +691,7 @@ function generateAnalysis(ranked) {
 function displayRanking(ranked) {
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('comparison-view').style.display = 'none';
-    document.getElementById('ranking-view').classList.remove('hidden');
-    document.getElementById('ranking-view').style.display = 'block';
+    showScreen(document.getElementById('ranking-view'));
     const list = document.getElementById('ranking-list');
     list.innerHTML = '';
     ranked.forEach((song, i) => {
@@ -659,8 +714,7 @@ function restart() {
     stopAllVideos();
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('ranking-view').classList.add('hidden');
-    document.getElementById('comparison-view').style.display = 'block';
-    document.getElementById('comparison-view').classList.remove('hidden');
+    showScreen(document.getElementById('comparison-view'));
     loadPair();
 }
 
