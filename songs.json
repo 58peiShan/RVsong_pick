@@ -148,6 +148,24 @@
     "songs": [
         {
             "id": 2,
+            "title": "어떤 별보다",
+            "albumId": "",
+            "audio": "",
+            "ytId": "WTiUpvQr2R4",
+            "isTitleSong": false,
+            "isOST": true
+        },
+        {
+            "id": 2,
+            "title": "미래",
+            "albumId": "",
+            "audio": "",
+            "ytId": "n551JUqfq9w",
+            "isTitleSong": false,
+            "isOST": true
+        },
+        {
+            "id": 2,
             "title": "Wish Tree",
             "albumId": "WishTree",
             "audio": "",

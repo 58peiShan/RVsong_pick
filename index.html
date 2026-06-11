@@ -19,6 +19,14 @@
         <script src="config.js"></script>
     </head>
     <body>
+        <!-- Organic gradient blobs background (mouse-interactive) -->
+        <div id="bg-orbs" aria-hidden="true">
+            <div class="orb orb-a"></div>
+            <div class="orb orb-b"></div>
+            <div class="orb orb-c"></div>
+            <div class="orb orb-cursor"></div>
+        </div>
+
         <!-- YouTube URL management modal -->
         <div id="url-manage-overlay" class="hidden">
             <div class="url-manage-card">
@@ -186,5 +194,42 @@
         </div>
 
         <script src="script.js"></script>
+        <script>
+            // 讓其中一顆漸層色塊平滑跟隨滑鼠（lerp 緩動）
+            (function () {
+                const orbs = document.getElementById("bg-orbs");
+                if (!orbs) return;
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+                let tx = window.innerWidth / 2,
+                    ty = window.innerHeight / 2;
+                let cx = tx,
+                    cy = ty;
+
+                const onMove = (x, y) => {
+                    tx = x;
+                    ty = y;
+                };
+                window.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY), { passive: true });
+                window.addEventListener(
+                    "touchmove",
+                    (e) => {
+                        if (e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+                    },
+                    { passive: true }
+                );
+
+                function tick() {
+                    cx += (tx - cx) * 0.07;
+                    cy += (ty - cy) * 0.07;
+                    orbs.style.setProperty("--mx", cx + "px");
+                    orbs.style.setProperty("--my", cy + "px");
+                    requestAnimationFrame(tick);
+                }
+                orbs.style.setProperty("--mx", cx + "px");
+                orbs.style.setProperty("--my", cy + "px");
+                tick();
+            })();
+        </script>
     </body>
 </html>
