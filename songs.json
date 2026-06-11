@@ -127,6 +127,12 @@
             "cover": "covers/Birthday.jpeg"
         },
         {
+            "id": "FeelMyRhythm",
+            "name": "The ReVe Festival 2022 - Feel My Rhythm",
+            "year": 2022,
+            "cover": "covers/FeelMyRhythm.jpg"
+        },
+        {
             "id": "ChillKill",
             "name": "Chill Kill",
             "year": 2023,
@@ -146,6 +152,54 @@
             "albumId": "WishTree",
             "audio": "",
             "ytId": "hhPe4UtnDZI",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "Feel My Rhythm",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "OXWz_x6-dro",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Rainbow Halo",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "QEY1ScXs-mM",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "Beg For Me",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "3ErVPtN-oas",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "BAMBOLEO",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "pnZXbDZEaK4",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "Good, Bad, Ugly",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "GMZlRcpMWq0",
+            "isTitleSong": false
+        },
+        {
+            "id": 2,
+            "title": "In My Dreams",
+            "albumId": "FeelMyRhythm",
+            "audio": "",
+            "ytId": "jpEebbF-hAo",
             "isTitleSong": false
         },
         {
@@ -923,6 +977,46 @@
             "audio": "",
             "ytId": "IpQizSNgiOo",
             "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Pose",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "LX7CHCQwBkY",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Knock On Wood",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "PHINkx2So0s",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Pushin' N Pullin'",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "dL_GbAFIknI",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Hello, Sunset（다시, 여름）",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "-xw8ePRkyDE",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Better Be",
+            "albumId": "Queendom",
+            "audio": "",
+            "ytId": "_Nhe7PGV9fY",
+            "isTitleSong": false
         },
         {
             "id": 14,
