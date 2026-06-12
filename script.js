@@ -138,15 +138,14 @@ function pauseOther(activeIndex) {
 // Load songs from JSON
 async function loadSongs() {
     try {
-        const [response, metaResponse, feedbackResponse] = await Promise.all([
-            fetch('songs.json'),
-            fetch('songMeta.json'),
-            fetch('feedback.json')
-        ]);
-        const data = await response.json();
-        songMeta = await metaResponse.json();
+        // All song data lives in data.js (window.APP_DATA), loaded via a
+        // <script> tag so it works over http(s) and when opening the file
+        // directly (file://), where fetch() of local files is blocked.
+        if (!window.APP_DATA) throw new Error('data.js not loaded');
+        const data = window.APP_DATA.songs;
+        const feedbackData = window.APP_DATA.feedback;
+        songMeta = window.APP_DATA.songMeta;
         buildAlbumMarquee(data.albums);
-        const feedbackData = await feedbackResponse.json();
         feedbackMessages = feedbackData.messages || [];
         specialFeedback  = feedbackData.specialFeedback || {};
         songs = data.songs.map(song => ({
@@ -169,7 +168,7 @@ async function loadSongs() {
             try { ytIdCache = JSON.parse(cached); } catch(e) { ytIdCache = {}; }
         }
 
-        // Merge ytId from songs.json (takes precedence over localStorage)
+        // Merge ytId from data.js (takes precedence over localStorage)
         songs.forEach(song => {
             if (song.ytId) ytIdCache[song.name] = song.ytId;
         });
@@ -583,10 +582,18 @@ function togglePlay(index, event) {
             document.body.classList.remove('playing');
         }
     } else {
-        const player = ytPlayers[index];
-        if (!player || !ytPlayerReady[index]) return;
         const videoId = ytIdCache[currentSongs[index].name];
         if (!videoId) return;
+
+        const player = ytPlayers[index];
+        // Inline YouTube playback only works over http(s). When the page is
+        // opened directly from disk (file://) the embed can't play, and if the
+        // player isn't ready yet there's nothing to toggle — in both cases fall
+        // back to opening the song on YouTube in a new tab so Play still works.
+        if (location.protocol === 'file:' || !player || !ytPlayerReady[index]) {
+            window.open('https://www.youtube.com/watch?v=' + videoId, '_blank');
+            return;
+        }
 
         let state;
         try { state = player.getPlayerState(); } catch(e) { return; }
