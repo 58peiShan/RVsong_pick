@@ -137,6 +137,7 @@ body:has(#start-screen.hidden) .album-marquee-clip {
 .privacy-btn {
     font-size: 13px;
     color: #999;
+    background: #ffffffc7;
     text-decoration: none;
     padding: 6px 16px;
     border-radius: 999px;
@@ -769,7 +770,7 @@ h1 > span {
 }
 .analysis-box {
     position: sticky;
-    top: 16px;
+    top: 80px;
 }
 .ranking ol {
     background-color: white;
@@ -805,9 +806,6 @@ h1 > span {
     border-radius: 5px;
     cursor: pointer;
 }
-.restart-btn:hover {
-    box-shadow: #ff9797 0px 4px 8px;
-}
 .export-btn {
     background-color: #ff9797;
     color: white;
@@ -824,11 +822,6 @@ h1 > span {
     background-color: #ff4444;
     color: white;
 }
-.yt-playlist-btn:hover {
-    background-color: #cc0000;
-    box-shadow: #cc0000 0px 4px 8px;
-}
-
 .analysis-box {
     margin-top: 16px;
     padding: 20px;
@@ -881,9 +874,6 @@ body.theme-red {
 }
 
 /* ── Velvet theme（暗色）─────────────────── */
-.restart-btn:hover {
-    box-shadow: #c98aff 0px 4px 8px;
-}
 body.theme-velvet {
     background-image: linear-gradient(130deg, #1a0a2a, #3a1550);
     color: #e8d5f5;
