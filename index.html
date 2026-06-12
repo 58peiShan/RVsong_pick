@@ -76,6 +76,15 @@
                     <p id="continue-hint" class="continue-hint"></p>
                     <p class="continue-divider">── 或重新開始 | Start Over ──</p>
                 </div>
+                <div class="nickname-area">
+                    <input
+                        type="text"
+                        id="nickname-input"
+                        class="nickname-input"
+                        maxlength="20"
+                        placeholder="暱稱 Nickname（選填 / optional）"
+                        oninput="saveNickname(this.value)" />
+                </div>
                 <div class="mode-selector">
                     <label class="mode-option">
                         <input type="radio" name="song-mode" value="all" onchange="setSongMode('all')" />

@@ -14,6 +14,20 @@ let wins = [];
 let currentSongs = [];
 let comparisonHistory = {};
 let currentIdx1, currentIdx2;
+let playerNickname = '';
+
+// Escape user-entered text before injecting it into innerHTML
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+}
+
+// Persist the player's nickname (shown on the exported result image)
+function saveNickname(value) {
+    playerNickname = (value || '').trim();
+    localStorage.setItem('rv_nickname', playerNickname);
+}
 
 // Playback state — audios filled after DOM ready
 // slotMode[i]: 'local' | 'youtube'
@@ -733,6 +747,10 @@ async function exportImage() {
     const ranked = (JSON.parse(localStorage.getItem('rv_ranking')) || []).slice(0, 15);
     const isVelvet = document.body.classList.contains('theme-velvet');
 
+    // If a nickname was entered, personalise the title; otherwise keep the default.
+    const nickname = (playerNickname || localStorage.getItem('rv_nickname') || '').trim();
+    const titleText = nickname ? `${escapeHtml(nickname)}'s Song Ranking` : 'My Song Ranking';
+
     const theme = isVelvet ? {
         bg:          'linear-gradient(150deg, #1a0a2a, #3a1550)',
         titleColor:  '#c98aff',
@@ -766,7 +784,7 @@ async function exportImage() {
     card.innerHTML = `
         <div style="text-align:center;margin-bottom:24px;">
             <div style="font-size:13px;letter-spacing:3px;color:${theme.titleColor};font-weight:bold;">RED VELVET</div>
-            <div style="font-size:20px;font-weight:bold;color:${theme.subtitleColor};margin-top:4px;">My Song Ranking</div>
+            <div style="font-size:20px;font-weight:bold;color:${theme.subtitleColor};margin-top:4px;">${titleText}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;">
             ${ranked.map((song, i) => `
@@ -792,7 +810,8 @@ async function exportImage() {
     try {
         const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: null });
         const link = document.createElement('a');
-        link.download = 'rv_ranking.png';
+        const filePrefix = nickname.replace(/[^\w一-龥-]/g, '_').slice(0, 20);
+        link.download = (filePrefix ? filePrefix + '_' : '') + 'rv_ranking.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     } finally {
@@ -806,6 +825,11 @@ window.onload = () => {
     songMode = localStorage.getItem('rv_song_mode') || 'all';
     const radio = document.querySelector(`input[name="song-mode"][value="${songMode}"]`);
     if (radio) radio.checked = true;
+
+    // Restore previously entered nickname
+    playerNickname = localStorage.getItem('rv_nickname') || '';
+    const nicknameInput = document.getElementById('nickname-input');
+    if (nicknameInput) nicknameInput.value = playerNickname;
 
     audios = [document.getElementById('audio1'), document.getElementById('audio2')];
     // Reset play button when local audio finishes
