@@ -700,13 +700,17 @@ function generateAnalysis(ranked) {
     `;
     document.getElementById('analysis-container').innerHTML = html;
 
-    if (velvetPct > redPct) {
-        document.body.classList.add('theme-velvet');
-        document.body.classList.remove('theme-red');
-    } else {
-        document.body.classList.add('theme-red');
-        document.body.classList.remove('theme-velvet');
-    }
+    setTheme(velvetPct > redPct ? 'velvet' : 'red');
+}
+
+// Apply a theme to both <body> (for styling) and <html> (so the iOS canvas
+// background matches even on browsers without :has() support).
+function setTheme(name) {
+    const themed = name ? ['theme-' + name] : [];
+    [document.body, document.documentElement].forEach(el => {
+        el.classList.remove('theme-red', 'theme-velvet');
+        if (themed.length) el.classList.add(themed[0]);
+    });
 }
 
 function displayRanking(ranked) {
@@ -731,7 +735,7 @@ function restart() {
     currentPairIndex = 0;
     comparisonHistory = {};
     rebuildSongPool();
-    document.body.classList.remove('theme-red', 'theme-velvet');
+    setTheme(null);
     stopAllVideos();
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('ranking-view').classList.add('hidden');
