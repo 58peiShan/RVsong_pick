@@ -92,7 +92,27 @@ body:has(#start-screen.hidden) .album-marquee-clip {
 
 @media (max-width: 768px) {
     #feedback-msg {
-        margin:20px 0;}
+        position: absolute;
+        top:50px;
+        z-index: 99;
+        right: -15px;
+        background: #ffb2b2;
+        border-radius: 20px;
+        color: #fff;
+        padding: 5px 8px;
+        display: block;
+    }
+    #feedback-msg.active::after{
+        content: "";
+        width: 10px;
+        height: 5px;
+        position: absolute;
+        top: -8px;
+        right: 30px;
+        transform: rotate(253deg) skew(43deg, 347deg);
+        border-right: 10px solid #ffb2b2;
+        border-bottom: 10px solid #ffb2b2;
+    }
 }
 
 #feedback-msg.active {
