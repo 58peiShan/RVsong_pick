@@ -174,10 +174,10 @@ window.APP_DATA = {
         },
         {
             "id": 2,
-            "title": "Wish Tree",
+            "title": "Wish Tree(세가지 소원 )",
             "albumId": "WishTree",
             "audio": "",
-            "ytId": "hhPe4UtnDZI",
+            "ytId": "MkjjfI7eiV4",
             "isTitleSong": false
         },
         {
@@ -241,7 +241,7 @@ window.APP_DATA = {
             "title": "Knock Knock (Who’s There?)",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "PEn3Hhw0oSE",
+            "ytId": "0yk7AWzFZUI",
             "isTitleSong": false
         },
         {
@@ -249,7 +249,7 @@ window.APP_DATA = {
             "title": "Underwater",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "dLF7Fb_1akE",
+            "ytId": "5cBe1LZGPs4",
             "isTitleSong": false
         },
         {
@@ -257,7 +257,7 @@ window.APP_DATA = {
             "title": "Will I Ever See You Again?",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "r1qrCjndZo0",
+            "ytId": "rXxa-L9pmdM",
             "isTitleSong": false
         },
         {
@@ -265,7 +265,7 @@ window.APP_DATA = {
             "title": "Nightmare",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "MW1jBSmWzsM",
+            "ytId": "JUX_AZ7MPwI",
             "isTitleSong": false
         },
         {
@@ -273,7 +273,7 @@ window.APP_DATA = {
             "title": "Iced Coffee",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "Q02RoRVJOVs",
+            "ytId": "k76Rlq59zM0",
             "isTitleSong": false
         },
         {
@@ -281,7 +281,7 @@ window.APP_DATA = {
             "title": "One Kiss",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "y76SIbswrY4",
+            "ytId": "vIXE2aTNbMY",
             "isTitleSong": false
         },
         {
@@ -289,7 +289,7 @@ window.APP_DATA = {
             "title": "Bulldozer",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "vEGtJYhFohs",
+            "ytId": "yBwvu3yhpPs",
             "isTitleSong": false
         },
         {
@@ -297,7 +297,7 @@ window.APP_DATA = {
             "title": "Wings",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "3-9QLo-6J_s",
+            "ytId": "w4IbZtBjBII",
             "isTitleSong": false
         },
         {
@@ -305,7 +305,7 @@ window.APP_DATA = {
             "title": "Scenery",
             "albumId": "ChillKill",
             "audio": "",
-            "ytId": "6heSrTv5auk",
+            "ytId": "yVI9Q0pEYek",
             "isTitleSong": false
         },
         {
@@ -313,7 +313,7 @@ window.APP_DATA = {
             "title": "행복(Happiness)",
             "albumId": "Happiness",
             "audio": "",
-            "ytId": "JFgv8bKfxEs",
+            "ytId": "K0THWR1irk0",
             "isTitleSong": true
         },
         {
@@ -337,7 +337,7 @@ window.APP_DATA = {
             "title": "Ice Cream Cake",
             "albumId": "IceCreamCake",
             "audio": "",
-            "ytId": "glXgSSOKlls",
+            "ytId": "bJ-B2BNdEFs",
             "isTitleSong": true
         },
         {
@@ -345,7 +345,7 @@ window.APP_DATA = {
             "title": "Somethin Kinda Crazy",
             "albumId": "IceCreamCake",
             "audio": "",
-            "ytId": "CE2bTNQJNUg",
+            "ytId": "gsoUmmaCM3w",
             "isTitleSong": false
         },
         {
@@ -393,7 +393,7 @@ window.APP_DATA = {
             "title": "Huff n Puff",
             "albumId": "TheRed",
             "audio": "",
-            "ytId": "JPgf4LMh5uA",
+            "ytId": "9eINuufm6TY",
             "isTitleSong": false
         },
         {
@@ -409,7 +409,7 @@ window.APP_DATA = {
             "title": "Red Dress",
             "albumId": "TheRed",
             "audio": "",
-            "ytId": "nn2_wckNqG4",
+            "ytId": "t3FVWX7u85U",
             "isTitleSong": false
         },
         {
@@ -417,7 +417,7 @@ window.APP_DATA = {
             "title": "Oh Boy",
             "albumId": "TheRed",
             "audio": "",
-            "ytId": "_cm_ooNTmkw",
+            "ytId": "3PgGuUP8_jI",
             "isTitleSong": false
         },
         {
@@ -449,7 +449,7 @@ window.APP_DATA = {
             "title": "Day 1",
             "albumId": "TheRed",
             "audio": "",
-            "ytId": "rwzXDehdwEo",
+            "ytId": "KTaa3Pbv9c0",
             "isTitleSong": false
         },
         {
@@ -481,7 +481,7 @@ window.APP_DATA = {
             "title": "Light Me Up",
             "albumId": "TheVelvet",
             "audio": "",
-            "ytId": "mo2u4he_dP4",
+            "ytId": "rRctWJReQFQ",
             "isTitleSong": false
         },
         {
@@ -513,7 +513,7 @@ window.APP_DATA = {
             "title": "Lucky Girl",
             "albumId": "RussianRoulette",
             "audio": "",
-            "ytId": "no3cKBBJseo",
+            "ytId": "rf65W73Q4kA",
             "isTitleSong": false
         },
         {
@@ -529,7 +529,7 @@ window.APP_DATA = {
             "title": "Sunny Afternoon",
             "albumId": "RussianRoulette",
             "audio": "",
-            "ytId": "HXCA79LO3bg",
+            "ytId": "G7ZTK07F0-I",
             "isTitleSong": false
         },
         {
@@ -561,7 +561,7 @@ window.APP_DATA = {
             "title": "Rookie",
             "albumId": "Rookie",
             "audio": "",
-            "ytId": "J0h8-OTC38I",
+            "ytId": "o845InvtxKk",
             "isTitleSong": true
         },
         {
@@ -569,7 +569,7 @@ window.APP_DATA = {
             "title": "Little Little",
             "albumId": "Rookie",
             "audio": "",
-            "ytId": "mvfVLlXQ0Dw",
+            "ytId": "hR8JnpnMxiE",
             "isTitleSong": false
         },
         {
@@ -577,7 +577,7 @@ window.APP_DATA = {
             "title": "Happily Ever After",
             "albumId": "Rookie",
             "audio": "",
-            "ytId": "YFMYOydGbwE",
+            "ytId": "qD6ZprxtdVE",
             "isTitleSong": false
         },
         {
@@ -585,7 +585,7 @@ window.APP_DATA = {
             "title": "Talk To Me(말을 해)",
             "albumId": "Rookie",
             "audio": "",
-            "ytId": "ka3jEZqWaJE",
+            "ytId": "Ds-Hb1y7MYw",
             "isTitleSong": false
         },
         {
@@ -665,7 +665,7 @@ window.APP_DATA = {
             "title": "Kingdom Come",
             "albumId": "PerfectVelvet",
             "audio": "",
-            "ytId": "xOdjjCxyMr4",
+            "ytId": "p9nNUuPei0Y",
             "isTitleSong": false
         },
         {
@@ -673,7 +673,7 @@ window.APP_DATA = {
             "title": "My Second Date",
             "albumId": "PerfectVelvet",
             "audio": "",
-            "ytId": "D9iGG2anQik",
+            "ytId": "j5WVvwZJIDo",
             "isTitleSong": false
         },
         {
@@ -681,7 +681,7 @@ window.APP_DATA = {
             "title": "Attaboy",
             "albumId": "PerfectVelvet",
             "audio": "",
-            "ytId": "UCNkX-uOa1I",
+            "ytId": "TqcvGnI2XXA",
             "isTitleSong": false
         },
         {
@@ -689,7 +689,7 @@ window.APP_DATA = {
             "title": "Perfect 10",
             "albumId": "PerfectVelvet",
             "audio": "",
-            "ytId": "9_GNzyAFMEk",
+            "ytId": "YjjZIhZMww4",
             "isTitleSong": false
         },
         {
@@ -735,15 +735,15 @@ window.APP_DATA = {
         {
             "id": 2,
             "title": "Aitai-tai",
-            "albumId": "CookieJar",
+            "albumId": "Bloom",
             "audio": "",
-            "ytId": "oHxSVAHq66s",
+            "ytId": "KrLpZVLUZeQ",
             "isTitleSong": false
         },
         {
             "id": 3,
             "title": "'Cause it's you",
-            "albumId": "CookieJar",
+            "albumId": "Bloom",
             "audio": "",
             "ytId": "WgC22S_hxXo",
             "isTitleSong": false
@@ -753,7 +753,7 @@ window.APP_DATA = {
             "title": "Power Up",
             "albumId": "SummerMagic",
             "audio": "",
-            "ytId": "ZXyToCnqOU0",
+            "ytId": "aiHSVQy9xN8",
             "isTitleSong": true
         },
         {
@@ -769,7 +769,7 @@ window.APP_DATA = {
             "title": "Mr.E",
             "albumId": "SummerMagic",
             "audio": "",
-            "ytId": "9NTs3Wjiw0A",
+            "ytId": "X5s2e9cX_TI",
             "isTitleSong": false
         },
         {
@@ -866,7 +866,7 @@ window.APP_DATA = {
             "albumId": "TheReVeFestivalDay2",
             "audio": "",
             "ytId": "7zLBQLvOty0",
-            "isTitleSong": true
+            "isTitleSong": false
         },
         {
             "id": 3,
@@ -881,7 +881,7 @@ window.APP_DATA = {
             "title": "Marionette",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "vAQCuROAa2E",
+            "ytId": "M_nUKUoItu4",
             "isTitleSong": false
         },
         {
@@ -897,7 +897,7 @@ window.APP_DATA = {
             "title": "Jackpot",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "BpfQJ4MWsGU",
+            "ytId": "O3GLHZKAhw8",
             "isTitleSong": false
         },
         {
@@ -905,7 +905,7 @@ window.APP_DATA = {
             "title": "Snap Snap",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "NkbeOWlVztY",
+            "ytId": "fn5sL5x0ZmM",
             "isTitleSong": false
         },
         {
@@ -921,7 +921,7 @@ window.APP_DATA = {
             "title": "'Cause it’s you",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "NgPyjAfF748",
+            "ytId": "WgC22S_hxXo",
             "isTitleSong": false
         },
         {
@@ -929,7 +929,7 @@ window.APP_DATA = {
             "title": "Color of Love",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "0QgRD6aFZMs",
+            "ytId": "CeGWtK1YHGY",
             "isTitleSong": false
         },
         {
@@ -937,7 +937,7 @@ window.APP_DATA = {
             "title": "Swimming Pool",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "pZ7pTVG9jQQ",
+            "ytId": "VrtJr75uGDc",
             "isTitleSong": false
         },
         {
@@ -954,14 +954,14 @@ window.APP_DATA = {
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
             "ytId": "BQouHXkPLFw",
-            "isTitleSong": true
+            "isTitleSong": false
         },
         {
             "id": 3,
             "title": "Birthday",
             "albumId": "Birthday",
             "audio": "",
-            "ytId": "KNBQzjS4ahI",
+            "ytId": "oKpz0d9WBzE",
             "isTitleSong": true
         },
         {
@@ -969,7 +969,7 @@ window.APP_DATA = {
             "title": "BYE BYE",
             "albumId": "Birthday",
             "audio": "",
-            "ytId": "fS_nKJqiE9I",
+            "ytId": "TPNUscDJvew",
             "isTitleSong": false
         },
         {
@@ -977,7 +977,7 @@ window.APP_DATA = {
             "title": "On A Ride",
             "albumId": "Birthday",
             "audio": "",
-            "ytId": "C0OnprN0BAE",
+            "ytId": "bpi4tmDfbFw",
             "isTitleSong": false
         },
         {
@@ -985,7 +985,7 @@ window.APP_DATA = {
             "title": "ZOOM",
             "albumId": "Birthday",
             "audio": "",
-            "ytId": "4fNmuCG6TVc",
+            "ytId": "6WCiPEH6Cak",
             "isTitleSong": false
         },
         {
@@ -993,7 +993,7 @@ window.APP_DATA = {
             "title": "Celebrate",
             "albumId": "Birthday",
             "audio": "",
-            "ytId": "j8eSEbFnu2M",
+            "ytId": "nvuO06HkSag",
             "isTitleSong": false
         },
         {
@@ -1001,7 +1001,7 @@ window.APP_DATA = {
             "title": "Queendom",
             "albumId": "Queendom",
             "audio": "",
-            "ytId": "IpQizSNgiOo",
+            "ytId": "c9RzZpV460k",
             "isTitleSong": true
         },
         {
@@ -1049,7 +1049,7 @@ window.APP_DATA = {
             "title": "Cosmic",
             "albumId": "Cosmic",
             "audio": "",
-            "ytId": "j8GBT-UFgrc",
+            "ytId": "FyG21rXCxlY",
             "isTitleSong": true
         },
         {
@@ -1089,7 +1089,7 @@ window.APP_DATA = {
             "title": "Night Drive",
             "albumId": "Cosmic",
             "audio": "",
-            "ytId": "qWmjOjqEx6E",
+            "ytId": "Bo_dgP7bilM",
             "isTitleSong": false
         },
         {
@@ -1097,7 +1097,7 @@ window.APP_DATA = {
             "title": "Sweet Dreams",
             "albumId": "Cosmic",
             "audio": "",
-            "ytId": "4cWdrpEktV4",
+            "ytId": "jv-UAioFOW0",
             "isTitleSong": false
         }
     ]
@@ -1203,7 +1203,7 @@ window.APP_DATA = {
     "Bubble":                       { "tempo": "mid",  "vibe": ["dreamy","bright"],               "side": "Both",   "album": "Cosmic" },
     "Night Drive":                  { "tempo": "slow",  "vibe": ["emotional","dreamy"],     "side": "Velvet", "album": "Cosmic" },
     "Sweet Dreams":                 { "tempo": "slow", "vibe": ["dreamy","emotional"],            "side": "Velvet", "album": "Cosmic" },
-    "Wish Tree":                    { "tempo": "slow", "vibe": [], "side": "Both", "album": "WishTree" },
+    "Wish Tree(세가지 소원 )":       { "tempo": "slow", "vibe": [], "side": "Both", "album": "WishTree" },
     "Marionette":                   { "tempo": "mid", "vibe": [], "side": "Velvet", "album": "Bloom" },
     "SAPPY":                        { "tempo": "fast", "vibe": [], "side": "Red", "album": "Bloom" },
     "Jackpot":                      { "tempo": "fast", "vibe": ["cool"], "side": "", "album": "Bloom" },
