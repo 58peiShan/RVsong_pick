@@ -414,9 +414,10 @@
   });
 
   // ---------- 回合 ----------
-  var timerInt=null;
+  var timerInt=null, roundStart=0;
   function startRound(){
     clearInterval(timerInt);
+    roundStart=Date.now();
     var s=G.songs[G.idx];
     $('roundTag').innerHTML='第 '+(G.idx+1)+' / '+G.rounds+' 回合<span class="en-block">Round '+(G.idx+1)+' / '+G.rounds+'</span>';
     $('progress').style.width=((G.idx)/G.rounds*100)+'%';
@@ -478,7 +479,8 @@
     var s=G.songs[G.idx];
     var guess = guessOrNull===null ? '' : guessOrNull;
     var ok = guessOrNull!==null && isCorrect(guess, s.title);
-    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null });
+    var elapsed = ok ? Math.min(SOLO_SEC, (Date.now()-roundStart)/1000) : null;
+    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null, time:elapsed });
     if(ok) G.scores[0]++;
     stopClip();
     showReveal(ok, guess, guessOrNull===null);
@@ -563,17 +565,29 @@
       rows+'<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
   }
 
+  function fmtTime(sec){ return sec.toFixed(1)+'s'; }
   function soloResultHtml(){
     var right=G.results.filter(function(r){ return r.correct; });
     var wrong=G.results.filter(function(r){ return !r.correct; });
     function item(r){
-      var g = r.correct ? '' : (r.timeout?'<span class="a">未作答 No answer</span>':'<span class="a">答 / your answer：'+escapeHtml(r.guess||'—')+'</span>');
+      var g = r.correct
+        ? '<span class="a">用時 / time：'+fmtTime(r.time)+'</span>'
+        : (r.timeout?'<span class="a">未作答 No answer</span>':'<span class="a">答 / your answer：'+escapeHtml(r.guess||'—')+'</span>');
       return '<div class="item"><img src="'+r.song.cover+'" onerror="this.style.display=\'none\'" alt="">'+
         '<span>'+escapeHtml(r.song.title)+'</span>'+g+'</div>';
     }
     var html='<h1>🎵 遊戲結束<span class="en-block">Game Over</span></h1>'+
       '<div class="sub">'+scopeLabel(scope)+' · <span class="en">'+scopeEn(scope)+'</span></div>'+
       '<div class="summary">答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
+    if(right.length){
+      var times=right.map(function(r){ return r.time; });
+      var total=times.reduce(function(a,b){ return a+b; },0);
+      var avg=total/times.length;
+      var fastest=Math.min.apply(null, times);
+      html+='<div class="summary" style="font-size:14px;margin-top:-8px">'+
+        '⏱ 總用時 <b style="font-size:16px">'+fmtTime(total)+'</b>　·　平均 '+fmtTime(avg)+'　·　最快 '+fmtTime(fastest)+
+        '<span class="en-block">Total '+fmtTime(total)+' · Avg '+fmtTime(avg)+' · Fastest '+fmtTime(fastest)+'（correct answers only）</span></div>';
+    }
     html+='<div class="list-title ok"><i class="fas fa-circle-check"></i> 答對的歌 <span class="en">Correct</span> ('+right.length+')</div>';
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
