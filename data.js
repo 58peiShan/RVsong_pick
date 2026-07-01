@@ -993,7 +993,7 @@ window.APP_DATA = {
             "title": "Psycho",
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
-            "ytId": "uR8Mrt1IpXg",
+            "ytId": "PyyT5tHbOLw",
             "isTitleSong": true
         },
         {

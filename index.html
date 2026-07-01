@@ -406,7 +406,7 @@
     disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
     var s=G.songs[G.idx];
     var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
-      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'答對了！ 🎉<span class="en">Correct!</span>':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'答錯了<span class="en">Wrong</span>'))+'</div>'+
+      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'✔':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'✘'))+'</div>'+
       '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
       '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>';
     if(!ok && guess) html+='<div class="yourguess">你的答案 Your answer：'+escapeHtml(guess)+'</div>';
@@ -546,6 +546,7 @@
   function soloResultHtml(){
     var right=G.results.filter(function(r){ return r.correct; });
     var wrong=G.results.filter(function(r){ return !r.correct; });
+    let name = G.names[0] || '玩家 1';
     function item(r){
       var g = r.correct
         ? '<span class="a">用時 / time：'+fmtTime(r.time)+'</span>'
@@ -555,7 +556,7 @@
     }
     var html='<h1>🎵 遊戲結束<span class="en-block">Game Over</span></h1>'+
       '<div class="sub">'+scopeLabel(scope)+' · <span class="en">'+scopeEn(scope)+'</span></div>'+
-      '<div class="summary">答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
+      '<div class="summary">'+name+' 答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
     if(right.length){
       var times=right.map(function(r){ return r.time; });
       var total=times.reduce(function(a,b){ return a+b; },0);
