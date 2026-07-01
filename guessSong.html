@@ -82,21 +82,26 @@
 
   .btn{
     display:block; width:100%; border:none; cursor:pointer;
-    font-family:inherit; font-size:17px; font-weight:700; letter-spacing:1px; color:#fff;
+    font-family:inherit; font-size:17px; font-weight:700; letter-spacing:1px;
+    color:#fff;
     background:linear-gradient(135deg,var(--pink),var(--coral));
     padding:15px; border-radius:16px; margin-top:24px;
     box-shadow:0 10px 24px rgba(255,127,80,.32); transition:.15s;
   }
+  .btn span.en{color:#fff;}
   .btn:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(255,127,80,.4); }
   .btn:active{ transform:translateY(0); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 10px 24px rgba(255,127,80,.32); }
   .btn.ghost{ background:#fff; color:var(--deep); border:2px solid #ffd0d8; box-shadow:none; }
   .btn.small{ font-size:14px; padding:11px; margin-top:0; }
 
   .hidden{ display:none !important; }
 
   /* Game */
-  .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:10px; }
+  .topbar-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
   .roundtag{ font-weight:700; color:var(--deep); }
+  .topbar-actions .replay{ padding:8px 12px; font-size:13px; }
   .bar{ height:8px; background:#ffe1e6; border-radius:99px; overflow:hidden; margin:10px 0 20px; }
   .bar > div{ height:100%; background:linear-gradient(90deg,var(--pink),var(--coral)); width:0; transition:.4s; }
 
@@ -151,9 +156,11 @@
   .pbtn .idx{ width:24px; height:24px; border-radius:50%; color:#fff; font-size:11px; display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,var(--pink),var(--coral)); }
   .pbtn.none{ grid-column:1/-1; border-style:dashed; color:var(--muted); }
+  .pbtn.sel{ border-color:var(--coral); background:#fff5f0; box-shadow:0 8px 20px rgba(255,127,80,.28); transform:translateY(-1px); }
+  .pbtn.sel .idx{ box-shadow:0 0 0 3px rgba(255,127,80,.25); }
 
   /* Reveal */
-  .reveal{ text-align:center; }
+  .reveal{ margin-top:20px; text-align:center; }
   .reveal .cover{ width:120px; height:120px; border-radius:16px; object-fit:cover; box-shadow:0 10px 26px rgba(0,0,0,.16); margin-bottom:12px; }
   .verdict{ font-size:20px; font-weight:800; margin-bottom:4px; }
   .verdict.ok{ color:#2fae6a; } .verdict.no{ color:#e23; }
@@ -178,6 +185,9 @@
 
   #yt{ position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; }
   .foot{ text-align:center; color:var(--muted); font-size:12px; margin-top:18px; }
+  @media (max-width: 768px) {
+  .foot{display:none;}
+}
 </style>
 </head>
 <body>
@@ -200,7 +210,7 @@
       <div class="choice active" data-rounds="5">5</div>
       <div class="choice" data-rounds="10">10</div>
       <div class="choice" data-rounds="15">15</div>
-      <div class="choice" data-rounds="custom">自訂<small>Custom</small></div>
+      <div class="choice" data-rounds="custom">自訂</div>
       <div id="customWrap">
         <input type="number" id="customRounds" min="1" max="30" value="20" />
         <span style="color:var(--muted);font-size:13px">回合（上限 30）<span class="en">Rounds (max 30)</span></span>
@@ -219,7 +229,10 @@
   <div class="card hidden" id="game">
     <div class="topbar">
       <span class="roundtag" id="roundTag">第 1 / 5 回合</span>
-      <span class="badge" id="scopeTag">全部</span>
+      <div class="topbar-actions">
+        <button class="replay topbar-btn" id="backToSetupBtn" type="button"><i class="fas fa-house"></i> 回到開始<span class="en">Back to start</span></button>
+        <span class="badge" id="scopeTag">全部</span>
+      </div>
     </div>
     <div class="bar"><div id="progress"></div></div>
 
@@ -234,15 +247,12 @@
       <div class="timer" id="timer">60</div>
       <div class="guess-row">
         <input type="text" id="guessInput" placeholder="輸入歌名… · Type the song title" autocomplete="off" />
-        <button class="btn small" id="submitGuess">作答 <span class="en">Guess</span></button>
+                <button class="btn small" id="submitGuess">Boo-ya!</button>
       </div>
     </div>
 
     <!-- Multiplayer answering -->
-    <div id="multiArea" class="hidden">
-      <div class="sub" style="margin:0 0 12px">主持人：誰答對了？（不限時）<span class="en-block">Host: who got it right? (no time limit)</span></div>
-      <div class="pbtns" id="pbtns"></div>
-    </div>
+    <div id="multiArea" class="hidden"></div>
 
     <!-- Reveal -->
     <div id="reveal" class="reveal hidden"></div>
@@ -329,8 +339,19 @@
 
   // ---------- 元素捷徑 ----------
   var $=function(id){ return document.getElementById(id); };
-  var setup=$('setup'), game=$('game'), result=$('result');
+  var setup=$('setup'), game=$('game'), result=$('result'), backToSetupBtn=$('backToSetupBtn');
 
+  backToSetupBtn.addEventListener('click', function(){
+    clearInterval(timerInt);
+    stopClip();
+    G=null;
+    $('reveal').classList.add('hidden');
+    $('reveal').innerHTML='';
+    game.classList.add('hidden');
+    result.classList.add('hidden');
+    setup.classList.remove('hidden');
+    window.scrollTo(0,0);
+  });
   // ---------- 設定：題目範圍 ----------
   var scope="all";
   var scopeChoices=$('scopeChoices');
@@ -414,9 +435,10 @@
   });
 
   // ---------- 回合 ----------
-  var timerInt=null, roundStart=0;
+  var timerInt=null, roundStart=0, selectedWinner, multiCommitted=false;
   function startRound(){
     clearInterval(timerInt);
+    selectedWinner=undefined; multiCommitted=false;
     roundStart=Date.now();
     var s=G.songs[G.idx];
     $('roundTag').innerHTML='第 '+(G.idx+1)+' / '+G.rounds+' 回合<span class="en-block">Round '+(G.idx+1)+' / '+G.rounds+'</span>';
@@ -432,7 +454,7 @@
       setTimeout(function(){ gi.focus(); }, 60);
     } else {
       $('soloArea').classList.add('hidden'); $('multiArea').classList.remove('hidden');
-      buildPlayerButtons();
+      buildMultiArea();
     }
     playClip(s.ytId);   // 在使用者手勢（開始／下一回合）內播放，避免被瀏覽器擋掉
   }
@@ -447,18 +469,27 @@
     },1000);
   }
 
+  // 多人：作答區只放「揭露答案」按鈕，主持人聽完前奏後才揭曉
+  function buildMultiArea(){
+    var box=$('multiArea');
+    box.innerHTML='<div class="sub" style="margin:0 0 12px">主持人：聽完前奏後揭露答案<span class="en-block">Host: reveal the answer after the intro</span></div>'+
+      '<button class="btn" id="revealMultiBtn"><i class="fas fa-eye"></i> 揭露答案 <span class="en">Reveal Answer</span></button>';
+    $('revealMultiBtn').addEventListener('click', revealMulti);
+  }
+
+  // 揭曉後才顯示的玩家計分按鈕
   function buildPlayerButtons(){
     var box=$('pbtns'); box.innerHTML='';
     box.className='pbtns'+(G.names.length===1?' solo':'');
     G.names.forEach(function(nm,i){
       var b=document.createElement('div'); b.className='pbtn';
       b.innerHTML='<span class="idx">'+(i+1)+'</span>'+escapeHtml(nm);
-      b.addEventListener('click', function(){ answerMulti(i); });
+      b.addEventListener('click', function(){ selectWinner(i); });
       box.appendChild(b);
     });
     var none=document.createElement('div'); none.className='pbtn none';
-    none.innerHTML='<i class="fas fa-ban"></i> 無人答對 / 跳過 <span class="en">No one / Skip</span>';
-    none.addEventListener('click', function(){ answerMulti(-1); });
+    none.innerHTML='<i class="fas fa-ban"></i> 無人得分 / 跳過 <span class="en">No one / Skip</span>';
+    none.addEventListener('click', function(){ selectWinner(-1); });
     box.appendChild(none);
   }
 
@@ -489,12 +520,19 @@
   $('guessInput').addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('submitGuess').disabled) answerSolo(this.value); });
 
   // ---------- 作答：多人 ----------
-  function answerMulti(winnerIdx){
-    var s=G.songs[G.idx];
-    if(winnerIdx>=0) G.scores[winnerIdx]++;
-    G.results.push({ song:s, winner: winnerIdx>=0 ? G.names[winnerIdx] : null });
-    stopClip();
-    showRevealMulti(winnerIdx);
+  // 主持人選擇得分玩家（尚未計分，按「下一回合」才提交）
+  function selectWinner(idx){
+    if(multiCommitted) return;
+    selectedWinner=idx;
+    var btns=$('pbtns').children;
+    var targetIdx = idx>=0 ? idx : G.names.length;   // 「無人得分」為最後一顆
+    Array.prototype.forEach.call(btns, function(b,i){ b.classList.toggle('sel', i===targetIdx); });
+    var v=$('winnerVerdict');
+    v.className='verdict '+(idx>=0?'ok':'no');
+    v.style.visibility='visible';
+    v.innerHTML = idx>=0 ? ('🏆 '+escapeHtml(G.names[idx])+' 得分！<span class="en">scored a point</span>')
+                         : '本回合無人得分<span class="en">No one scored</span>';
+    $('nextBtn').disabled=false;
   }
 
   // ---------- 揭曉 ----------
@@ -522,18 +560,37 @@
     $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
     bindNext();
   }
-  function showRevealMulti(winnerIdx){
+  // 主持人按下「揭露答案」：顯示答案與計分按鈕，選好玩家後才進到下一回合
+  function revealMulti(){
+    stopClip();
+    $('multiArea').classList.add('hidden');
     disc.classList.add('paused');
-    disc.innerHTML='<i class="fas fa-'+(winnerIdx>=0?'trophy':'music')+'"></i>';
+    disc.innerHTML='<i class="fas fa-music"></i>';
     var s=G.songs[G.idx];
     var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
-      '<div class="verdict '+(winnerIdx>=0?'ok':'no')+'">'+(winnerIdx>=0?('🏆 '+escapeHtml(G.names[winnerIdx])+' 得分！<span class="en">scored a point</span>'):'本回合無人得分<span class="en">No one scored</span>')+'</div>'+
       '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
       '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>'+
+      '<div class="sub" style="margin:16px 0 10px">選擇得分玩家<span class="en-block">Select the scoring player</span></div>'+
+      '<div class="pbtns" id="pbtns"></div>'+
+      '<div id="winnerVerdict" class="verdict" style="visibility:hidden;margin-top:14px">&nbsp;</div>'+
       nextBtnHtml();
     var r=$('reveal'); r.innerHTML=html; r.classList.remove('hidden');
     $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
-    bindNext();
+    buildPlayerButtons();
+    $('nextBtn').disabled=true;
+    bindNextMulti();
+  }
+  // 多人「下一回合」：此時才提交分數，確保每回合只計一次
+  function bindNextMulti(){
+    $('nextBtn').addEventListener('click', function(){
+      if(this.disabled || selectedWinner===undefined || multiCommitted) return;
+      multiCommitted=true;
+      var s=G.songs[G.idx];
+      if(selectedWinner>=0) G.scores[selectedWinner]++;
+      G.results.push({ song:s, winner: selectedWinner>=0 ? G.names[selectedWinner] : null });
+      G.idx++;
+      if(G.idx>=G.rounds){ showResult(); } else { startRound(); }
+    });
   }
 
   $('replayBtn').addEventListener('click', function(){ if(G) playClip(G.songs[G.idx].ytId, REPLAY_MS); });
