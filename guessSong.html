@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>前奏猜歌 Guess the Intro · Red Velvet</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root{
+    --coral:#ff7f50; --pink:#ff9797; --deep:#e0567c; --soft:#ffeaea;
+    --ink:#5a3a44; --muted:#9b7d86;
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:'Noto Sans TC','Noto Sans',Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 18%, #ffd1dc 0%, transparent 42%),
+      radial-gradient(circle at 88% 12%, #ffc48a 0%, transparent 40%),
+      radial-gradient(circle at 78% 88%, #d4a0ff 0%, transparent 45%),
+      linear-gradient(135deg,#fff5f5,#ffeaea);
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .app{ width:100%; max-width:640px; }
+  .card{
+    background:rgba(255,255,255,.82);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.7);
+    border-radius:22px;
+    box-shadow:0 18px 50px rgba(224,86,124,.16);
+    padding:26px 24px;
+  }
+  h1{
+    font-size:26px; text-align:center; letter-spacing:1px;
+    background:linear-gradient(135deg,var(--pink),var(--coral));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .sub{ text-align:center; color:var(--muted); font-size:13px; margin-top:6px; margin-bottom:20px; }
+  /* 雙語：中文為主、英文為輔 */
+  .en{ font-weight:400; color:var(--muted); font-size:.78em; letter-spacing:.3px; }
+  .en-block{ display:block; font-weight:400; color:var(--muted); font-size:11px; letter-spacing:.3px; margin-top:2px; }
+  h1 .en-block{ font-size:13px; margin-top:4px; }
+  .section-title{ font-size:15px; font-weight:700; margin:22px 0 10px; display:flex; align-items:center; gap:8px; }
+  .section-title i{ color:var(--coral); }
+  .section-title:first-of-type{ margin-top:4px; }
+
+  .choices{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .choice{
+    border:2px solid #ffd9de; background:#fff; border-radius:14px;
+    padding:12px 8px; text-align:center; cursor:pointer; font-size:14px; font-weight:600;
+    transition:.15s; color:var(--ink); user-select:none;
+  }
+  .choice small{ display:block; font-weight:400; color:var(--muted); font-size:11px; margin-top:3px; }
+  .choice:hover{ border-color:var(--pink); transform:translateY(-2px); }
+  .choice.active{ border-color:var(--coral); background:linear-gradient(135deg,#fff0f0,#ffe3d6); box-shadow:0 6px 16px rgba(255,127,80,.22); }
+
+  .rounds{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .rounds .choice{ flex:1; min-width:64px; }
+  #customWrap{ display:none; align-items:center; gap:8px; flex-basis:100%; margin-top:4px; }
+  input[type=number],input[type=text]{
+    font-family:inherit; font-size:15px; color:var(--ink);
+    border:2px solid #ffd9de; border-radius:12px; padding:10px 12px; width:100%;
+    background:#fff; outline:none; transition:.15s;
+  }
+  input:focus{ border-color:var(--coral); }
+  #customWrap input{ width:100px; }
+
+  .player-row{ display:flex; gap:8px; margin-bottom:9px; align-items:center; }
+  .player-row .idx{ width:26px; height:26px; flex:0 0 26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--pink),var(--coral)); }
+  .icon-btn{
+    border:none; background:#ffe1e6; color:var(--deep); width:40px; height:40px; flex:0 0 40px;
+    border-radius:12px; cursor:pointer; font-size:15px; transition:.15s;
+  }
+  .icon-btn:hover{ background:#ffd0d8; }
+  .icon-btn.add{ background:#e9fbe9; color:#3a9d5a; }
+  .icon-btn.add:hover{ background:#d6f5d6; }
+
+  .btn{
+    display:block; width:100%; border:none; cursor:pointer;
+    font-family:inherit; font-size:17px; font-weight:700; letter-spacing:1px; color:#fff;
+    background:linear-gradient(135deg,var(--pink),var(--coral));
+    padding:15px; border-radius:16px; margin-top:24px;
+    box-shadow:0 10px 24px rgba(255,127,80,.32); transition:.15s;
+  }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(255,127,80,.4); }
+  .btn:active{ transform:translateY(0); }
+  .btn.ghost{ background:#fff; color:var(--deep); border:2px solid #ffd0d8; box-shadow:none; }
+  .btn.small{ font-size:14px; padding:11px; margin-top:0; }
+
+  .hidden{ display:none !important; }
+
+  /* Game */
+  .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .roundtag{ font-weight:700; color:var(--deep); }
+  .bar{ height:8px; background:#ffe1e6; border-radius:99px; overflow:hidden; margin:10px 0 20px; }
+  .bar > div{ height:100%; background:linear-gradient(90deg,var(--pink),var(--coral)); width:0; transition:.4s; }
+
+  .disc-wrap{ text-align:center; margin:8px 0 20px; }
+  .disc{
+    width:150px; height:150px; border-radius:50%; margin:0 auto;
+    background:
+      repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.06) 0 2px, transparent 2px 5px),
+      conic-gradient(from 0deg,#ffb3c1,#ff7f50,#d4a0ff,#ffb3c1);
+    display:flex; align-items:center; justify-content:center; position:relative;
+    box-shadow:0 12px 30px rgba(224,86,124,.28);
+    animation:spin 9s linear infinite;               /* 平時慢慢轉 */
+    transition:box-shadow .3s;
+  }
+  .disc::after{ content:''; width:44px; height:44px; border-radius:50%; background:#fff; position:absolute;
+    box-shadow:0 0 0 6px rgba(255,255,255,.35), inset 0 0 0 4px rgba(224,86,124,.15); }
+  .disc i{ position:relative; z-index:1; font-size:30px; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.2);
+    animation:counter 9s linear infinite; }          /* 圖示反向轉，維持直立 */
+  .disc.spin{ animation-duration:1.4s; box-shadow:0 12px 34px rgba(255,127,80,.55); }   /* 播放時轉快＋發光 */
+  .disc.spin i{ animation-duration:1.4s; }
+  .disc.paused, .disc.paused i{ animation-play-state:paused; }   /* 揭曉時停住 */
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes counter{ to{ transform:rotate(-360deg); } }
+  .eq{ display:flex; gap:4px; justify-content:center; height:26px; align-items:flex-end; margin-top:14px; }
+  .eq span{ width:5px; background:linear-gradient(var(--pink),var(--coral)); border-radius:3px; height:8px; }
+  .disc-wrap.playing .eq span{ animation:eq .8s ease-in-out infinite; }
+  .disc-wrap.playing .eq span:nth-child(2){ animation-delay:.15s }
+  .disc-wrap.playing .eq span:nth-child(3){ animation-delay:.3s }
+  .disc-wrap.playing .eq span:nth-child(4){ animation-delay:.45s }
+  .disc-wrap.playing .eq span:nth-child(5){ animation-delay:.1s }
+  @keyframes eq{ 0%,100%{ height:8px } 50%{ height:26px } }
+
+  .replay{ display:inline-flex; align-items:center; gap:8px; border:2px solid #ffd0d8; background:#fff;
+    color:var(--deep); font-weight:700; font-size:14px; padding:9px 18px; border-radius:99px; cursor:pointer; transition:.15s; }
+  .replay:hover{ background:#fff0f2; }
+
+  .timer{ text-align:center; font-size:34px; font-weight:800; color:var(--coral); font-variant-numeric:tabular-nums; margin-bottom:6px; }
+  .timer.warn{ color:#e23; animation:pulse .5s infinite; }
+  @keyframes pulse{ 50%{ opacity:.4 } }
+
+  .guess-row{ display:flex; gap:8px; }
+  .guess-row input{ flex:1; }
+  .guess-row .btn{ width:auto; margin-top:0; padding:12px 20px; }
+
+  .pbtns{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+  .pbtns.solo{ grid-template-columns:1fr; }
+  .pbtn{
+    border:2px solid #ffd0d8; background:#fff; border-radius:14px; padding:14px; cursor:pointer;
+    font-size:15px; font-weight:700; color:var(--ink); transition:.15s; display:flex; align-items:center; gap:8px; justify-content:center;
+  }
+  .pbtn:hover{ border-color:var(--coral); background:#fff5f0; transform:translateY(-2px); }
+  .pbtn .idx{ width:24px; height:24px; border-radius:50%; color:#fff; font-size:11px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,var(--pink),var(--coral)); }
+  .pbtn.none{ grid-column:1/-1; border-style:dashed; color:var(--muted); }
+
+  /* Reveal */
+  .reveal{ text-align:center; }
+  .reveal .cover{ width:120px; height:120px; border-radius:16px; object-fit:cover; box-shadow:0 10px 26px rgba(0,0,0,.16); margin-bottom:12px; }
+  .verdict{ font-size:20px; font-weight:800; margin-bottom:4px; }
+  .verdict.ok{ color:#2fae6a; } .verdict.no{ color:#e23; }
+  .song-title{ font-size:19px; font-weight:700; }
+  .song-album{ color:var(--muted); font-size:13px; margin-top:2px; }
+  .yourguess{ font-size:13px; color:var(--muted); margin-top:8px; }
+  .badge{ display:inline-block; font-size:11px; padding:2px 10px; border-radius:99px; background:#ffe1e6; color:var(--deep); }
+
+  /* Results */
+  .rank{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:#fff; margin-bottom:10px; border:2px solid #ffe1e6; }
+  .rank .medal{ font-size:22px; width:34px; text-align:center; }
+  .rank .nm{ flex:1; font-weight:700; }
+  .rank .sc{ font-weight:800; color:var(--coral); font-size:18px; }
+  .rank.top{ background:linear-gradient(135deg,#fff7e6,#fff0f0); border-color:#ffcf8a; }
+  .summary{ text-align:center; font-size:16px; margin-bottom:18px; }
+  .summary b{ color:var(--coral); font-size:22px; }
+  .list-title{ font-weight:700; margin:16px 0 8px; display:flex; align-items:center; gap:7px; }
+  .list-title.ok{ color:#2fae6a } .list-title.no{ color:#e23 }
+  .item{ display:flex; align-items:center; gap:10px; padding:8px 10px; background:#fff; border-radius:11px; margin-bottom:7px; font-size:14px; }
+  .item img{ width:34px; height:34px; border-radius:8px; object-fit:cover; }
+  .item .a{ color:var(--muted); font-size:12px; margin-left:auto; }
+
+  #yt{ position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; }
+  .foot{ text-align:center; color:var(--muted); font-size:12px; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SETUP ============ -->
+  <div class="card" id="setup">
+    <h1>🎧 聽前奏猜歌<span class="en-block">Guess the Song from the Intro</span></h1>
+    <div class="sub">Red Velvet · 聽 1 秒前奏，猜出是哪首歌</div>
+
+    <div class="section-title"><i class="fas fa-layer-group"></i>題目範圍 <span class="en">Song Pool</span></div>
+    <div class="choices" id="scopeChoices">
+      <div class="choice active" data-scope="all">全部<small>All · <span id="cAll">–</span></small></div>
+      <div class="choice" data-scope="bside">收錄曲<small>B-sides · <span id="cBside">–</span></small></div>
+      <div class="choice" data-scope="title">主打歌<small>Title · <span id="cTitle">–</span></small></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-list-ol"></i>回合數 <span class="en">Rounds</span></div>
+    <div class="rounds" id="roundChoices">
+      <div class="choice active" data-rounds="5">5</div>
+      <div class="choice" data-rounds="10">10</div>
+      <div class="choice" data-rounds="15">15</div>
+      <div class="choice" data-rounds="custom">自訂<small>Custom</small></div>
+      <div id="customWrap">
+        <input type="number" id="customRounds" min="1" max="30" value="20" />
+        <span style="color:var(--muted);font-size:13px">回合（上限 30）<span class="en">Rounds (max 30)</span></span>
+      </div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-users"></i>玩家 <span class="en">Players</span></div>
+    <div id="players"></div>
+    <button class="btn ghost small" id="addPlayer" style="margin-top:4px"><i class="fas fa-plus"></i> 新增玩家 <span class="en">Add Player</span></button>
+
+    <button class="btn" id="startBtn"><i class="fas fa-play"></i> Start</button>
+    <div class="foot">單人：60 秒內輸入歌名　·　多人：由主持人選出答對者<span class="en-block">Solo: type the title within 60s　·　Multiplayer: the host picks the winner</span></div>
+  </div>
+
+  <!-- ============ GAME ============ -->
+  <div class="card hidden" id="game">
+    <div class="topbar">
+      <span class="roundtag" id="roundTag">第 1 / 5 回合</span>
+      <span class="badge" id="scopeTag">全部</span>
+    </div>
+    <div class="bar"><div id="progress"></div></div>
+
+    <div class="disc-wrap" id="discWrap">
+      <div class="disc" id="disc"><i class="fas fa-music"></i></div>
+      <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+      <div style="margin-top:16px"><button class="replay" id="replayBtn"><i class="fas fa-rotate-right"></i> 再聽一次（3 秒）<span class="en">Replay 3s</span></button></div>
+    </div>
+
+    <!-- Solo answering -->
+    <div id="soloArea">
+      <div class="timer" id="timer">60</div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="輸入歌名… · Type the song title" autocomplete="off" />
+        <button class="btn small" id="submitGuess">作答 <span class="en">Guess</span></button>
+      </div>
+    </div>
+
+    <!-- Multiplayer answering -->
+    <div id="multiArea" class="hidden">
+      <div class="sub" style="margin:0 0 12px">主持人：誰答對了？（不限時）<span class="en-block">Host: who got it right? (no time limit)</span></div>
+      <div class="pbtns" id="pbtns"></div>
+    </div>
+
+    <!-- Reveal -->
+    <div id="reveal" class="reveal hidden"></div>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div class="card hidden" id="result"></div>
+
+</div>
+
+<div id="yt"></div>
+<script src="data.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+(function(){
+  "use strict";
+  var CLIP_MS = 1000;      // 首次前奏播放長度（毫秒）
+  var REPLAY_MS = 3000;    // 「再聽一次」播放長度（毫秒）
+  var SOLO_SEC = 60;       // 單人作答秒數
+  var COVER_PREFIX = "";
+
+  // ---------- 載入資料 ----------
+  var ALL = [];
+  function loadData(){
+    if(!window.APP_DATA || !window.APP_DATA.songs){ alert("無法載入歌曲資料 (data.js)\nFailed to load song data (data.js)"); return; }
+    var d = window.APP_DATA.songs;
+    var albums = {};
+    (d.albums||[]).forEach(function(a){ albums[a.id] = a; });
+    ALL = (d.songs||[]).filter(function(s){ return s.ytId; }).map(function(s){
+      var al = albums[s.albumId];
+      return {
+        title: s.title,
+        ytId: s.ytId,
+        isTitle: !!s.isTitleSong,
+        albumName: al ? al.name : (s.isOST ? "OST・其他 / Others" : "單曲・其他 / Others"),
+        cover: al && al.cover ? COVER_PREFIX + al.cover : COVER_PREFIX + "covers/default.png"
+      };
+    });
+  }
+
+  function poolFor(scope){
+    if(scope==="title") return ALL.filter(function(s){ return s.isTitle; });
+    if(scope==="bside") return ALL.filter(function(s){ return !s.isTitle; });
+    return ALL.slice();
+  }
+
+  // ---------- YouTube 播放器 ----------
+  var player=null, ready=false, pauseTimer=null, pending=null, curClipMs=CLIP_MS;
+  window.onYouTubeIframeAPIReady = function(){
+    player = new YT.Player('yt',{
+      height:'1', width:'1',
+      playerVars:{autoplay:0,controls:0,rel:0,modestbranding:1,iv_load_policy:3,disablekb:1,fs:0},
+      events:{
+        onReady:function(){ ready=true; if(pending){ var p=pending; pending=null; playClip(p.id, p.ms); } },
+        onStateChange:onState
+      }
+    });
+  };
+  function onState(e){
+    if(e.data===YT.PlayerState.PLAYING){
+      clearTimeout(pauseTimer);
+      pauseTimer=setTimeout(function(){ try{ player.pauseVideo(); }catch(_){} }, curClipMs);
+      setPlaying(true);
+    } else if(e.data===YT.PlayerState.PAUSED || e.data===YT.PlayerState.ENDED){
+      setPlaying(false);
+    }
+  }
+  function playClip(ytId, ms){
+    curClipMs = ms || CLIP_MS;
+    if(!ready){ pending={id:ytId, ms:curClipMs}; return; }
+    clearTimeout(pauseTimer);
+    try{
+      player.loadVideoById({videoId:ytId, startSeconds:0});
+      player.unMute(); player.setVolume(100);
+    }catch(_){}
+  }
+  function stopClip(){ clearTimeout(pauseTimer); try{ player.stopVideo(); }catch(_){} setPlaying(false); }
+
+  var discWrap=document.getElementById('discWrap'), disc=document.getElementById('disc');
+  function setPlaying(on){
+    discWrap.classList.toggle('playing', on);
+    disc.classList.toggle('spin', on);
+  }
+
+  // ---------- 元素捷徑 ----------
+  var $=function(id){ return document.getElementById(id); };
+  var setup=$('setup'), game=$('game'), result=$('result');
+
+  // ---------- 設定：題目範圍 ----------
+  var scope="all";
+  var scopeChoices=$('scopeChoices');
+  scopeChoices.addEventListener('click', function(e){
+    var el=e.target.closest('.choice'); if(!el) return;
+    scope=el.dataset.scope;
+    Array.prototype.forEach.call(scopeChoices.children, function(c){ c.classList.toggle('active', c===el); });
+  });
+
+  // ---------- 設定：回合數 ----------
+  var roundsSel=5;
+  var roundChoices=$('roundChoices'), customWrap=$('customWrap'), customRounds=$('customRounds');
+  roundChoices.addEventListener('click', function(e){
+    var el=e.target.closest('.choice'); if(!el) return;
+    Array.prototype.forEach.call(roundChoices.querySelectorAll('.choice'), function(c){ c.classList.toggle('active', c===el); });
+    if(el.dataset.rounds==="custom"){ customWrap.style.display='flex'; roundsSel="custom"; }
+    else { customWrap.style.display='none'; roundsSel=parseInt(el.dataset.rounds,10); }
+  });
+  customRounds.addEventListener('input', function(){
+    var v=parseInt(customRounds.value,10);
+    if(isNaN(v)||v<1) v=1; if(v>30) v=30;
+    customRounds.value=v;
+  });
+
+  // ---------- 設定：玩家 ----------
+  var playersBox=$('players');
+  function playerRow(i){
+    var row=document.createElement('div'); row.className='player-row';
+    row.innerHTML='<span class="idx">'+(i+1)+'</span>'+
+      '<input type="text" class="pname" placeholder="玩家 '+(i+1)+' · Player '+(i+1)+'" maxlength="16" />'+
+      '<button class="icon-btn del" title="移除"><i class="fas fa-xmark"></i></button>';
+    row.querySelector('.del').addEventListener('click', function(){
+      if(playersBox.children.length<=1) return;
+      row.remove(); renumber();
+    });
+    return row;
+  }
+  function renumber(){
+    Array.prototype.forEach.call(playersBox.children, function(r,i){
+      r.querySelector('.idx').textContent=i+1;
+      r.querySelector('.pname').placeholder='玩家 '+(i+1);
+    });
+  }
+  playersBox.appendChild(playerRow(0));
+  $('addPlayer').addEventListener('click', function(){
+    if(playersBox.children.length>=8){ alert('最多 8 位玩家 · Up to 8 players'); return; }
+    playersBox.appendChild(playerRow(playersBox.children.length));
+  });
+
+  // ---------- 遊戲狀態 ----------
+  var G=null;
+  function scopeLabel(s){ return s==="title"?"只有主打歌":s==="bside"?"只有收錄曲":"全部"; }
+  function scopeEn(s){ return s==="title"?"Title tracks":s==="bside"?"B-sides":"All songs"; }
+
+  $('startBtn').addEventListener('click', function(){
+    var pool=poolFor(scope);
+    if(pool.length===0){ alert('這個範圍沒有可播放的歌曲\nNo playable songs in this pool'); return; }
+
+    var rounds = roundsSel==="custom" ? Math.min(30, Math.max(1, parseInt(customRounds.value,10)||1)) : roundsSel;
+    var capped=false;
+    if(rounds>pool.length){ rounds=pool.length; capped=true; }
+
+    var names=[];
+    Array.prototype.forEach.call(playersBox.querySelectorAll('.pname'), function(inp,i){
+      names.push((inp.value||'').trim() || ('玩家 '+(i+1)));
+    });
+
+    // 隨機挑出不重複的題目
+    var shuffled=pool.slice();
+    for(var i=shuffled.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=shuffled[i]; shuffled[i]=shuffled[j]; shuffled[j]=t; }
+    var songs=shuffled.slice(0,rounds);
+
+    G={ songs:songs, rounds:rounds, idx:0, solo:names.length===1, names:names,
+        scores:names.map(function(){return 0;}), results:[] };
+
+    if(capped) alert('此範圍僅有 '+pool.length+' 首可播放歌曲，已將回合數調整為 '+pool.length+' 回合。\nOnly '+pool.length+' playable songs in this pool; rounds set to '+pool.length+'.');
+
+    $('scopeTag').innerHTML=scopeLabel(scope)+' <span class="en">'+scopeEn(scope)+'</span>';
+    setup.classList.add('hidden'); result.classList.add('hidden'); game.classList.remove('hidden');
+    startRound();
+  });
+
+  // ---------- 回合 ----------
+  var timerInt=null;
+  function startRound(){
+    clearInterval(timerInt);
+    var s=G.songs[G.idx];
+    $('roundTag').innerHTML='第 '+(G.idx+1)+' / '+G.rounds+' 回合<span class="en-block">Round '+(G.idx+1)+' / '+G.rounds+'</span>';
+    $('progress').style.width=((G.idx)/G.rounds*100)+'%';
+    $('reveal').classList.add('hidden'); $('reveal').innerHTML='';
+    disc.classList.remove('paused');
+    disc.innerHTML='<i class="fas fa-music"></i>';
+
+    if(G.solo){
+      $('soloArea').classList.remove('hidden'); $('multiArea').classList.add('hidden');
+      var gi=$('guessInput'); gi.value=''; gi.disabled=false; $('submitGuess').disabled=false;
+      startTimer();
+      setTimeout(function(){ gi.focus(); }, 60);
+    } else {
+      $('soloArea').classList.add('hidden'); $('multiArea').classList.remove('hidden');
+      buildPlayerButtons();
+    }
+    playClip(s.ytId);   // 在使用者手勢（開始／下一回合）內播放，避免被瀏覽器擋掉
+  }
+
+  function startTimer(){
+    var left=SOLO_SEC, t=$('timer');
+    t.textContent=left; t.classList.remove('warn');
+    timerInt=setInterval(function(){
+      left--; t.textContent=left;
+      if(left<=10) t.classList.add('warn');
+      if(left<=0){ clearInterval(timerInt); answerSolo(null); }
+    },1000);
+  }
+
+  function buildPlayerButtons(){
+    var box=$('pbtns'); box.innerHTML='';
+    box.className='pbtns'+(G.names.length===1?' solo':'');
+    G.names.forEach(function(nm,i){
+      var b=document.createElement('div'); b.className='pbtn';
+      b.innerHTML='<span class="idx">'+(i+1)+'</span>'+escapeHtml(nm);
+      b.addEventListener('click', function(){ answerMulti(i); });
+      box.appendChild(b);
+    });
+    var none=document.createElement('div'); none.className='pbtn none';
+    none.innerHTML='<i class="fas fa-ban"></i> 無人答對 / 跳過 <span class="en">No one / Skip</span>';
+    none.addEventListener('click', function(){ answerMulti(-1); });
+    box.appendChild(none);
+  }
+
+  // ---------- 作答：單人 ----------
+  function norm(s){
+    return (s||'').toLowerCase()
+      .replace(/\([^)]*\)/g,'').replace(/（[^）]*）/g,'')   // 去除括號內副標
+      .replace(/[\s.,!?'"“”‘’\-_~&()（）\[\]]/g,'');
+  }
+  function isCorrect(guess, answer){
+    var g=norm(guess), a=norm(answer);
+    if(g.length<2) return false;
+    return g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1;
+  }
+  function answerSolo(guessOrNull){
+    clearInterval(timerInt);
+    var gi=$('guessInput'); gi.disabled=true; $('submitGuess').disabled=true;
+    var s=G.songs[G.idx];
+    var guess = guessOrNull===null ? '' : guessOrNull;
+    var ok = guessOrNull!==null && isCorrect(guess, s.title);
+    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null });
+    if(ok) G.scores[0]++;
+    stopClip();
+    showReveal(ok, guess, guessOrNull===null);
+  }
+  $('submitGuess').addEventListener('click', function(){ if(!$('submitGuess').disabled) answerSolo($('guessInput').value); });
+  $('guessInput').addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('submitGuess').disabled) answerSolo(this.value); });
+
+  // ---------- 作答：多人 ----------
+  function answerMulti(winnerIdx){
+    var s=G.songs[G.idx];
+    if(winnerIdx>=0) G.scores[winnerIdx]++;
+    G.results.push({ song:s, winner: winnerIdx>=0 ? G.names[winnerIdx] : null });
+    stopClip();
+    showRevealMulti(winnerIdx);
+  }
+
+  // ---------- 揭曉 ----------
+  function nextBtnHtml(){
+    var last=G.idx>=G.rounds-1;
+    return '<button class="btn" id="nextBtn">'+(last?'<i class="fas fa-flag-checkered"></i> 查看結果 <span class="en">See Results</span>':'<i class="fas fa-forward"></i> 下一回合 <span class="en">Next Round</span>')+'</button>';
+  }
+  function bindNext(){
+    $('nextBtn').addEventListener('click', function(){
+      G.idx++;
+      if(G.idx>=G.rounds){ showResult(); } else { startRound(); }
+    });
+  }
+  function showReveal(ok, guess, timeout){
+    disc.classList.add('paused');
+    disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
+    var s=G.songs[G.idx];
+    var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'答對了！ 🎉<span class="en">Correct!</span>':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'答錯了<span class="en">Wrong</span>'))+'</div>'+
+      '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
+      '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>';
+    if(!ok && guess) html+='<div class="yourguess">你的答案 Your answer：'+escapeHtml(guess)+'</div>';
+    html+=nextBtnHtml();
+    var r=$('reveal'); r.innerHTML=html; r.classList.remove('hidden');
+    $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
+    bindNext();
+  }
+  function showRevealMulti(winnerIdx){
+    disc.classList.add('paused');
+    disc.innerHTML='<i class="fas fa-'+(winnerIdx>=0?'trophy':'music')+'"></i>';
+    var s=G.songs[G.idx];
+    var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+      '<div class="verdict '+(winnerIdx>=0?'ok':'no')+'">'+(winnerIdx>=0?('🏆 '+escapeHtml(G.names[winnerIdx])+' 得分！<span class="en">scored a point</span>'):'本回合無人得分<span class="en">No one scored</span>')+'</div>'+
+      '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
+      '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>'+
+      nextBtnHtml();
+    var r=$('reveal'); r.innerHTML=html; r.classList.remove('hidden');
+    $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
+    bindNext();
+  }
+
+  $('replayBtn').addEventListener('click', function(){ if(G) playClip(G.songs[G.idx].ytId, REPLAY_MS); });
+
+  // ---------- 結果 ----------
+  function showResult(){
+    stopClip(); clearInterval(timerInt);
+    game.classList.add('hidden'); result.classList.remove('hidden');
+    result.innerHTML = G.solo ? soloResultHtml() : multiResultHtml();
+    result.querySelector('#againBtn').addEventListener('click', function(){
+      result.classList.add('hidden'); setup.classList.remove('hidden');
+    });
+    window.scrollTo(0,0);
+  }
+
+  function multiResultHtml(){
+    var order=G.names.map(function(nm,i){ return {nm:nm, sc:G.scores[i]}; })
+      .sort(function(a,b){ return b.sc-a.sc; });
+    var medals=['🥇','🥈','🥉'];
+    var rows=order.map(function(p,i){
+      var top = i===0 && p.sc>0;
+      return '<div class="rank'+(top?' top':'')+'">'+
+        '<span class="medal">'+(medals[i]||(i+1))+'</span>'+
+        '<span class="nm">'+escapeHtml(p.nm)+'</span>'+
+        '<span class="sc">'+p.sc+' <span class="en">分/pts</span></span></div>';
+    }).join('');
+    return '<h1>🏆 比賽結果<span class="en-block">Final Results</span></h1>'+
+      '<div class="sub">共 '+G.rounds+' 回合 · '+scopeLabel(scope)+'<br><span class="en">'+G.rounds+' rounds · '+scopeEn(scope)+'</span></div>'+
+      rows+'<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+  }
+
+  function soloResultHtml(){
+    var right=G.results.filter(function(r){ return r.correct; });
+    var wrong=G.results.filter(function(r){ return !r.correct; });
+    function item(r){
+      var g = r.correct ? '' : (r.timeout?'<span class="a">未作答 No answer</span>':'<span class="a">答 / your answer：'+escapeHtml(r.guess||'—')+'</span>');
+      return '<div class="item"><img src="'+r.song.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+        '<span>'+escapeHtml(r.song.title)+'</span>'+g+'</div>';
+    }
+    var html='<h1>🎵 遊戲結束<span class="en-block">Game Over</span></h1>'+
+      '<div class="sub">'+scopeLabel(scope)+' · <span class="en">'+scopeEn(scope)+'</span></div>'+
+      '<div class="summary">答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
+    html+='<div class="list-title ok"><i class="fas fa-circle-check"></i> 答對的歌 <span class="en">Correct</span> ('+right.length+')</div>';
+    html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
+    html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
+    html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
+    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+    return html;
+  }
+
+  // ---------- 工具 ----------
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  // ---------- 初始化 ----------
+  loadData();
+  $('cAll').textContent=poolFor('all').length+' 首';
+  $('cBside').textContent=poolFor('bside').length+' 首';
+  $('cTitle').textContent=poolFor('title').length+' 首';
+})();
+</script>
+</body>
+</html>
