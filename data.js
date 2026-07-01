@@ -854,11 +854,67 @@ window.APP_DATA = {
         },
         {
             "id": 3,
+            "title": "Milkshake",
+            "albumId": "TheReVeFestivalDay1",
+            "audio": "",
+            "ytId": "cdwxYqWFB1U",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Parade(안녕，여름)",
+            "albumId": "TheReVeFestivalDay1",
+            "audio": "",
+            "ytId": "yX9n_CkgHNQ",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "LP",
+            "albumId": "TheReVeFestivalDay1",
+            "audio": "",
+            "ytId": "rRMgZP9i73g",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
             "title": "Umpah Umpah",
             "albumId": "TheReVeFestivalDay2",
             "audio": "",
             "ytId": "e0psQMmlzW0",
             "isTitleSong": true
+        },
+        {
+            "id": 3,
+            "title": "Carpool(카풀)",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "iOjv6c-PMxg",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Love Is The Way",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "AKOABJBRafw",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Jumpin'",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "zjl19ebzNss",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "눈 맞추고, 손 맞대고(Eyes Locked, Hands Locked)",
+            "albumId": "TheReVeFestivalDay2",
+            "audio": "",
+            "ytId": "Wn9MFo6tzJc",
+            "isTitleSong": false
         },
         {
             "id": 3,
@@ -918,14 +974,6 @@ window.APP_DATA = {
         },
         {
             "id": 3,
-            "title": "'Cause it’s you",
-            "albumId": "Bloom",
-            "audio": "",
-            "ytId": "WgC22S_hxXo",
-            "isTitleSong": false
-        },
-        {
-            "id": 3,
             "title": "Color of Love",
             "albumId": "Bloom",
             "audio": "",
@@ -950,10 +998,34 @@ window.APP_DATA = {
         },
         {
             "id": 3,
+            "title": "Remember Forever",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "RooElzQqgNo",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "In & Out",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "fh0yHa1Waxk",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
             "title": "Bing Bing",
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
             "ytId": "BQouHXkPLFw",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "La Rouge",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "mmHKMfqydiA",
             "isTitleSong": false
         },
         {
@@ -1125,6 +1197,9 @@ window.APP_DATA = {
     "Sunny Side Up!":               { "tempo": "mid", "vibe": ["sophisticated","rnb"],           "side": "Velvet", "album": "The ReVe Festival Day 1" },
     "Umpah Umpah":                  { "tempo": "fast", "vibe": ["bright","energetic"],            "side": "Red",    "album": "The ReVe Festival Day 2" },
     "Psycho":                       { "tempo": "mid",  "vibe": ["dark","sophisticated"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "Remember Forever":             { "tempo": "slow",  "vibe": ["emotional","retro"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "In & Out":                     { "tempo": "mid",  "vibe": ["quirky","rnb"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "La Rouge":                     { "tempo": "mid",  "vibe": ["sophisticated","rnb"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
     "Queendom":                     { "tempo": "fast",  "vibe": ["emotional","energetic"],         "side": "Red",   "album": "Queendom" },
     "Feel My Rhythm":               { "tempo": "mid",  "vibe": ["emotional","dreamy"],            "side": "Both",   "album": "The ReVe Festival 2022 - Feel My Rhythm" },
     "Birthday":                     { "tempo": "fast", "vibe": ["energetic","quirky"],            "side": "Both",   "album": "The ReVe Festival 2022 - Birthday" },
@@ -1188,7 +1263,7 @@ window.APP_DATA = {
     "ZOOM":                         { "tempo": "mid", "vibe": ["cool","sophisticated"],               "side": "Velvet",    "album": "The ReVe Festival 2022 - Birthday" },
     "Celebrate":                    { "tempo": "slow", "vibe": ["emotional","rnb"],            "side": "Velvet",    "album": "The ReVe Festival 2022 - Birthday" },
     "Bing Bing":                    { "tempo": "fast", "vibe": ["energetic","quirky"],            "side": "Red",    "album": "The ReVe Festival: Finale" },
-    "Knock Knock (Who's There?)":   { "tempo": "fast",  "vibe": ["quirky","dark"],                "side": "Velvet",   "album": "Chill Kill" },
+    "Knock Knock (Who’s There?)":   { "tempo": "fast",  "vibe": ["quirky","dark"],                "side": "Velvet",   "album": "Chill Kill" },
     "Underwater":                   { "tempo": "slow", "vibe": ["sophisticated","emotional"],            "side": "Velvet", "album": "Chill Kill" },
     "Will I Ever See You Again?":   { "tempo": "fast",  "vibe": ["emotional","dreamy"],            "side": "Velvet", "album": "Chill Kill" },
     "Nightmare":                    { "tempo": "mid",  "vibe": ["dark","energetic"],              "side": "Both",   "album": "Chill Kill" },
@@ -1217,7 +1292,16 @@ window.APP_DATA = {
     "Knock On Wood":                { "tempo": "mid", "vibe": ["bright"], "side": "Velvet", "album": "Queendom" },
     "Pushin' N Pullin'":            { "tempo": "mid", "vibe": ["cool","rnb"], "side": "Velvet", "album": "Queendom" },
     "Hello, Sunset（다시, 여름）":    { "tempo": "slow", "vibe": ["retro","rnb"], "side": "Velvet", "album": "Queendom" },
-    "Better Be":                    { "tempo": "fast", "vibe": [], "side": "Velvet", "album": "Queendom" }
+    "Better Be":                    { "tempo": "fast", "vibe": [], "side": "Velvet", "album": "Queendom" },
+    "어떤 별보다":                    { "tempo": "", "vibe": [], "side": "", "album": "" },
+    "미래":                          { "tempo": "", "vibe": [], "side": "", "album": "" },
+    "Milkshake":                    { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 1" },
+    "Parade(안녕，여름)":             { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 1" },
+    "LP":                           { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 1" },
+    "Carpool(카풀)":                 { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 2" },
+    "Love Is The Way":              { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 2" },
+    "Jumpin'":                      { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 2" },
+    "눈 맞추고, 손 맞대고(Eyes Locked, Hands Locked)": { "tempo": "", "vibe": [], "side": "", "album": "The ReVe Festival Day 2" }
 },
   feedback: {
     "messages": [
