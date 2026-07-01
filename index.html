@@ -1,246 +1,500 @@
-﻿<!doctype html>
-<html lang="zh-TW">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>My Red Velvet Picks</title>
-        <meta
-            name="description"
-            content="「Red Velvet的每一首歌我都喜歡！我排不出第一名！」你是真的沒有答案嗎？也許你只是沒有認真試過！本工具透過兩兩比較排序，決定出你最愛的歌曲。An interactive tool that ranks your favorite Red Velvet songs using pairwise comparisons." />
-        <link rel="stylesheet" href="style.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-        <link rel="icon" type="image/x-icon" href="favicon.ico" />
-        <script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1914398977384746"
-            crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-        <script src="https://www.youtube.com/iframe_api"></script>
-        <script src="config.js"></script>
-        <!-- Embedded song data so the app also works when opening index.html directly (file://). -->
-        <script src="data.js"></script>
-    </head>
-    <body>
-        <!-- Organic gradient blobs background (mouse-interactive) -->
-        <div id="bg-orbs" aria-hidden="true">
-            <div class="orb orb-a"></div>
-            <div class="orb orb-b"></div>
-            <div class="orb orb-c"></div>
-            <div class="orb orb-cursor"></div>
-        </div>
-
-        <!-- YouTube URL management modal -->
-        <div id="url-manage-overlay" class="hidden">
-            <div class="url-manage-card">
-                <div class="url-manage-header">
-                    <h3>🎬 YouTube 試聽管理</h3>
-                    <button class="url-manage-close" onclick="closeUrlManage()">&#x2715;</button>
-                </div>
-                <p class="url-manage-desc">
-                    為歌曲貼上 YouTube 網址即可加入試聽。支援 youtube.com/watch?v=... 與 youtu.be/... 格式。
-                    <br />
-                    設定後儲存在瀏覽器本機，不消耗任何 API 額度。
-                </p>
-                <div id="url-song-list"></div>
-                <button class="url-manage-btn" onclick="closeUrlManage()">完成</button>
-            </div>
-        </div>
-
-        <header class="site-header">
-            <div class="header-spacer"></div>
-            <h1 onclick="goToStart()">
-                Ranking My Top 15
-                <span>Red Velvet</span>
-                Songs
-            </h1>
-            <div class="header-right">
-                <a href="privacy.html" class="privacy-btn">隱私權政策 | Privacy</a>
-            </div>
-        </header>
-
-        <section id="start-screen" class="about-section">
-            <div class="about-card">
-                <h2>
-                    Are you ready for this?
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
-                </h2>
-                <div id="continue-area" class="hidden">
-                    <button class="continue-btn" onclick="continueComparison()">
-                        <i class="fas fa-play"></i>
-                        繼續上次的比較 | Resume Comparison
-                    </button>
-                    <p id="continue-hint" class="continue-hint"></p>
-                    <p class="continue-divider">── 或重新開始 | Start Over ──</p>
-                </div>
-                <div class="nickname-area">
-                    <input
-                        type="text"
-                        id="nickname-input"
-                        class="nickname-input"
-                        maxlength="20"
-                        placeholder="暱稱 Nickname（選填 / optional）"
-                        oninput="saveNickname(this.value)" />
-                </div>
-                <div class="mode-selector">
-                    <label class="mode-option">
-                        <input type="radio" name="song-mode" value="all" onchange="setSongMode('all')" />
-                        <span>全部歌曲 All songs</span>
-                    </label>
-                    <label class="mode-option">
-                        <input type="radio" name="song-mode" value="title" onchange="setSongMode('title')" />
-                        <span>只比主打歌 Title songs</span>
-                    </label>
-                    <label class="mode-option">
-                        <input type="radio" name="song-mode" value="bside" onchange="setSongMode('bside')" />
-                        <span>只比收錄曲 B-side songs</span>
-                    </label>
-                </div>
-                <p id="mode-hint" class="mode-hint"></p>
-                <div>
-                    <button class="start-btn" onclick="beginComparison()">ZIMZALABIM！！！！！</button>
-                </div>
-            </div>
-        </section>
-        <!-- <div class="start-screen">
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="前奏猜歌遊戲，挑戰你的音樂記憶力！聽 Red Velvet隨機歌曲的前奏，猜出是哪首歌，你能不能贏過朴秀英？！" />
         
-        <div class="start-card">
-            
-        </div>
-    </div> -->
-        <div id="ranking-view" class="ranking">
-            <div
-                style="display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center">
-                <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                    <button class="restart-btn" onclick="restart()">再一次</button>
-                    <button class="restart-btn export-btn" id="export-btn" onclick="exportImage()">
-                        <i class="fas fa-download"></i>
-                        儲存 | Save Results
-                    </button>
-                    <button class="restart-btn yt-playlist-btn" id="yt-playlist-btn" onclick="openYouTubePlaylist()">
-                        <i class="fab fa-youtube"></i>
-                        YouTube Playlist
-                    </button>
-                </div>
-                <h2>結果 | Results</h2>
-            </div>
-            <div class="ranking-container">
-                <ol id="ranking-list"></ol>
-                <div id="analysis-container"></div>
-            </div>
-        </div>
-        <div id="comparison-view">
-            <div class="progress-container">
-                <div>
-                    <div></div>
-                    <div class="progress-text" id="progress-text">1 / 6</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="song-card" id="song1" onclick="selectSong(0)">
-                    <div class="cover-box">
-                        <div class="load-wrapp">
-                            <div class="load-1">
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
-                        </div>
-                        <img id="cover1" src="" alt="Cover" onerror="this.src = 'covers/default.png'" />
-                    </div>
+<title>前奏猜歌 Guess the Intro · Red Velvet</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="guessStyle.css" />
+</head>
+<body>
+<div class="app">
 
-                    <h3 id="title1"></h3>
-                    <button class="play-btn" id="play1" onclick="togglePlay(0, event)">Play</button>
-                    <audio id="audio1" preload="none"></audio>
-                </div>
-                <div class="song-card" id="song2" onclick="selectSong(1)">
-                    <div class="cover-box">
-                        <div class="load-wrapp">
-                            <div class="load-1">
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
-                        </div>
+  <!-- ============ SETUP ============ -->
+  <div class="card" id="setup">
+    <h1>🎧 聽前奏猜歌<span class="en-block">Guess the Song from the Intro</span></h1>
+    <div class="sub">Red Velvet · 聽 1 秒前奏，猜出是哪首歌</div>
 
-                        <img id="cover2" src="" alt="Cover" onerror="this.src = 'covers/default.png'" />
-                    </div>
-                    <h3 id="title2"></h3>
-                    <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
-                    <audio id="audio2" preload="none"></audio>
-                </div>
-            </div>
-            <div id="feedback-msg"></div>
-            <div class="undo-area">
-                <button id="undo-btn" class="undo-btn" onclick="undoLastChoice()" style="display: none">
-                    <i class="fas fa-rotate-left"></i>
-                    回上一選擇 | Choose Again
-                </button>
-            </div>
-        </div>
+    <div class="section-title"><i class="fas fa-layer-group"></i>題目範圍 <span class="en">Song Pool</span></div>
+    <div class="choices" id="scopeChoices">
+      <div class="choice active" data-scope="all">全部<small>All · <span id="cAll">–</span></small></div>
+      <div class="choice" data-scope="bside">收錄曲<small>B-sides · <span id="cBside">–</span></small></div>
+      <div class="choice" data-scope="title">主打歌<small>Title · <span id="cTitle">–</span></small></div>
+    </div>
 
-        <!-- Off-screen YouTube players (rendered but not visible) -->
-        <div
-            id="yt-container"
-            style="position: fixed; left: -9999px; top: 0; width: 320px; height: 180px; pointer-events: none">
-            <div id="ytPlayer0"></div>
-            <div id="ytPlayer1"></div>
-        </div>
+    <div class="section-title"><i class="fas fa-list-ol"></i>回合數 <span class="en">Rounds</span></div>
+    <div class="rounds" id="roundChoices">
+      <div class="choice active" data-rounds="5">5</div>
+      <div class="choice" data-rounds="10">10</div>
+      <div class="choice" data-rounds="15">15</div>
+      <div class="choice" data-rounds="custom">自訂</div>
+      <div id="customWrap">
+        <input type="number" id="customRounds" min="1" max="30" value="20" />
+        <span style="color:var(--muted);font-size:13px">回合（上限 30）<span class="en">Rounds (max 30)</span></span>
+      </div>
+    </div>
 
-        <!-- Settings button to manage YouTube URLs -->
-        <button style="display: none" class="settings-btn" onclick="openUrlManage()" title="管理 YouTube 試聽網址">
-            <i class="fas fa-cog"></i>
-        </button>
+    <div class="section-title"><i class="fas fa-users"></i>玩家 <span class="en">Players</span></div>
+    <div id="players"></div>
+    <button class="btn ghost small" id="addPlayer" style="margin-top:4px"><i class="fas fa-plus"></i> 新增玩家 <span class="en">Add Player</span></button>
 
-        <div class="album-marquee-clip">
-            <div class="album-marquee">
-                <div id="marquee-track" class="marquee-track"></div>
-            </div>
-        </div>
+    <button class="btn" id="startBtn"><i class="fas fa-play"></i> Start</button>
+    <div class="foot">單人：60 秒內輸入歌名　·　多人：由主持人選出答對者<span class="en-block">Solo: type the title within 60s　·　Multiplayer: the host picks the winner</span></div>
+  </div>
 
-        <script src="script.js"></script>
-        <script>
-            // 讓其中一顆漸層色塊平滑跟隨滑鼠（lerp 緩動）
-            (function () {
-                const orbs = document.getElementById("bg-orbs");
-                if (!orbs) return;
-                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  <!-- ============ GAME ============ -->
+  <div class="card hidden" id="game">
+    <div class="topbar">
+      <span class="roundtag" id="roundTag"> 1 / 5 </span>
+      <div class="topbar-actions">
+        <button class="replay topbar-btn" id="backToSetupBtn" type="button"><i class="fas fa-house"></i> 回到開始<span class="en">Back to start</span></button>
+        <span class="badge" id="scopeTag">全部</span>
+      </div>
+    </div>
+    <div class="bar"><div id="progress"></div></div>
 
-                let tx = window.innerWidth / 2,
-                    ty = window.innerHeight / 2;
-                let cx = tx,
-                    cy = ty;
+    <div class="disc-wrap" id="discWrap">
+      <div class="disc" id="disc"><i class="fas fa-music"></i></div>
+      <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+      <div style="margin-top:16px"><button class="replay" id="replayBtn"><i class="fas fa-rotate-right"></i> 再聽一次（3 秒）<span class="en">Replay 3s</span></button></div>
+    </div>
 
-                const onMove = (x, y) => {
-                    tx = x;
-                    ty = y;
-                };
-                window.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY), { passive: true });
-                window.addEventListener(
-                    "touchmove",
-                    (e) => {
-                        if (e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
-                    },
-                    { passive: true }
-                );
+    <!-- Solo answering -->
+    <div id="soloArea">
+      <div class="timer" id="timer">60</div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="輸入歌名… · Type the song title" autocomplete="off" />
+                <button class="btn small" id="submitGuess">Boo-ya!</button>
+      </div>
+    </div>
 
-                function tick() {
-                    cx += (tx - cx) * 0.07;
-                    cy += (ty - cy) * 0.07;
-                    orbs.style.setProperty("--mx", cx + "px");
-                    orbs.style.setProperty("--my", cy + "px");
-                    requestAnimationFrame(tick);
-                }
-                orbs.style.setProperty("--mx", cx + "px");
-                orbs.style.setProperty("--my", cy + "px");
-                tick();
-            })();
-        </script>
-    </body>
+    <!-- Multiplayer answering -->
+    <div id="multiArea" class="hidden"></div>
+
+    <!-- Reveal -->
+    <div id="reveal" class="reveal hidden"></div>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div class="card hidden" id="result"></div>
+
+</div>
+
+<div id="yt"></div>
+<script src="data.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+(function(){
+  "use strict";
+  var CLIP_MS = 1000;      // 首次前奏播放長度（毫秒）
+  var REPLAY_MS = 3000;    // 「再聽一次」播放長度（毫秒）
+  var REPLAY_LONG_MS = 4000; // 第 3 次（含）之後的「再聽一次」播放長度（毫秒）
+  var REPLAY_LONG_AT = 3;    // 第幾次起改放較長片段
+  var SOLO_SEC = 60;       // 單人作答秒數
+  var COVER_PREFIX = "";
+
+  // ---------- 載入資料 ----------
+  var ALL = [];
+  function loadData(){
+    if(!window.APP_DATA || !window.APP_DATA.songs){ alert("無法載入歌曲資料 (data.js)\nFailed to load song data (data.js)"); return; }
+    var d = window.APP_DATA.songs;
+    var albums = {};
+    (d.albums||[]).forEach(function(a){ albums[a.id] = a; });
+    ALL = (d.songs||[]).filter(function(s){ return s.ytId; }).map(function(s){
+      var al = albums[s.albumId];
+      return {
+        title: s.title,
+        ytId: s.ytId,
+        isTitle: !!s.isTitleSong,
+        albumName: al ? al.name : (s.isOST ? "OST・其他 / Others" : "單曲・其他 / Others"),
+        cover: al && al.cover ? COVER_PREFIX + al.cover : COVER_PREFIX + "covers/default.png"
+      };
+    });
+  }
+
+  function poolFor(scope){
+    if(scope==="title") return ALL.filter(function(s){ return s.isTitle; });
+    if(scope==="bside") return ALL.filter(function(s){ return !s.isTitle; });
+    return ALL.slice();
+  }
+
+  // ---------- YouTube 播放器 ----------
+  var player=null, ready=false, pauseTimer=null, pending=null, curClipMs=CLIP_MS;
+  window.onYouTubeIframeAPIReady = function(){
+    player = new YT.Player('yt',{
+      height:'1', width:'1',
+      playerVars:{autoplay:0,controls:0,rel:0,modestbranding:1,iv_load_policy:3,disablekb:1,fs:0},
+      events:{
+        onReady:function(){ ready=true; if(pending){ var p=pending; pending=null; playClip(p.id, p.ms); } },
+        onStateChange:onState
+      }
+    });
+  };
+  function onState(e){
+    if(e.data===YT.PlayerState.PLAYING){
+      clearTimeout(pauseTimer);
+      pauseTimer=setTimeout(function(){ try{ player.pauseVideo(); }catch(_){} }, curClipMs);
+      setPlaying(true);
+    } else if(e.data===YT.PlayerState.PAUSED || e.data===YT.PlayerState.ENDED){
+      setPlaying(false);
+    }
+  }
+  function playClip(ytId, ms){
+    curClipMs = ms || CLIP_MS;
+    if(!ready){ pending={id:ytId, ms:curClipMs}; return; }
+    clearTimeout(pauseTimer);
+    try{
+      player.loadVideoById({videoId:ytId, startSeconds:0});
+      player.unMute(); player.setVolume(100);
+    }catch(_){}
+  }
+  function stopClip(){ clearTimeout(pauseTimer); try{ player.stopVideo(); }catch(_){} setPlaying(false); }
+
+  var discWrap=document.getElementById('discWrap'), disc=document.getElementById('disc');
+  function setPlaying(on){
+    discWrap.classList.toggle('playing', on);
+    disc.classList.toggle('spin', on);
+  }
+
+  // ---------- 元素捷徑 ----------
+  var $=function(id){ return document.getElementById(id); };
+  var setup=$('setup'), game=$('game'), result=$('result'), backToSetupBtn=$('backToSetupBtn');
+
+  backToSetupBtn.addEventListener('click', function(){
+    clearInterval(timerInt);
+    stopClip();
+    G=null;
+    $('reveal').classList.add('hidden');
+    $('reveal').innerHTML='';
+    game.classList.add('hidden');
+    result.classList.add('hidden');
+    setup.classList.remove('hidden');
+    window.scrollTo(0,0);
+  });
+  // ---------- 設定：題目範圍 ----------
+  var scope="all";
+  var scopeChoices=$('scopeChoices');
+  scopeChoices.addEventListener('click', function(e){
+    var el=e.target.closest('.choice'); if(!el) return;
+    scope=el.dataset.scope;
+    Array.prototype.forEach.call(scopeChoices.children, function(c){ c.classList.toggle('active', c===el); });
+  });
+
+  // ---------- 設定：回合數 ----------
+  var roundsSel=5;
+  var roundChoices=$('roundChoices'), customWrap=$('customWrap'), customRounds=$('customRounds');
+  roundChoices.addEventListener('click', function(e){
+    var el=e.target.closest('.choice'); if(!el) return;
+    Array.prototype.forEach.call(roundChoices.querySelectorAll('.choice'), function(c){ c.classList.toggle('active', c===el); });
+    if(el.dataset.rounds==="custom"){ customWrap.style.display='flex'; roundsSel="custom"; }
+    else { customWrap.style.display='none'; roundsSel=parseInt(el.dataset.rounds,10); }
+  });
+  customRounds.addEventListener('input', function(){
+    var v=parseInt(customRounds.value,10);
+    if(isNaN(v)||v<1) v=1; if(v>30) v=30;
+    customRounds.value=v;
+  });
+
+  // ---------- 設定：玩家 ----------
+  var playersBox=$('players');
+  function playerRow(i){
+    var row=document.createElement('div'); row.className='player-row';
+    row.innerHTML='<span class="idx">'+(i+1)+'</span>'+
+      '<input type="text" class="pname" placeholder="玩家 '+(i+1)+' · Player '+(i+1)+'" maxlength="16" />'+
+      '<button class="icon-btn del" title="移除"><i class="fas fa-xmark"></i></button>';
+    row.querySelector('.del').addEventListener('click', function(){
+      if(playersBox.children.length<=1) return;
+      row.remove(); renumber();
+    });
+    return row;
+  }
+  function renumber(){
+    Array.prototype.forEach.call(playersBox.children, function(r,i){
+      r.querySelector('.idx').textContent=i+1;
+      r.querySelector('.pname').placeholder='玩家 '+(i+1);
+    });
+  }
+  playersBox.appendChild(playerRow(0));
+  $('addPlayer').addEventListener('click', function(){
+    if(playersBox.children.length>=8){ alert('最多 8 位玩家 · Up to 8 players'); return; }
+    playersBox.appendChild(playerRow(playersBox.children.length));
+  });
+
+  // ---------- 遊戲狀態 ----------
+  var G=null;
+  function scopeLabel(s){ return s==="title"?"只有主打歌":s==="bside"?"只有收錄曲":"全部"; }
+  function scopeEn(s){ return s==="title"?"Title tracks":s==="bside"?"B-sides":"All songs"; }
+
+  $('startBtn').addEventListener('click', function(){
+    var pool=poolFor(scope);
+    if(pool.length===0){ alert('這個範圍沒有可播放的歌曲\nNo playable songs in this pool'); return; }
+
+    var rounds = roundsSel==="custom" ? Math.min(30, Math.max(1, parseInt(customRounds.value,10)||1)) : roundsSel;
+    var capped=false;
+    if(rounds>pool.length){ rounds=pool.length; capped=true; }
+
+    var names=[];
+    Array.prototype.forEach.call(playersBox.querySelectorAll('.pname'), function(inp,i){
+      names.push((inp.value||'').trim() || ('玩家 '+(i+1)));
+    });
+
+    // 隨機挑出不重複的題目
+    var shuffled=pool.slice();
+    for(var i=shuffled.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=shuffled[i]; shuffled[i]=shuffled[j]; shuffled[j]=t; }
+    var songs=shuffled.slice(0,rounds);
+
+    G={ songs:songs, rounds:rounds, idx:0, solo:names.length===1, names:names,
+        scores:names.map(function(){return 0;}), results:[] };
+
+    if(capped) alert('此範圍僅有 '+pool.length+' 首可播放歌曲，已將回合數調整為 '+pool.length+' 回合。\nOnly '+pool.length+' playable songs in this pool; rounds set to '+pool.length+'.');
+
+    $('scopeTag').innerHTML=scopeLabel(scope)+' <span class="en">'+scopeEn(scope)+'</span>';
+    setup.classList.add('hidden'); result.classList.add('hidden'); game.classList.remove('hidden');
+    startRound();
+  });
+
+  // ---------- 回合 ----------
+  var timerInt=null, roundStart=0, selectedWinner, multiCommitted=false, replayCount=0;
+  function startRound(){
+    clearInterval(timerInt);
+    selectedWinner=undefined; multiCommitted=false; replayCount=0;
+    setReplayLabel(REPLAY_MS);
+    roundStart=Date.now();
+    var s=G.songs[G.idx];
+    $('roundTag').innerHTML=(G.idx+1)+' / '+G.rounds+' <span class="en-block">Round '+(G.idx+1)+' / '+G.rounds+'</span>';
+    $('progress').style.width=((G.idx)/G.rounds*100)+'%';
+    $('reveal').classList.add('hidden'); $('reveal').innerHTML='';
+    disc.classList.remove('paused');
+    disc.innerHTML='<i class="fas fa-music"></i>';
+
+    if(G.solo){
+      $('soloArea').classList.remove('hidden'); $('multiArea').classList.add('hidden');
+      var gi=$('guessInput'); gi.value=''; gi.disabled=false; $('submitGuess').disabled=false;
+      startTimer();
+      setTimeout(function(){ gi.focus(); }, 60);
+    } else {
+      $('soloArea').classList.add('hidden'); $('multiArea').classList.remove('hidden');
+      buildMultiArea();
+    }
+    playClip(s.ytId);   // 在使用者手勢（開始／下一回合）內播放，避免被瀏覽器擋掉
+  }
+
+  function startTimer(){
+    var left=SOLO_SEC, t=$('timer');
+    t.textContent=left; t.classList.remove('warn');
+    timerInt=setInterval(function(){
+      left--; t.textContent=left;
+      if(left<=10) t.classList.add('warn');
+      if(left<=0){ clearInterval(timerInt); answerSolo(null); }
+    },1000);
+  }
+
+  // 多人：作答區只放「揭露答案」按鈕，主持人聽完前奏後才揭曉
+  function buildMultiArea(){
+    var box=$('multiArea');
+    box.innerHTML='<div class="sub" style="margin:0 0 12px">主持人：聽完前奏後揭露答案<span class="en-block">Host: reveal the answer after the intro</span></div>'+
+      '<button class="btn" id="revealMultiBtn"><i class="fas fa-eye"></i> 揭露答案 <span class="en">Reveal Answer</span></button>';
+    $('revealMultiBtn').addEventListener('click', revealMulti);
+  }
+
+  // 揭曉後才顯示的玩家計分按鈕
+  function buildPlayerButtons(){
+    var box=$('pbtns'); box.innerHTML='';
+    box.className='pbtns'+(G.names.length===1?' solo':'');
+    G.names.forEach(function(nm,i){
+      var b=document.createElement('div'); b.className='pbtn';
+      b.innerHTML='<span class="idx">'+(i+1)+'</span>'+escapeHtml(nm);
+      b.addEventListener('click', function(){ selectWinner(i); });
+      box.appendChild(b);
+    });
+    var none=document.createElement('div'); none.className='pbtn none';
+    none.innerHTML='<i class="fas fa-ban"></i> 無人得分 / 跳過 <span class="en">No one / Skip</span>';
+    none.addEventListener('click', function(){ selectWinner(-1); });
+    box.appendChild(none);
+  }
+
+  // ---------- 作答：單人 ----------
+  function norm(s){
+    return (s||'').toLowerCase()
+      .replace(/\([^)]*\)/g,'').replace(/（[^）]*）/g,'')   // 去除括號內副標
+      .replace(/[\s.,!?'"“”‘’\-_~&()（）\[\]]/g,'');
+  }
+  function isCorrect(guess, answer){
+    var g=norm(guess), a=norm(answer);
+    if(g.length<2) return false;
+    return g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1;
+  }
+  function answerSolo(guessOrNull){
+    clearInterval(timerInt);
+    var gi=$('guessInput'); gi.disabled=true; $('submitGuess').disabled=true;
+    var s=G.songs[G.idx];
+    var guess = guessOrNull===null ? '' : guessOrNull;
+    var ok = guessOrNull!==null && isCorrect(guess, s.title);
+    var elapsed = ok ? Math.min(SOLO_SEC, (Date.now()-roundStart)/1000) : null;
+    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null, time:elapsed });
+    if(ok) G.scores[0]++;
+    stopClip();
+    showReveal(ok, guess, guessOrNull===null);
+  }
+  $('submitGuess').addEventListener('click', function(){ if(!$('submitGuess').disabled) answerSolo($('guessInput').value); });
+  $('guessInput').addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('submitGuess').disabled) answerSolo(this.value); });
+
+  // ---------- 作答：多人 ----------
+  // 主持人選擇得分玩家（尚未計分，按「下一回合」才提交）
+  function selectWinner(idx){
+    if(multiCommitted) return;
+    selectedWinner=idx;
+    var btns=$('pbtns').children;
+    var targetIdx = idx>=0 ? idx : G.names.length;   // 「無人得分」為最後一顆
+    Array.prototype.forEach.call(btns, function(b,i){ b.classList.toggle('sel', i===targetIdx); });
+    var v=$('winnerVerdict');
+    v.className='verdict '+(idx>=0?'ok':'no');
+    v.style.visibility='visible';
+    v.innerHTML = idx>=0 ? ('🏆 '+escapeHtml(G.names[idx])+' 得分！<span class="en">scored a point</span>')
+                         : '本回合無人得分<span class="en">No one scored</span>';
+    $('nextBtn').disabled=false;
+  }
+
+  // ---------- 揭曉 ----------
+  function nextBtnHtml(){
+    var last=G.idx>=G.rounds-1;
+    return '<button class="btn" id="nextBtn">'+(last?'<i class="fas fa-flag-checkered"></i> 查看結果 <span class="en">See Results</span>':'<i class="fas fa-forward"></i> 下一回合 <span class="en">Next Round</span>')+'</button>';
+  }
+  function bindNext(){
+    $('nextBtn').addEventListener('click', function(){
+      G.idx++;
+      if(G.idx>=G.rounds){ showResult(); } else { startRound(); }
+    });
+  }
+  function showReveal(ok, guess, timeout){
+    disc.classList.add('paused');
+    disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
+    var s=G.songs[G.idx];
+    var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'答對了！ 🎉<span class="en">Correct!</span>':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'答錯了<span class="en">Wrong</span>'))+'</div>'+
+      '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
+      '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>';
+    if(!ok && guess) html+='<div class="yourguess">你的答案 Your answer：'+escapeHtml(guess)+'</div>';
+    html+=nextBtnHtml();
+    var r=$('reveal'); r.innerHTML=html; r.classList.remove('hidden');
+    $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
+    bindNext();
+  }
+  // 主持人按下「揭露答案」：顯示答案與計分按鈕，選好玩家後才進到下一回合
+  function revealMulti(){
+    stopClip();
+    $('multiArea').classList.add('hidden');
+    disc.classList.add('paused');
+    disc.innerHTML='<i class="fas fa-music"></i>';
+    var s=G.songs[G.idx];
+    var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+      '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
+      '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>'+
+      '<div class="sub" style="margin:16px 0 10px">選擇得分玩家<span class="en-block">Select the scoring player</span></div>'+
+      '<div class="pbtns" id="pbtns"></div>'+
+      '<div id="winnerVerdict" class="verdict" style="visibility:hidden;margin-top:14px">&nbsp;</div>'+
+      nextBtnHtml();
+    var r=$('reveal'); r.innerHTML=html; r.classList.remove('hidden');
+    $('progress').style.width=((G.idx+1)/G.rounds*100)+'%';
+    buildPlayerButtons();
+    $('nextBtn').disabled=true;
+    bindNextMulti();
+  }
+  // 多人「下一回合」：此時才提交分數，確保每回合只計一次
+  function bindNextMulti(){
+    $('nextBtn').addEventListener('click', function(){
+      if(this.disabled || selectedWinner===undefined || multiCommitted) return;
+      multiCommitted=true;
+      var s=G.songs[G.idx];
+      if(selectedWinner>=0) G.scores[selectedWinner]++;
+      G.results.push({ song:s, winner: selectedWinner>=0 ? G.names[selectedWinner] : null });
+      G.idx++;
+      if(G.idx>=G.rounds){ showResult(); } else { startRound(); }
+    });
+  }
+
+  function setReplayLabel(ms){
+    var sec = Math.round(ms/1000);
+    $('replayBtn').innerHTML='<i class="fas fa-rotate-right"></i> 再聽一次（'+sec+' 秒）<span class="en">Replay '+sec+'s</span>';
+  }
+  $('replayBtn').addEventListener('click', function(){
+    if(!G) return;
+    replayCount++;
+    var ms = replayCount>=REPLAY_LONG_AT ? REPLAY_LONG_MS : REPLAY_MS;
+    setReplayLabel(ms);
+    playClip(G.songs[G.idx].ytId, ms);
+  });
+
+  // ---------- 結果 ----------
+  function showResult(){
+    stopClip(); clearInterval(timerInt);
+    game.classList.add('hidden'); result.classList.remove('hidden');
+    result.innerHTML = G.solo ? soloResultHtml() : multiResultHtml();
+    result.querySelector('#againBtn').addEventListener('click', function(){
+      result.classList.add('hidden'); setup.classList.remove('hidden');
+    });
+    window.scrollTo(0,0);
+  }
+
+  function multiResultHtml(){
+    var order=G.names.map(function(nm,i){ return {nm:nm, sc:G.scores[i]}; })
+      .sort(function(a,b){ return b.sc-a.sc; });
+    var medals=['🥇','🥈','🥉'];
+    var rows=order.map(function(p,i){
+      var top = i===0 && p.sc>0;
+      return '<div class="rank'+(top?' top':'')+'">'+
+        '<span class="medal">'+(medals[i]||(i+1))+'</span>'+
+        '<span class="nm">'+escapeHtml(p.nm)+'</span>'+
+        '<span class="sc">'+p.sc+' <span class="en">分/pts</span></span></div>';
+    }).join('');
+    return '<h1>🏆 比賽結果<span class="en-block">Final Results</span></h1>'+
+      '<div class="sub">共 '+G.rounds+' 回合 · '+scopeLabel(scope)+'<br><span class="en">'+G.rounds+' rounds · '+scopeEn(scope)+'</span></div>'+
+      rows+'<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+  }
+
+  function fmtTime(sec){ return sec.toFixed(1)+'s'; }
+  function soloResultHtml(){
+    var right=G.results.filter(function(r){ return r.correct; });
+    var wrong=G.results.filter(function(r){ return !r.correct; });
+    function item(r){
+      var g = r.correct
+        ? '<span class="a">用時 / time：'+fmtTime(r.time)+'</span>'
+        : (r.timeout?'<span class="a">未作答 No answer</span>':'<span class="a">答 / your answer：'+escapeHtml(r.guess||'—')+'</span>');
+      return '<div class="item"><img src="'+r.song.cover+'" onerror="this.style.display=\'none\'" alt="">'+
+        '<span>'+escapeHtml(r.song.title)+'</span>'+g+'</div>';
+    }
+    var html='<h1>🎵 遊戲結束<span class="en-block">Game Over</span></h1>'+
+      '<div class="sub">'+scopeLabel(scope)+' · <span class="en">'+scopeEn(scope)+'</span></div>'+
+      '<div class="summary">答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
+    if(right.length){
+      var times=right.map(function(r){ return r.time; });
+      var total=times.reduce(function(a,b){ return a+b; },0);
+      var avg=total/times.length;
+      var fastest=Math.min.apply(null, times);
+      html+='<div class="summary" style="font-size:14px;margin-top:-8px">'+
+        '⏱ 總用時 <b style="font-size:16px">'+fmtTime(total)+'</b>　·　平均 '+fmtTime(avg)+'　·　最快 '+fmtTime(fastest)+
+        '<span class="en-block">Total '+fmtTime(total)+' · Avg '+fmtTime(avg)+' · Fastest '+fmtTime(fastest)+'（correct answers only）</span></div>';
+    }
+    html+='<div class="list-title ok"><i class="fas fa-circle-check"></i> 答對的歌 <span class="en">Correct</span> ('+right.length+')</div>';
+    html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
+    html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
+    html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
+    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+    return html;
+  }
+
+  // ---------- 工具 ----------
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  // ---------- 初始化 ----------
+  loadData();
+  $('cAll').textContent=poolFor('all').length+' 首';
+  $('cBside').textContent=poolFor('bside').length+' 首';
+  $('cTitle').textContent=poolFor('title').length+' 首';
+})();
+</script>
+</body>
 </html>
