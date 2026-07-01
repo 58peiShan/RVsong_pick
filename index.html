@@ -39,9 +39,10 @@
 
     <div class="section-title"><i class="fas fa-users"></i>玩家 <span class="en">Players</span></div>
     <div id="players"></div>
-    <button class="btn ghost small" id="addPlayer" style="margin-top:4px"><i class="fas fa-plus"></i> 新增玩家 <span class="en">Add Player</span></button>
+    <button class="btn ghost small" id="addPlayer" style="margin-top:4px"><i class="fas fa-plus"></i></button>
 
     <button class="btn" id="startBtn"><i class="fas fa-play"></i> Start</button>
+    <button class="btn ghost small" id="achBtn" style="margin-top:10px"><i class="fas fa-trophy"></i> 我的成就 <span class="en">My Achievements</span></button>
     <div class="foot">單人：60 秒內輸入歌名　·　多人：由主持人選出答對者<span class="en-block">Solo: type the title within 60s　·　Multiplayer: the host picks the winner</span></div>
   </div>
 
@@ -66,7 +67,7 @@
     <div id="soloArea">
       <div class="timer" id="timer">60</div>
       <div class="guess-row">
-        <input type="text" id="guessInput" placeholder="輸入歌名… · Type the song title" autocomplete="off" />
+        <input type="text" id="guessInput" placeholder="Type the song title..." autocomplete="off" />
                 <button class="btn small" id="submitGuess">Boo-ya!</button>
       </div>
     </div>
@@ -81,6 +82,23 @@
   <!-- ============ RESULT ============ -->
   <div class="card hidden" id="result"></div>
 
+</div>
+
+<!-- 專輯封面輪播裝飾（固定在視窗最底、全寬；僅開始畫面顯示） -->
+<div class="album-marquee-clip" aria-hidden="true">
+  <div class="album-marquee">
+    <div id="marquee-track" class="marquee-track"></div>
+  </div>
+</div>
+
+<!-- ============ 成就彈窗 ============ -->
+<div class="modal hidden" id="achModal">
+  <div class="modal-card">
+    <button class="modal-close" id="achClose" type="button"><i class="fas fa-xmark"></i></button>
+    <h2>🏆 我的成就<span class="en-block">My Achievements</span></h2>
+    <div class="ach-count" id="achCount"></div>
+    <div id="achList"></div>
+  </div>
 </div>
 
 <div id="yt"></div>
@@ -203,7 +221,7 @@
   function playerRow(i){
     var row=document.createElement('div'); row.className='player-row';
     row.innerHTML='<span class="idx">'+(i+1)+'</span>'+
-      '<input type="text" class="pname" placeholder="玩家 '+(i+1)+' · Player '+(i+1)+'" maxlength="16" />'+
+      '<input type="text" class="pname" placeholder="Player '+(i+1)+'" maxlength="16" />'+
       '<button class="icon-btn del" title="移除"><i class="fas fa-xmark"></i></button>';
     row.querySelector('.del').addEventListener('click', function(){
       if(playersBox.children.length<=1) return;
@@ -265,7 +283,7 @@
     setReplayLabel(REPLAY_MS);
     roundStart=Date.now();
     var s=G.songs[G.idx];
-    $('roundTag').innerHTML=(G.idx+1)+' / '+G.rounds+' <span class="en-block">Round '+(G.idx+1)+' / '+G.rounds+'</span>';
+    $('roundTag').innerHTML='Round ' + (G.idx+1)+' / '+G.rounds;
     $('progress').style.width=((G.idx)/G.rounds*100)+'%';
     $('reveal').classList.add('hidden'); $('reveal').innerHTML='';
     disc.classList.remove('paused');
@@ -335,7 +353,7 @@
     var guess = guessOrNull===null ? '' : guessOrNull;
     var ok = guessOrNull!==null && isCorrect(guess, s.title);
     var elapsed = ok ? Math.min(SOLO_SEC, (Date.now()-roundStart)/1000) : null;
-    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null, time:elapsed });
+    G.results.push({ song:s, guess:guess, correct:ok, timeout:guessOrNull===null, time:elapsed, replays:replayCount });
     if(ok) G.scores[0]++;
     stopClip();
     showReveal(ok, guess, guessOrNull===null);
@@ -429,9 +447,64 @@
     playClip(G.songs[G.idx].ytId, ms);
   });
 
+  // ---------- 成就 ----------
+  // 順序即優先度（越前面越高榮譽），結果頁只顯示第一個達成的作為稱號
+  var ACHIEVEMENTS = [
+    { id:'reaction', title:'反應神經冠軍', sub:'Reaction Nerve Champion',
+      desc:'單人・全部題庫・5 回合以上，全部在第一次播放就答對',
+      test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect && st.noReplays; } },
+    { id:'legend6', title:'雷德貝貝傳說第六人', sub:'The Legendary 6th Member',
+      desc:'單人・全部題庫・15 回合以上全部答對',
+      test:function(st){ return st.solo && st.scopeAll && st.rounds>=15 && st.allCorrect; } },
+    { id:'reveluv', title:'真正的ReVeLuv', sub:'A True ReVeLuv',
+      desc:'單人・全部題庫・10 回合以上全部答對',
+      test:function(st){ return st.solo && st.scopeAll && st.rounds>=10 && st.allCorrect; } },
+    { id:'champion', title:'雷貝冠軍', sub:'Red Velvet Champion',
+      desc:'單人・全部題庫・5 回合以上全部答對',
+      test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect; } }
+  ];
+  var ACH_KEY='rvsong_achievements';
+  function loadEarned(){ try{ return JSON.parse(localStorage.getItem(ACH_KEY))||[]; }catch(_){ return []; } }
+  function saveEarned(ids){ try{ localStorage.setItem(ACH_KEY, JSON.stringify(ids)); }catch(_){} }
+  function soloState(){
+    var right=G.results.filter(function(r){ return r.correct; });
+    return {
+      solo:G.solo, scopeAll:(scope==='all'), rounds:G.rounds,
+      allCorrect:(G.rounds>0 && right.length===G.rounds),
+      noReplays:G.results.every(function(r){ return (r.replays||0)===0; })
+    };
+  }
+  // 依目前遊戲狀態解鎖所有符合條件的成就（獨立判定，可一次解鎖多個），回傳新解鎖的
+  function unlockFromState(st){
+    var earned=loadEarned(), newly=[];
+    ACHIEVEMENTS.forEach(function(a){
+      if(a.test(st) && earned.indexOf(a.id)===-1){ earned.push(a.id); newly.push(a.id); }
+    });
+    if(newly.length) saveEarned(earned);
+    return newly;
+  }
+  function openAchModal(){
+    var earned=loadEarned();
+    var got=ACHIEVEMENTS.filter(function(a){ return earned.indexOf(a.id)!==-1; }).length;
+    var list=ACHIEVEMENTS.map(function(a){
+      var has=earned.indexOf(a.id)!==-1;
+      return '<div class="ach-item '+(has?'earned':'locked')+'">'+
+        '<div class="medal"><i class="fas fa-'+(has?'crown':'lock')+'"></i></div>'+
+        '<div class="info"><div class="t">'+(has?escapeHtml(a.title)+' <span class="en">'+escapeHtml(a.sub)+'</span>':'？？？')+'</div>'+
+        '<div class="d">'+escapeHtml(a.desc)+'</div></div></div>';
+    }).join('');
+    $('achCount').textContent='已解鎖 '+got+' / '+ACHIEVEMENTS.length;
+    $('achList').innerHTML=list;
+    $('achModal').classList.remove('hidden');
+  }
+  $('achBtn').addEventListener('click', openAchModal);
+  $('achClose').addEventListener('click', function(){ $('achModal').classList.add('hidden'); });
+  $('achModal').addEventListener('click', function(e){ if(e.target===this) this.classList.add('hidden'); });
+
   // ---------- 結果 ----------
   function showResult(){
     stopClip(); clearInterval(timerInt);
+    if(G.solo) unlockFromState(soloState());
     game.classList.add('hidden'); result.classList.remove('hidden');
     result.innerHTML = G.solo ? soloResultHtml() : multiResultHtml();
     result.querySelector('#againBtn').addEventListener('click', function(){
@@ -479,6 +552,16 @@
         '⏱ 總用時 <b style="font-size:16px">'+fmtTime(total)+'</b>　·　平均 '+fmtTime(avg)+'　·　最快 '+fmtTime(fastest)+
         '<span class="en-block">Total '+fmtTime(total)+' · Avg '+fmtTime(avg)+' · Fastest '+fmtTime(fastest)+'（correct answers only）</span></div>';
     }
+    // 稱號成就：依成就定義取「最高榮譽」的一個顯示於結果頁
+    var st=soloState(), head=null;
+    for(var ai=0; ai<ACHIEVEMENTS.length; ai++){ if(ACHIEVEMENTS[ai].test(st)){ head=ACHIEVEMENTS[ai]; break; } }
+    if(head){
+      html+='<div class="achievement">'+
+        '<div class="ach-label"><i class="fas fa-crown"></i> 解鎖稱號 <span class="en">Achievement Unlocked</span></div>'+
+        '<div class="ach-title">'+head.title+'</div>'+
+        '<div class="ach-sub">'+head.sub+'</div>'+
+      '</div>';
+    }
     html+='<div class="list-title ok"><i class="fas fa-circle-check"></i> 答對的歌 <span class="en">Correct</span> ('+right.length+')</div>';
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
@@ -490,11 +573,24 @@
   // ---------- 工具 ----------
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
+  // 開始畫面下方的專輯封面輪播裝飾（參考 ranking.html）
+  function buildAlbumMarquee(){
+    var track=$('marquee-track');
+    if(!track || !window.APP_DATA || !window.APP_DATA.songs) return;
+    var albums=(window.APP_DATA.songs.albums||[]).filter(function(a){ return a.cover; });
+    if(!albums.length){ track.parentNode.parentNode.style.display='none'; return; }
+    var imgs=albums.map(function(a){
+      return '<img src="'+COVER_PREFIX+a.cover+'" alt="'+escapeHtml(a.name||'')+'" title="'+escapeHtml(a.name||'')+'" onerror="this.style.display=\'none\'">';
+    }).join('');
+    track.innerHTML=imgs+imgs;   // 複製一份以達成無縫循環
+  }
+
   // ---------- 初始化 ----------
   loadData();
   $('cAll').textContent=poolFor('all').length+' 首';
   $('cBside').textContent=poolFor('bside').length+' 首';
   $('cTitle').textContent=poolFor('title').length+' 首';
+  buildAlbumMarquee();
 })();
 </script>
 </body>
