@@ -929,7 +929,7 @@ window.APP_DATA = {
             "title": "Wild Side",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "boI1jQyqvsc",
+            "ytId": "71yQjT0ec7I",
             "isTitleSong": true
         },
         {

@@ -258,6 +258,26 @@
     border-radius:14px 14px 0 0;
     box-shadow:0 -2px 12px rgba(0,0,0,.12);
   }
+h2.about-card{
+    text-align: center;
+    font-size: 20px;
+    margin-top: 10px;
+}
+h2.about-card span {
+    color: #f09191;
+}
+h2.about-card  span:nth-child(2) {
+    color: #ffc31f;
+}
+h2.about-card span:nth-child(3) {
+    color: #20c1f1;
+}
+h2.about-card span:nth-child(4) {
+    color: #71fc31;
+}
+h2.about-card span:last-child{
+    color: #c175ff;
+}
   @media (prefers-reduced-motion: reduce){ .marquee-track{ animation:none; } }
   @media (max-width: 768px) {
   .foot{display:none;}
