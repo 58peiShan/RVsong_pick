@@ -4,7 +4,8 @@
     --coral:#ff7f50; --pink:#ff9797; --deep:#e0567c; --soft:#ffeaea;
     --ink:#5a3a44; --muted:#9b7d86;
   }
-  html,body{ height:100%; }
+  html,body{ min-height:100%; }
+  html{ background:#ffeaea; }
   body{
     font-family:'Noto Sans TC','Noto Sans',Arial,sans-serif;
     color:var(--ink);
@@ -13,6 +14,7 @@
       radial-gradient(circle at 88% 12%, #ffc48a 0%, transparent 40%),
       radial-gradient(circle at 78% 88%, #d4a0ff 0%, transparent 45%),
       linear-gradient(135deg,#fff5f5,#ffeaea);
+    background-attachment:fixed;
     min-height:100vh;
     display:flex; align-items:flex-start; justify-content:center;
     padding:28px 16px 60px;
@@ -180,3 +182,24 @@
   @media (max-width: 768px) {
   .foot{display:none;}
 }
+
+  /* ---------- 桌面：多人時左右分欄，較好利用空間 ---------- */
+  @media (min-width: 820px){
+    /* 多人時加寬容器；單人維持原本置中窄版 */
+    .app:has(#game.multi:not(.hidden)){ max-width:980px; }
+    /* 遊戲畫面（僅多人）：左（唱片）／右（作答、揭曉） */
+    #game.multi{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      column-gap:40px;
+      row-gap:6px;
+      align-items:start;
+    }
+    #game.multi > .topbar{ grid-column:1 / -1; grid-row:1; }
+    #game.multi > .bar{ grid-column:1 / -1; grid-row:2; }
+    #game.multi > .disc-wrap{ grid-column:1; grid-row:3; align-self:center; margin:0; }
+    /* 三種作答狀態同時只顯示一個，統一放在右欄 */
+    #game.multi > #soloArea,
+    #game.multi > #multiArea,
+    #game.multi > #reveal{ grid-column:2; grid-row:3; align-self:center; }
+  }
