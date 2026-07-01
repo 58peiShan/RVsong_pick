@@ -1,0 +1,246 @@
+﻿<!doctype html>
+<html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Red Velvet Picks</title>
+        <meta
+            name="description"
+            content="「Red Velvet的每一首歌我都喜歡！我排不出第一名！」你是真的沒有答案嗎？也許你只是沒有認真試過！本工具透過兩兩比較排序，決定出你最愛的歌曲。An interactive tool that ranks your favorite Red Velvet songs using pairwise comparisons." />
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1914398977384746"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://www.youtube.com/iframe_api"></script>
+        <script src="config.js"></script>
+        <!-- Embedded song data so the app also works when opening index.html directly (file://). -->
+        <script src="data.js"></script>
+    </head>
+    <body>
+        <!-- Organic gradient blobs background (mouse-interactive) -->
+        <div id="bg-orbs" aria-hidden="true">
+            <div class="orb orb-a"></div>
+            <div class="orb orb-b"></div>
+            <div class="orb orb-c"></div>
+            <div class="orb orb-cursor"></div>
+        </div>
+
+        <!-- YouTube URL management modal -->
+        <div id="url-manage-overlay" class="hidden">
+            <div class="url-manage-card">
+                <div class="url-manage-header">
+                    <h3>🎬 YouTube 試聽管理</h3>
+                    <button class="url-manage-close" onclick="closeUrlManage()">&#x2715;</button>
+                </div>
+                <p class="url-manage-desc">
+                    為歌曲貼上 YouTube 網址即可加入試聽。支援 youtube.com/watch?v=... 與 youtu.be/... 格式。
+                    <br />
+                    設定後儲存在瀏覽器本機，不消耗任何 API 額度。
+                </p>
+                <div id="url-song-list"></div>
+                <button class="url-manage-btn" onclick="closeUrlManage()">完成</button>
+            </div>
+        </div>
+
+        <header class="site-header">
+            <div class="header-spacer"></div>
+            <h1 onclick="goToStart()">
+                Ranking My Top 15
+                <span>Red Velvet</span>
+                Songs
+            </h1>
+            <div class="header-right">
+                <a href="privacy.html" class="privacy-btn">隱私權政策 | Privacy</a>
+            </div>
+        </header>
+
+        <section id="start-screen" class="about-section">
+            <div class="about-card">
+                <h2>
+                    Are you ready for this?
+                    <span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                </h2>
+                <div id="continue-area" class="hidden">
+                    <button class="continue-btn" onclick="continueComparison()">
+                        <i class="fas fa-play"></i>
+                        繼續上次的比較 | Resume Comparison
+                    </button>
+                    <p id="continue-hint" class="continue-hint"></p>
+                    <p class="continue-divider">── 或重新開始 | Start Over ──</p>
+                </div>
+                <div class="nickname-area">
+                    <input
+                        type="text"
+                        id="nickname-input"
+                        class="nickname-input"
+                        maxlength="20"
+                        placeholder="暱稱 Nickname（選填 / optional）"
+                        oninput="saveNickname(this.value)" />
+                </div>
+                <div class="mode-selector">
+                    <label class="mode-option">
+                        <input type="radio" name="song-mode" value="all" onchange="setSongMode('all')" />
+                        <span>全部歌曲 All songs</span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="song-mode" value="title" onchange="setSongMode('title')" />
+                        <span>只比主打歌 Title songs</span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="song-mode" value="bside" onchange="setSongMode('bside')" />
+                        <span>只比收錄曲 B-side songs</span>
+                    </label>
+                </div>
+                <p id="mode-hint" class="mode-hint"></p>
+                <div>
+                    <button class="start-btn" onclick="beginComparison()">ZIMZALABIM！！！！！</button>
+                </div>
+            </div>
+        </section>
+        <!-- <div class="start-screen">
+        
+        <div class="start-card">
+            
+        </div>
+    </div> -->
+        <div id="ranking-view" class="ranking">
+            <div
+                style="display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                    <button class="restart-btn" onclick="restart()">再一次</button>
+                    <button class="restart-btn export-btn" id="export-btn" onclick="exportImage()">
+                        <i class="fas fa-download"></i>
+                        儲存 | Save Results
+                    </button>
+                    <button class="restart-btn yt-playlist-btn" id="yt-playlist-btn" onclick="openYouTubePlaylist()">
+                        <i class="fab fa-youtube"></i>
+                        YouTube Playlist
+                    </button>
+                </div>
+                <h2>結果 | Results</h2>
+            </div>
+            <div class="ranking-container">
+                <ol id="ranking-list"></ol>
+                <div id="analysis-container"></div>
+            </div>
+        </div>
+        <div id="comparison-view">
+            <div class="progress-container">
+                <div>
+                    <div></div>
+                    <div class="progress-text" id="progress-text">1 / 6</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="song-card" id="song1" onclick="selectSong(0)">
+                    <div class="cover-box">
+                        <div class="load-wrapp">
+                            <div class="load-1">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                        <img id="cover1" src="" alt="Cover" onerror="this.src = 'covers/default.png'" />
+                    </div>
+
+                    <h3 id="title1"></h3>
+                    <button class="play-btn" id="play1" onclick="togglePlay(0, event)">Play</button>
+                    <audio id="audio1" preload="none"></audio>
+                </div>
+                <div class="song-card" id="song2" onclick="selectSong(1)">
+                    <div class="cover-box">
+                        <div class="load-wrapp">
+                            <div class="load-1">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+
+                        <img id="cover2" src="" alt="Cover" onerror="this.src = 'covers/default.png'" />
+                    </div>
+                    <h3 id="title2"></h3>
+                    <button class="play-btn" id="play2" onclick="togglePlay(1, event)">Play</button>
+                    <audio id="audio2" preload="none"></audio>
+                </div>
+            </div>
+            <div id="feedback-msg"></div>
+            <div class="undo-area">
+                <button id="undo-btn" class="undo-btn" onclick="undoLastChoice()" style="display: none">
+                    <i class="fas fa-rotate-left"></i>
+                    回上一選擇 | Choose Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Off-screen YouTube players (rendered but not visible) -->
+        <div
+            id="yt-container"
+            style="position: fixed; left: -9999px; top: 0; width: 320px; height: 180px; pointer-events: none">
+            <div id="ytPlayer0"></div>
+            <div id="ytPlayer1"></div>
+        </div>
+
+        <!-- Settings button to manage YouTube URLs -->
+        <button style="display: none" class="settings-btn" onclick="openUrlManage()" title="管理 YouTube 試聽網址">
+            <i class="fas fa-cog"></i>
+        </button>
+
+        <div class="album-marquee-clip">
+            <div class="album-marquee">
+                <div id="marquee-track" class="marquee-track"></div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+        <script>
+            // 讓其中一顆漸層色塊平滑跟隨滑鼠（lerp 緩動）
+            (function () {
+                const orbs = document.getElementById("bg-orbs");
+                if (!orbs) return;
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+                let tx = window.innerWidth / 2,
+                    ty = window.innerHeight / 2;
+                let cx = tx,
+                    cy = ty;
+
+                const onMove = (x, y) => {
+                    tx = x;
+                    ty = y;
+                };
+                window.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY), { passive: true });
+                window.addEventListener(
+                    "touchmove",
+                    (e) => {
+                        if (e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+                    },
+                    { passive: true }
+                );
+
+                function tick() {
+                    cx += (tx - cx) * 0.07;
+                    cy += (ty - cy) * 0.07;
+                    orbs.style.setProperty("--mx", cx + "px");
+                    orbs.style.setProperty("--my", cy + "px");
+                    requestAnimationFrame(tick);
+                }
+                orbs.style.setProperty("--mx", cx + "px");
+                orbs.style.setProperty("--my", cy + "px");
+                tick();
+            })();
+        </script>
+    </body>
+</html>
