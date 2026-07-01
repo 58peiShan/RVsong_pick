@@ -998,10 +998,34 @@ window.APP_DATA = {
         },
         {
             "id": 3,
+            "title": "Remember Forever",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "RooElzQqgNo",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "In & Out",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "fh0yHa1Waxk",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
             "title": "Bing Bing",
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
             "ytId": "BQouHXkPLFw",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "La Rouge",
+            "albumId": "TheReVeFestivalFinale",
+            "audio": "",
+            "ytId": "mmHKMfqydiA",
             "isTitleSong": false
         },
         {
@@ -1173,6 +1197,9 @@ window.APP_DATA = {
     "Sunny Side Up!":               { "tempo": "mid", "vibe": ["sophisticated","rnb"],           "side": "Velvet", "album": "The ReVe Festival Day 1" },
     "Umpah Umpah":                  { "tempo": "fast", "vibe": ["bright","energetic"],            "side": "Red",    "album": "The ReVe Festival Day 2" },
     "Psycho":                       { "tempo": "mid",  "vibe": ["dark","sophisticated"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "Remember Forever":             { "tempo": "slow",  "vibe": ["emotional","retro"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "In & Out":                     { "tempo": "mid",  "vibe": ["quirky","rnb"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
+    "La Rouge":                     { "tempo": "mid",  "vibe": ["sophisticated","rnb"],          "side": "Velvet", "album": "The ReVe Festival: Finale" },
     "Queendom":                     { "tempo": "fast",  "vibe": ["emotional","energetic"],         "side": "Red",   "album": "Queendom" },
     "Feel My Rhythm":               { "tempo": "mid",  "vibe": ["emotional","dreamy"],            "side": "Both",   "album": "The ReVe Festival 2022 - Feel My Rhythm" },
     "Birthday":                     { "tempo": "fast", "vibe": ["energetic","quirky"],            "side": "Both",   "album": "The ReVe Festival 2022 - Birthday" },
