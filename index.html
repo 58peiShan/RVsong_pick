@@ -252,6 +252,7 @@
     if(capped) alert('此範圍僅有 '+pool.length+' 首可播放歌曲，已將回合數調整為 '+pool.length+' 回合。\nOnly '+pool.length+' playable songs in this pool; rounds set to '+pool.length+'.');
 
     $('scopeTag').innerHTML=scopeLabel(scope)+' <span class="en">'+scopeEn(scope)+'</span>';
+    game.classList.toggle('multi', !G.solo);   // 只有多人才在桌面版左右分欄
     setup.classList.add('hidden'); result.classList.add('hidden'); game.classList.remove('hidden');
     startRound();
   });
