@@ -278,10 +278,15 @@ h2.about-card span:nth-child(4) {
 h2.about-card span:last-child{
     color: #c175ff;
 }
+.powered{
+  text-align:center; display:block; margin-top:12px;
+  font-size: 12px;
+  color: #ffb7b7;
+}
   @media (prefers-reduced-motion: reduce){ .marquee-track{ animation:none; } }
   @media (max-width: 768px) {
   .foot{display:none;}
-  #customWrap input{width:calc(50% - 10px);}
+  #customWrap input{width:100%;}
 }
 
   /* ---------- 桌面：多人時左右分欄，較好利用空間 ---------- */
