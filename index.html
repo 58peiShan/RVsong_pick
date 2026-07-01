@@ -16,7 +16,7 @@
   <!-- ============ SETUP ============ -->
   <div class="card" id="setup">
 
-    <h1>Red Velvet 🎧 前奏猜歌
+    <h1>🎧Red Velvet 前奏猜歌
     </h1>
     <h2 class="about-card"><span>．</span>
                     <span>．</span>
@@ -26,7 +26,7 @@
                 </h2>
       
 
-    <div class="sub"> 聽前奏，猜出是哪首歌<span class="en-block">Guess Red Velvet Song from the Intro</span></div>
+    <div class="sub"> 聽前奏，猜歌曲<span class="en-block">Guess Red Velvet Song from the Intro</span></div>
 
      
     <div class="section-title"><i class="fas fa-layer-group"></i>題目範圍 <span class="en">Song Pool</span></div>
@@ -91,7 +91,8 @@
   </div>
 
   <!-- ============ RESULT ============ -->
-  <div class="card hidden" id="result"></div>
+   
+  <div class="card hidden" id="result"> </div>
 
 </div>
 
@@ -577,7 +578,7 @@
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
     html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
-    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button><span class="powered">Powered by Pachi</span>';
     return html;
   }
 
