@@ -377,7 +377,7 @@ window.APP_DATA = {
             "title": "Rebirth",
             "albumId": "Rebirth",
             "audio": "",
-            "ytId": "PymBJq0MirE",
+            "ytId": "bLtRsfnTnlU",
             "isTitleSong": false
         },
         {
@@ -817,7 +817,7 @@ window.APP_DATA = {
             "title": "So Good",
             "albumId": "RBB",
             "audio": "",
-            "ytId": "gO851aacQmA",
+            "ytId": "jXQg_1NvF4U",
             "isTitleSong": false
         },
         {

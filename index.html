@@ -250,7 +250,30 @@
       r.querySelector('.pname').placeholder='玩家 '+(i+1);
     });
   }
-  playersBox.appendChild(playerRow(0));
+  // 用瀏覽器記住輸入過的暱稱，重玩時免再輸入
+  var PLAYERS_KEY='rvsong_players';
+  function savePlayers(){
+    try{
+      var vals=[];
+      Array.prototype.forEach.call(playersBox.querySelectorAll('.pname'), function(inp){ vals.push(inp.value||''); });
+      localStorage.setItem(PLAYERS_KEY, JSON.stringify(vals));
+    }catch(_){}
+  }
+  function loadPlayers(){
+    try{ var v=JSON.parse(localStorage.getItem(PLAYERS_KEY)); return Array.isArray(v)?v:[]; }catch(_){ return []; }
+  }
+  (function restorePlayers(){
+    var saved=loadPlayers();
+    if(saved.length){
+      saved.forEach(function(nm,i){
+        var row=playerRow(i);
+        playersBox.appendChild(row);
+        row.querySelector('.pname').value=nm;
+      });
+    } else {
+      playersBox.appendChild(playerRow(0));
+    }
+  })();
   $('addPlayer').addEventListener('click', function(){
     if(playersBox.children.length>=8){ alert('最多 8 位玩家 · Up to 8 players'); return; }
     playersBox.appendChild(playerRow(playersBox.children.length));
@@ -273,6 +296,7 @@
     Array.prototype.forEach.call(playersBox.querySelectorAll('.pname'), function(inp,i){
       names.push((inp.value||'').trim() || ('玩家 '+(i+1)));
     });
+    savePlayers();   // 記住這次輸入的暱稱，供重玩時自動帶入
 
     // 隨機挑出不重複的題目
     var shuffled=pool.slice();
@@ -490,7 +514,7 @@
     $('replayBtn').innerHTML='<i class="fas fa-rotate-right"></i> 再聽一次（'+sec+' 秒）<span class="en">Replay '+sec+'s</span>';
   }
   function setPlayIcon(){   // 揭曉後：單純的播放 icon
-    $('replayBtn').innerHTML='<i class="fas fa-play"></i> 播放 <span class="en">Play</span>';
+    $('replayBtn').innerHTML='<i class="fas fa-play"></i>';
   }
   $('replayBtn').addEventListener('click', function(){
     if(!G) return;
@@ -621,6 +645,14 @@
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
     html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
+    // 答錯歌曲的複習播放清單（連到 YouTube）
+    var wrongIds = wrong.map(function(r){ return r.song.ytId; }).filter(Boolean);
+    if(wrongIds.length){
+      html+='<div class="review-cta">'+
+        '<div class="review-text">有不太熟的歌嗎？快來複習！</div>'+
+        '<a class="btn small ghost" href="https://www.youtube.com/watch_videos?video_ids='+wrongIds.join(',')+'" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> Play List</a>'+
+      '</div>';
+    }
     html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次</button><span class="powered">Powered by Pachi</span>';
     return html;
   }

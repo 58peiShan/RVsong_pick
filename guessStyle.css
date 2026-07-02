@@ -94,6 +94,11 @@
   .btn.ghost span.en{color:var(--deep);}
 
   .btn.small{ font-size:14px; padding:11px; margin-top:0; }
+  a.btn{ text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+  /* 答錯歌曲複習播放清單 */
+  .review-cta{ margin-top:22px; text-align:center; }
+  .review-text{ font-size:13px; color:var(--deep); font-weight:700; margin-bottom:10px; }
 
   .hidden{ display:none !important; }
 
