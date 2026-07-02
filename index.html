@@ -733,7 +733,8 @@
       '<div class="sc-app">🎧 Red Velvet 前奏猜歌</div>'+
       '<div class="sc-name">'+escapeHtml(name)+'</div>'+
       '<div class="sc-score"><b>'+rightSongs.length+'</b> / '+G.rounds+'</div>'+
-      '<div class="sc-label">答對題數 · '+scopeLabel(scope)+'</div>';
+      '<div class="sc-label">答對題數</div>'+
+      '<div class="sc-scope">🎧 題庫範圍：'+scopeLabel(scope)+'</div>';
     if(head){
       htmlc+='<div class="sc-badge">🏆 '+escapeHtml(head.title)+'<span>'+escapeHtml(head.sub)+'</span></div>';
     }
