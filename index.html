@@ -337,14 +337,24 @@
 
   // ---------- 作答：單人 ----------
   function norm(s){
-    return (s||'').toLowerCase()
-      .replace(/\([^)]*\)/g,'').replace(/（[^）]*）/g,'')   // 去除括號內副標
-      .replace(/[\s.,!?'"“”‘’\-_~&()（）\[\]]/g,'');
+    return (s||'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');   // 只保留文字與數字，去除所有標點、空白、符號
+  }
+  // 由歌名產生可接受的答案：括號代表別名，主名／別名／全名皆可
+  function answerKeys(title){
+    var t=title||'';
+    var main=t.replace(/\([^)]*\)/g,'').replace(/（[^）]*）/g,'');   // 去掉括號內容 → 主名
+    var keys=[norm(main), norm(t)];                                 // 主名、全名（主名＋別名）
+    (t.match(/[（(]([^)）]*)[)）]/g)||[]).forEach(function(p){       // 各括號內的別名
+      keys.push(norm(p.replace(/[（(]|[)）]/g,'')));
+    });
+    return keys.filter(function(k,i,arr){ return k.length>=2 && arr.indexOf(k)===i; });  // 去空白／過短／重複
   }
   function isCorrect(guess, answer){
-    var g=norm(guess), a=norm(answer);
+    var g=norm(guess);
     if(g.length<2) return false;
-    return g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1;
+    return answerKeys(answer).some(function(a){
+      return g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1;
+    });
   }
   function answerSolo(guessOrNull){
     clearInterval(timerInt);
