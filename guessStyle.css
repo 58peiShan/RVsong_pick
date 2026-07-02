@@ -158,6 +158,8 @@
   .share-card .sc-score{ font-size:20px; font-weight:700; margin-top:6px; color:var(--ink); }
   .share-card .sc-score b{ font-size:52px; color:var(--coral); vertical-align:-6px; }
   .share-card .sc-label{ font-size:13px; color:var(--muted); margin-top:2px; }
+  .share-card .sc-scope{ display:inline-block; margin-top:12px; padding:6px 14px; border-radius:99px;
+    font-size:13px; font-weight:700; color:var(--deep); background:#fff; border:2px solid var(--pink); }
   .share-card .sc-badge{
     margin:20px auto 4px; padding:14px 16px; border-radius:16px; max-width:320px;
     background:#fff; border:2px solid var(--pink); box-shadow:0 8px 20px rgba(0,0,0,.10);
