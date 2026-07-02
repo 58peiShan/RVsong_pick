@@ -163,17 +163,17 @@
     width:150px; height:150px; border-radius:50%; margin:0 auto;
     background:
       repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.06) 0 2px, transparent 2px 5px),
-      conic-gradient(from 0deg,var(--pink),var(--coral),var(--deep),var(--pink));
+      conic-gradient(from 0deg,#ffb3c1,#ff7f50,#d4a0ff,#ffb3c1);
     display:flex; align-items:center; justify-content:center; position:relative;
-    box-shadow:0 12px 30px var(--glow-deep);
+    box-shadow:0 12px 30px rgba(224,86,124,.28);
     animation:spin 9s linear infinite;               /* 平時慢慢轉 */
     transition:box-shadow .3s;
   }
   .disc::after{ content:''; width:44px; height:44px; border-radius:50%; background:#fff; position:absolute;
-    box-shadow:0 0 0 6px rgba(255,255,255,.35), inset 0 0 0 4px var(--glow-deep); }
+    box-shadow:0 0 0 6px rgba(255,255,255,.35), inset 0 0 0 4px rgba(224,86,124,.15); }
   .disc i{ position:relative; z-index:1; font-size:30px; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.2);
     animation:counter 9s linear infinite; }          /* 圖示反向轉，維持直立 */
-  .disc.spin{ animation-duration:1.4s; box-shadow:0 12px 34px var(--glow-strong); }   /* 播放時轉快＋發光 */
+  .disc.spin{ animation-duration:1.4s; box-shadow:0 12px 34px rgba(255,127,80,.55); }   /* 播放時轉快＋發光 */
   .disc.spin i{ animation-duration:1.4s; }
   .disc.paused, .disc.paused i{ animation-play-state:paused; }   /* 揭曉時停住 */
   @keyframes spin{ to{ transform:rotate(360deg); } }
