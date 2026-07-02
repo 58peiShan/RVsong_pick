@@ -118,6 +118,7 @@
 <div id="yt"></div>
 <script src="data.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 (function(){
   "use strict";
@@ -647,6 +648,8 @@
     result.querySelector('#againBtn').addEventListener('click', function(){
       result.classList.add('hidden'); setup.classList.remove('hidden');
     });
+    var dl=result.querySelector('#dlImgBtn');
+    if(dl) dl.addEventListener('click', downloadResultImage);
     window.scrollTo(0,0);
   }
 
@@ -712,8 +715,45 @@
         '<a class="btn small ghost" href="https://www.youtube.com/watch_videos?video_ids='+wrongIds.join(',')+'" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> Play List</a>'+
       '</div>';
     }
+    html+='<button class="btn ghost small" id="dlImgBtn" style="margin-top:16px"><i class="fas fa-image"></i> 下載結果圖片</button>';
     html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次</button><span class="powered">Powered by Pachi</span>';
     return html;
+  }
+
+  // 下載結果圖片：只含成績與稱號，省略答錯區塊與多餘文字
+  function downloadResultImage(){
+    if(typeof html2canvas!=='function'){ alert('圖片元件尚未載入，請稍後再試'); return; }
+    var st=soloState(), head=null;
+    for(var ai=0; ai<ACHIEVEMENTS.length; ai++){ if(ACHIEVEMENTS[ai].test(st)){ head=ACHIEVEMENTS[ai]; break; } }
+    var rightSongs=G.results.filter(function(r){ return r.correct; }).map(function(r){ return r.song.title; });
+    var name=G.names[0] || '玩家 1';
+    var card=document.createElement('div');
+    card.className='share-card';
+    var htmlc=''+
+      '<div class="sc-app">🎧 Red Velvet 前奏猜歌</div>'+
+      '<div class="sc-name">'+escapeHtml(name)+'</div>'+
+      '<div class="sc-score"><b>'+rightSongs.length+'</b> / '+G.rounds+'</div>'+
+      '<div class="sc-label">答對題數 · '+scopeLabel(scope)+'</div>';
+    if(head){
+      htmlc+='<div class="sc-badge">🏆 '+escapeHtml(head.title)+'<span>'+escapeHtml(head.sub)+'</span></div>';
+    }
+    if(rightSongs.length){
+      htmlc+='<div class="sc-songs-title">答對的歌</div>'+
+        '<div class="sc-songs">'+rightSongs.map(function(t){ return '<div>🎵 '+escapeHtml(t)+'</div>'; }).join('')+'</div>';
+    }
+    htmlc+='<div class="sc-foot">Guess the Intro</div>';
+    card.innerHTML=htmlc;
+    document.body.appendChild(card);
+    html2canvas(card, {scale:2, backgroundColor:null, logging:false}).then(function(canvas){
+      document.body.removeChild(card);
+      var link=document.createElement('a');
+      link.download='RV前奏猜歌_'+name+'.png';
+      link.href=canvas.toDataURL('image/png');
+      link.click();
+    }).catch(function(){
+      if(card.parentNode) document.body.removeChild(card);
+      alert('圖片產生失敗，請再試一次');
+    });
   }
 
   // ---------- 工具 ----------
