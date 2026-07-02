@@ -167,7 +167,9 @@
   function onState(e){
     if(e.data===YT.PlayerState.PLAYING){
       clearTimeout(pauseTimer);
-      pauseTimer=setTimeout(function(){ try{ player.pauseVideo(); }catch(_){} }, curClipMs);
+      if(isFinite(curClipMs)){   // curClipMs 為 Infinity 時代表不限秒數，不自動暫停
+        pauseTimer=setTimeout(function(){ try{ player.pauseVideo(); }catch(_){} }, curClipMs);
+      }
       setPlaying(true);
     } else if(e.data===YT.PlayerState.PAUSED || e.data===YT.PlayerState.ENDED){
       setPlaying(false);
@@ -289,10 +291,10 @@
   });
 
   // ---------- 回合 ----------
-  var timerInt=null, roundStart=0, selectedWinner, multiCommitted=false, replayCount=0;
+  var timerInt=null, roundStart=0, selectedWinner, multiCommitted=false, replayCount=0, soloRevealed=false;
   function startRound(){
     clearInterval(timerInt);
-    selectedWinner=undefined; multiCommitted=false; replayCount=0;
+    selectedWinner=undefined; multiCommitted=false; replayCount=0; soloRevealed=false;
     setReplayLabel(REPLAY_MS);
     roundStart=Date.now();
     var s=G.songs[G.idx];
@@ -352,21 +354,44 @@
   function norm(s){
     return (s||'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');   // 只保留文字與數字，去除所有標點、空白、符號
   }
+  // 編輯距離（Levenshtein）；用來容許一個字的拼字錯誤
+  function editDist(a,b){
+    var m=a.length, n=b.length;
+    if(Math.abs(m-n)>1) return 2;   // 只在意是否 <=1，差超過 1 個字直接回傳大值
+    var prev=[], cur=[], i, j;
+    for(j=0;j<=n;j++) prev[j]=j;
+    for(i=1;i<=m;i++){
+      cur[0]=i;
+      for(j=1;j<=n;j++){
+        var cost = a.charAt(i-1)===b.charAt(j-1) ? 0 : 1;
+        cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+      }
+      for(j=0;j<=n;j++) prev[j]=cur[j];
+    }
+    return prev[n];
+  }
+  // 網路縮寫互通：獨立單字「U」與「you」視為相同（不分大小寫）
+  function textSpeakVariants(s){
+    return [s, s.replace(/\bu\b/gi,'you'), s.replace(/\byou\b/gi,'u')];
+  }
   // 由歌名產生可接受的答案：括號代表別名，主名／別名／全名皆可
   function answerKeys(title){
     var t=title||'';
     var main=t.replace(/\([^)]*\)/g,'').replace(/（[^）]*）/g,'');   // 去掉括號內容 → 主名
-    var keys=[norm(main), norm(t)];                                 // 主名、全名（主名＋別名）
+    var bases=[main, t];                                            // 主名、全名（主名＋別名）
     (t.match(/[（(]([^)）]*)[)）]/g)||[]).forEach(function(p){       // 各括號內的別名
-      keys.push(norm(p.replace(/[（(]|[)）]/g,'')));
+      bases.push(p.replace(/[（(]|[)）]/g,''));
     });
+    var keys=[];
+    bases.forEach(function(b){ textSpeakVariants(b).forEach(function(v){ keys.push(norm(v)); }); });
     return keys.filter(function(k,i,arr){ return k.length>=2 && arr.indexOf(k)===i; });  // 去空白／過短／重複
   }
   function isCorrect(guess, answer){
     var g=norm(guess);
     if(g.length<2) return false;
     return answerKeys(answer).some(function(a){
-      return g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1;
+      if(g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1) return true;
+      return a.length>=4 && editDist(g,a)<=1;   // 容許一個字的拼字錯誤（僅較長答案，避免短字誤判）
     });
   }
   function answerSolo(guessOrNull){
@@ -412,6 +437,8 @@
     });
   }
   function showReveal(ok, guess, timeout){
+    soloRevealed=true;
+    setPlayIcon();   // 揭曉後改為單純播放鍵、不限秒數
     disc.classList.add('paused');
     disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
     var s=G.songs[G.idx];
@@ -462,8 +489,12 @@
     var sec = Math.round(ms/1000);
     $('replayBtn').innerHTML='<i class="fas fa-rotate-right"></i> 再聽一次（'+sec+' 秒）<span class="en">Replay '+sec+'s</span>';
   }
+  function setPlayIcon(){   // 揭曉後：單純的播放 icon
+    $('replayBtn').innerHTML='<i class="fas fa-play"></i> 播放 <span class="en">Play</span>';
+  }
   $('replayBtn').addEventListener('click', function(){
     if(!G) return;
+    if(soloRevealed){ playClip(G.songs[G.idx].ytId, Infinity); return; }   // 揭曉後：完整播放、不限秒數
     replayCount++;
     var ms = replayCount>=REPLAY_LONG_AT ? REPLAY_LONG_MS : REPLAY_MS;
     setReplayLabel(ms);
@@ -549,7 +580,7 @@
     }).join('');
     return '<h1>🏆 比賽結果<span class="en-block">Final Results</span></h1>'+
       '<div class="sub">共 '+G.rounds+' 回合 · '+scopeLabel(scope)+'<br><span class="en">'+G.rounds+' rounds · '+scopeEn(scope)+'</span></div>'+
-      rows+'<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+      rows+'<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次</button>';
   }
 
   function fmtTime(sec){ return sec.toFixed(1)+'s'; }
@@ -590,7 +621,7 @@
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
     html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
-    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button><span class="powered">Powered by Pachi</span>';
+    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次</button><span class="powered">Powered by Pachi</span>';
     return html;
   }
 
