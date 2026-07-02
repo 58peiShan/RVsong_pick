@@ -130,7 +130,8 @@
   var COVER_PREFIX = "";
 
   // ---------- 載入資料 ----------
-  var ALL = [];
+  var ALL = [];       // 只存在此閉包內，不掛全域，避免用 console 直接讀取歌名
+  var ALBUMS = [];    // 供封面輪播用（同樣存在閉包內）
   function loadData(){
     if(!window.APP_DATA || !window.APP_DATA.songs){ alert("無法載入歌曲資料 (data.js)\nFailed to load song data (data.js)"); return; }
     var d = window.APP_DATA.songs;
@@ -146,6 +147,9 @@
         cover: al && al.cover ? COVER_PREFIX + al.cover : COVER_PREFIX + "covers/default.png"
       };
     });
+    ALBUMS = (d.albums||[]).filter(function(a){ return a.cover; });
+    // 把資料收進閉包後移除全域，讓玩家無法在 console 打 APP_DATA 直接偷看所有歌名
+    try{ delete window.APP_DATA; }catch(_){ try{ window.APP_DATA = undefined; }catch(__){} }
   }
 
   function poolFor(scope){
@@ -155,13 +159,28 @@
   }
 
   // ---------- YouTube 播放器 ----------
-  var player=null, ready=false, pauseTimer=null, pending=null, curClipMs=CLIP_MS;
+  var player=null, ready=false, pauseTimer=null, pending=null, curClipMs=CLIP_MS, titleGuard=null;
+  // YouTube 會把 <iframe> 的 title 設成影片標題（＝答案），這裡持續蓋掉避免被檢查元素偷看
+  function guardIframeTitle(){
+    var f = (player && player.getIframe) ? player.getIframe() : document.querySelector('#yt iframe');
+    if(!f) return;
+    var scrub=function(){
+      if(f.getAttribute('title')!=='RV') f.setAttribute('title','RV');
+      if(f.getAttribute('aria-label')) f.removeAttribute('aria-label');
+    };
+    scrub();
+    try{
+      titleGuard && titleGuard.disconnect();
+      titleGuard=new MutationObserver(scrub);
+      titleGuard.observe(f, {attributes:true, attributeFilter:['title','aria-label']});
+    }catch(_){}
+  }
   window.onYouTubeIframeAPIReady = function(){
     player = new YT.Player('yt',{
       height:'1', width:'1',
       playerVars:{autoplay:0,controls:0,rel:0,modestbranding:1,iv_load_policy:3,disablekb:1,fs:0},
       events:{
-        onReady:function(){ ready=true; if(pending){ var p=pending; pending=null; playClip(p.id, p.ms); } },
+        onReady:function(){ ready=true; guardIframeTitle(); if(pending){ var p=pending; pending=null; playClip(p.id, p.ms); } },
         onStateChange:onState
       }
     });
@@ -583,7 +602,7 @@
   // 順序即優先度（越前面越高榮譽），結果頁只顯示第一個達成的作為稱號
   var ACHIEVEMENTS = [
     { id:'reaction', title:'反應神經冠軍', sub:'Reaction Nerve Champion',
-      desc:'單人・全部題庫・5 回合以上，全部在第一次播放就答對',
+      desc:'單人・全部題庫・5 回合以上，在第一次播放就答對',
       test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect && st.noReplays; } },
     { id:'legend6', title:'雷德貝貝傳說第六人', sub:'The Legendary 6th Member',
       desc:'單人・全部題庫・15 回合以上全部答對',
@@ -591,13 +610,16 @@
     { id:'titlefan', title:'主打歌狂粉', sub:'Title Track Superfan',
       desc:'單人・只有主打歌・15 回合以上全部答對',
       test:function(st){ return st.solo && st.scopeTitle && st.rounds>=15 && st.allCorrect; } },
+    { id:'bsidefan', title:'收錄曲美食店忠實顧客', sub:'B-side Regular',
+      desc:'單人・只有收錄曲・15 回合以上全部答對',
+      test:function(st){ return st.solo && st.scopeBside && st.rounds>=15 && st.allCorrect; } },
     { id:'reveluv', title:'真正的ReVeLuv', sub:'A True ReVeLuv',
       desc:'單人・全部題庫・10 回合以上全部答對',
       test:function(st){ return st.solo && st.scopeAll && st.rounds>=10 && st.allCorrect; } },
     { id:'champion', title:'雷貝冠軍', sub:'Red Velvet Champion',
       desc:'單人・全部題庫・5 回合以上全部答對',
       test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect; } },
-    { id:'firstparty', title:'第一次的雷貝趴踢！', sub:'First Red Velvet Party',
+    { id:'firstparty', title:'第一次的雷貝趴踢！', sub:'First Red Velvet Party!',
       desc:'完成第一次多人遊戲',
       test:function(st){ return !st.solo; } }
   ];
@@ -607,7 +629,7 @@
   function soloState(){
     var right=G.results.filter(function(r){ return r.correct; });
     return {
-      solo:G.solo, scopeAll:(scope==='all'), scopeTitle:(scope==='title'), rounds:G.rounds,
+      solo:G.solo, scopeAll:(scope==='all'), scopeTitle:(scope==='title'), scopeBside:(scope==='bside'), rounds:G.rounds,
       allCorrect:(G.rounds>0 && right.length===G.rounds),
       noReplays:G.results.every(function(r){ return (r.replays||0)===0; })
     };
@@ -763,8 +785,8 @@
   // 開始畫面下方的專輯封面輪播裝飾（參考 ranking.html）
   function buildAlbumMarquee(){
     var track=$('marquee-track');
-    if(!track || !window.APP_DATA || !window.APP_DATA.songs) return;
-    var albums=(window.APP_DATA.songs.albums||[]).filter(function(a){ return a.cover; });
+    if(!track) return;
+    var albums=ALBUMS;
     if(!albums.length){ track.parentNode.parentNode.style.display='none'; return; }
     var imgs=albums.map(function(a){
       return '<img src="'+COVER_PREFIX+a.cover+'" alt="'+escapeHtml(a.name||'')+'" title="'+escapeHtml(a.name||'')+'" onerror="this.style.display=\'none\'">';
