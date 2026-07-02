@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8" />
@@ -15,9 +15,20 @@
 
   <!-- ============ SETUP ============ -->
   <div class="card" id="setup">
-    <h1>🎧 聽前奏猜歌<span class="en-block">Guess the Song from the Intro</span></h1>
-    <div class="sub">Red Velvet · 聽 1 秒前奏，猜出是哪首歌</div>
 
+    <h1>🎧Red Velvet 前奏猜歌
+    </h1>
+    <h2 class="about-card"><span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                    <span>．</span>
+                </h2>
+      
+
+    <div class="sub"> 聽前奏，猜歌曲<span class="en-block">Guess Red Velvet Song from the Intro</span></div>
+
+     
     <div class="section-title"><i class="fas fa-layer-group"></i>題目範圍 <span class="en">Song Pool</span></div>
     <div class="choices" id="scopeChoices">
       <div class="choice active" data-scope="all">全部<small>All · <span id="cAll">–</span></small></div>
@@ -44,6 +55,7 @@
     <button class="btn" id="startBtn"><i class="fas fa-play"></i> Start</button>
     <button class="btn ghost small" id="achBtn" style="margin-top:10px"><i class="fas fa-trophy"></i> 我的成就 <span class="en">My Achievements</span></button>
     <div class="foot">單人：60 秒內輸入歌名　·　多人：由主持人選出答對者<span class="en-block">Solo: type the title within 60s　·　Multiplayer: the host picks the winner</span></div>
+    <div style="color:#e2e2e2;font-size:11px;text-align: center;padding-top:20px;cursor: default;">All song and images are copyrighted by SMTOWN, this is a fan-made support project.</div>
   </div>
 
   <!-- ============ GAME ============ -->
@@ -80,7 +92,8 @@
   </div>
 
   <!-- ============ RESULT ============ -->
-  <div class="card hidden" id="result"></div>
+   
+  <div class="card hidden" id="result"> </div>
 
 </div>
 
@@ -403,7 +416,7 @@
     disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
     var s=G.songs[G.idx];
     var html='<img class="cover" src="'+s.cover+'" onerror="this.style.display=\'none\'" alt="">'+
-      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'答對了！ 🎉<span class="en">Correct!</span>':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'答錯了<span class="en">Wrong</span>'))+'</div>'+
+      '<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'✔':(timeout?'時間到 ⏰<span class="en">Time\'s up</span>':'✘'))+'</div>'+
       '<div class="song-title">'+escapeHtml(s.title)+'</div>'+
       '<div class="song-album">'+escapeHtml(s.albumName)+(s.isTitle?' · 主打歌 / Title':' · 收錄曲 / B-side')+'</div>';
     if(!ok && guess) html+='<div class="yourguess">你的答案 Your answer：'+escapeHtml(guess)+'</div>';
@@ -543,6 +556,7 @@
   function soloResultHtml(){
     var right=G.results.filter(function(r){ return r.correct; });
     var wrong=G.results.filter(function(r){ return !r.correct; });
+    let name = G.names[0] || '玩家 1';
     function item(r){
       var g = r.correct
         ? '<span class="a">用時 / time：'+fmtTime(r.time)+'</span>'
@@ -552,7 +566,7 @@
     }
     var html='<h1>🎵 遊戲結束<span class="en-block">Game Over</span></h1>'+
       '<div class="sub">'+scopeLabel(scope)+' · <span class="en">'+scopeEn(scope)+'</span></div>'+
-      '<div class="summary">答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
+      '<div class="summary">'+name+' 答對 <b>'+right.length+'</b> / '+G.rounds+' 首<span class="en-block">'+right.length+' / '+G.rounds+' correct</span></div>';
     if(right.length){
       var times=right.map(function(r){ return r.time; });
       var total=times.reduce(function(a,b){ return a+b; },0);
@@ -576,7 +590,7 @@
     html+= right.length ? right.map(item).join('') : '<div class="item" style="color:var(--muted)">還沒有答對的歌，下次加油！ · No correct answers yet — good luck next time!</div>';
     html+='<div class="list-title no"><i class="fas fa-circle-xmark"></i> 答錯／未答 <span class="en">Wrong / Missed</span> ('+wrong.length+')</div>';
     html+= wrong.length ? wrong.map(item).join('') : '<div class="item" style="color:var(--muted)">全部答對，太厲害了！ · All correct — amazing!</div>';
-    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button>';
+    html+='<button class="btn" id="againBtn"><i class="fas fa-rotate-right"></i> 再玩一次 <span class="en">Play Again</span></button><span class="powered">Powered by Pachi</span>';
     return html;
   }
 

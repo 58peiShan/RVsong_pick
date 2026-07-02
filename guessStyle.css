@@ -30,7 +30,7 @@
     position:relative;
     z-index:9;
   }
-  h1{
+  h1{cursor: default;
     font-size:26px; text-align:center; letter-spacing:1px;
     background:linear-gradient(135deg,var(--pink),var(--coral));
     -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -40,7 +40,7 @@
   .en{ font-weight:400; color:var(--muted); font-size:.78em; letter-spacing:.3px; }
   .en-block{ display:block; font-weight:400; color:var(--muted); font-size:11px; letter-spacing:.3px; margin-top:2px; }
   h1 .en-block{ font-size:13px; margin-top:4px; }
-  .section-title{ font-size:15px; font-weight:700; margin:22px 0 10px; display:flex; align-items:center; gap:8px; }
+  .section-title{ cursor: default;font-size:15px; font-weight:700; margin:22px 0 10px; display:flex; align-items:center; gap:8px; }
   .section-title i{ color:var(--coral); }
   .section-title:first-of-type{ margin-top:4px; }
 
@@ -56,14 +56,16 @@
 
   .rounds{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
   .rounds .choice{ flex:1; min-width:64px; }
-  #customWrap{ display:none; align-items:center; gap:8px; flex-basis:100%; margin-top:4px; }
+  #customWrap{ display:none; gap:8px; flex-basis:100%; margin-top:4px;justify-content: right;
+    flex-direction: column;
+    align-items: end; }
   input[type=number],input[type=text]{
     font-family:inherit; font-size:15px; color:var(--ink);
     border:2px solid #ffd9de; border-radius:12px; padding:10px 12px; width:100%;
     background:#fff; outline:none; transition:.15s;
   }
   input:focus{ border-color:var(--coral); }
-  #customWrap input{ width:100px; }
+  #customWrap input{ width: calc(100% / 4 - 10px); }
 
   .player-row{ display:flex; gap:8px; margin-bottom:9px; align-items:center; }
   .player-row .idx{ width:26px; height:26px; flex:0 0 26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -182,7 +184,7 @@
   .item .a{ color:var(--muted); font-size:12px; margin-left:auto; }
 
   #yt{ position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; }
-  .foot{ text-align:center; color:var(--muted); font-size:12px; margin-top:18px; }
+  .foot{ text-align:center; color:var(--muted); font-size:12px; margin-top:18px;cursor: default; }
 
   /* 稱號成就徽章 */
   .achievement{
@@ -207,12 +209,12 @@
     display:flex; align-items:center; justify-content:center;
     background:rgba(90,58,68,.45); backdrop-filter:blur(4px);
   }
-  .modal-card{
+  .modal-card{cursor: default;
     position:relative; width:100%; max-width:460px; max-height:85vh; overflow:auto;
     background:#fff; border-radius:22px; padding:24px 22px;
     box-shadow:0 20px 50px rgba(0,0,0,.25); animation:achPop .25s ease;
   }
-  .modal-card h2{ font-size:22px; text-align:center; }
+  .modal-card h2{ font-size:22px; text-align:center;}
   .modal-close{
     position:absolute; top:14px; right:14px; width:34px; height:34px; border:none; cursor:pointer;
     border-radius:50%; background:#ffe1e6; color:var(--deep); font-size:15px;
@@ -256,9 +258,35 @@
     border-radius:14px 14px 0 0;
     box-shadow:0 -2px 12px rgba(0,0,0,.12);
   }
+h2.about-card{cursor: default;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 10px;
+}
+h2.about-card span {
+    color: #f09191;
+}
+h2.about-card  span:nth-child(2) {
+    color: #ffc31f;
+}
+h2.about-card span:nth-child(3) {
+    color: #20c1f1;
+}
+h2.about-card span:nth-child(4) {
+    color: #71fc31;
+}
+h2.about-card span:last-child{
+    color: #c175ff;
+}
+.powered{
+  text-align:center; display:block; margin-top:12px;
+  font-size: 12px;
+  color: #ffb7b7;
+}
   @media (prefers-reduced-motion: reduce){ .marquee-track{ animation:none; } }
   @media (max-width: 768px) {
   .foot{display:none;}
+  #customWrap input{width:100%;}
 }
 
   /* ---------- 桌面：多人時左右分欄，較好利用空間 ---------- */

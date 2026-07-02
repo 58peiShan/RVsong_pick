@@ -729,7 +729,7 @@ window.APP_DATA = {
             "title": "#Cookie Jar",
             "albumId": "CookieJar",
             "audio": "",
-            "ytId": "rRgTMs_bGuI",
+            "ytId": "Hvakv3flRCU",
             "isTitleSong": true
         },
         {
@@ -929,7 +929,7 @@ window.APP_DATA = {
             "title": "Wild Side",
             "albumId": "Bloom",
             "audio": "",
-            "ytId": "boI1jQyqvsc",
+            "ytId": "71yQjT0ec7I",
             "isTitleSong": true
         },
         {
@@ -993,7 +993,7 @@ window.APP_DATA = {
             "title": "Psycho",
             "albumId": "TheReVeFestivalFinale",
             "audio": "",
-            "ytId": "uR8Mrt1IpXg",
+            "ytId": "PyyT5tHbOLw",
             "isTitleSong": true
         },
         {
