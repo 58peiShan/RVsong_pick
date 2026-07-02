@@ -82,6 +82,7 @@
         <input type="text" id="guessInput" placeholder="Type the song title..." autocomplete="off" />
                 <button class="btn small" id="submitGuess">Boo-ya!</button>
       </div>
+      <div id="joyHint" class="joy-hint hidden"></div>
     </div>
 
     <!-- Multiplayer answering -->
@@ -249,7 +250,26 @@
       r.querySelector('.idx').textContent=i+1;
       r.querySelector('.pname').placeholder='玩家 '+(i+1);
     });
+    applyNameTheme();   // 移除玩家後重新計算彩蛋配色
   }
+  // 🥚 成員彩蛋：依玩家名字切換整體配色
+  var NAME_THEMES={
+    'wendy':'wendy','孫承完':'wendy',
+    'irene':'irene','裴柱現':'irene',
+    'seulgi':'seulgi','康瑟琪':'seulgi',
+    'joy':'joy','朴秀英':'joy',
+    'yeri':'yeri','金藝琳':'yeri'
+  };
+  function themeForName(n){ return NAME_THEMES[(n||'').trim().toLowerCase()] || null; }
+  function applyNameTheme(){
+    var theme=null;
+    Array.prototype.forEach.call(playersBox.querySelectorAll('.pname'), function(inp){
+      if(!theme) theme=themeForName(inp.value);
+    });
+    if(theme) document.documentElement.setAttribute('data-theme', theme);
+    else document.documentElement.removeAttribute('data-theme');
+  }
+  playersBox.addEventListener('input', applyNameTheme);
   // 用瀏覽器記住輸入過的暱稱，重玩時免再輸入
   var PLAYERS_KEY='rvsong_players';
   function savePlayers(){
@@ -273,6 +293,7 @@
     } else {
       playersBox.appendChild(playerRow(0));
     }
+    applyNameTheme();   // 依記住的名字套用彩蛋配色
   })();
   $('addPlayer').addEventListener('click', function(){
     if(playersBox.children.length>=8){ alert('最多 8 位玩家 · Up to 8 players'); return; }
@@ -297,6 +318,7 @@
       names.push((inp.value||'').trim() || ('玩家 '+(i+1)));
     });
     savePlayers();   // 記住這次輸入的暱稱，供重玩時自動帶入
+    applyNameTheme();   // 依名字套用成員彩蛋配色
 
     // 隨機挑出不重複的題目
     var shuffled=pool.slice();
@@ -305,6 +327,8 @@
 
     G={ songs:songs, rounds:rounds, idx:0, solo:names.length===1, names:names,
         scores:names.map(function(){return 0;}), results:[] };
+    G.joy = G.solo && themeForName(names[0])==='joy';   // Joy 彩蛋：單人且名字為 Joy／朴秀英
+    G.joyRound = G.joy ? Math.floor(Math.random()*rounds) : -1;   // 整場只在隨機一個回合出現提示
 
     if(capped) alert('此範圍僅有 '+pool.length+' 首可播放歌曲，已將回合數調整為 '+pool.length+' 回合。\nOnly '+pool.length+' playable songs in this pool; rounds set to '+pool.length+'.');
 
@@ -331,6 +355,7 @@
     if(G.solo){
       $('soloArea').classList.remove('hidden'); $('multiArea').classList.add('hidden');
       var gi=$('guessInput'); gi.value=''; gi.disabled=false; $('submitGuess').disabled=false;
+      showJoyHint();   // Joy 彩蛋：隨機一首歌的「靈光一閃」提示
       startTimer();
       setTimeout(function(){ gi.focus(); }, 60);
     } else {
@@ -340,6 +365,13 @@
     playClip(s.ytId);   // 在使用者手勢（開始／下一回合）內播放，避免被瀏覽器擋掉
   }
 
+  // Joy 彩蛋：整場隨機一個回合，直接給出正確答案的「靈光一閃」提示
+  function showJoyHint(){
+    var box=$('joyHint');
+    if(!G.joy || G.idx!==G.joyRound){ box.classList.add('hidden'); box.innerHTML=''; return; }
+    box.innerHTML='<i class="fas fa-lightbulb"></i> Joy 靈光一閃，這首歌可能叫「'+escapeHtml(G.songs[G.idx].title)+'」';
+    box.classList.remove('hidden');
+  }
   function startTimer(){
     var left=SOLO_SEC, t=$('timer');
     t.textContent=left; t.classList.remove('warn');
@@ -462,6 +494,7 @@
   }
   function showReveal(ok, guess, timeout){
     soloRevealed=true;
+    $('joyHint').classList.add('hidden');   // 揭曉後收起 Joy 提示
     setPlayIcon();   // 揭曉後改為單純播放鍵、不限秒數
     disc.classList.add('paused');
     disc.innerHTML='<i class="fas fa-'+(ok?'check':'xmark')+'"></i>';
@@ -534,12 +567,18 @@
     { id:'legend6', title:'雷德貝貝傳說第六人', sub:'The Legendary 6th Member',
       desc:'單人・全部題庫・15 回合以上全部答對',
       test:function(st){ return st.solo && st.scopeAll && st.rounds>=15 && st.allCorrect; } },
+    { id:'titlefan', title:'主打歌狂粉', sub:'Title Track Superfan',
+      desc:'單人・只有主打歌・15 回合以上全部答對',
+      test:function(st){ return st.solo && st.scopeTitle && st.rounds>=15 && st.allCorrect; } },
     { id:'reveluv', title:'真正的ReVeLuv', sub:'A True ReVeLuv',
       desc:'單人・全部題庫・10 回合以上全部答對',
       test:function(st){ return st.solo && st.scopeAll && st.rounds>=10 && st.allCorrect; } },
     { id:'champion', title:'雷貝冠軍', sub:'Red Velvet Champion',
       desc:'單人・全部題庫・5 回合以上全部答對',
-      test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect; } }
+      test:function(st){ return st.solo && st.scopeAll && st.rounds>=5 && st.allCorrect; } },
+    { id:'firstparty', title:'第一次的雷貝趴踢！', sub:'First Red Velvet Party',
+      desc:'完成第一次多人遊戲',
+      test:function(st){ return !st.solo; } }
   ];
   var ACH_KEY='rvsong_achievements';
   function loadEarned(){ try{ return JSON.parse(localStorage.getItem(ACH_KEY))||[]; }catch(_){ return []; } }
@@ -547,7 +586,7 @@
   function soloState(){
     var right=G.results.filter(function(r){ return r.correct; });
     return {
-      solo:G.solo, scopeAll:(scope==='all'), rounds:G.rounds,
+      solo:G.solo, scopeAll:(scope==='all'), scopeTitle:(scope==='title'), rounds:G.rounds,
       allCorrect:(G.rounds>0 && right.length===G.rounds),
       noReplays:G.results.every(function(r){ return (r.replays||0)===0; })
     };
@@ -582,7 +621,7 @@
   // ---------- 結果 ----------
   function showResult(){
     stopClip(); clearInterval(timerInt);
-    if(G.solo) unlockFromState(soloState());
+    unlockFromState(soloState());   // 單人與多人成就皆在此判定（各成就內以 st.solo 區分）
     game.classList.add('hidden'); result.classList.remove('hidden');
     result.innerHTML = G.solo ? soloResultHtml() : multiResultHtml();
     result.querySelector('#againBtn').addEventListener('click', function(){
