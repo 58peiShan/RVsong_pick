@@ -82,6 +82,7 @@
       <div class="timer" id="timer">60</div>
       <div class="guess-row">
         <input type="text" id="guessInput" placeholder="Type the song title..." autocomplete="off" />
+        <button class="btn small mic" id="micBtn" type="button" title="用說的作答 / Speak"><i class="fas fa-microphone"></i></button>
                 <button class="btn small" id="submitGuess">Boo-ya!</button>
       </div>
       <div id="joyHint" class="joy-hint hidden"></div>
@@ -508,6 +509,31 @@
   }
   $('submitGuess').addEventListener('click', function(){ if(!$('submitGuess').disabled) answerSolo($('guessInput').value); });
   $('guessInput').addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('submitGuess').disabled) answerSolo(this.value); });
+
+  // ---------- 語音作答（麥克風） ----------
+  (function(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var micBtn=$('micBtn');
+    if(!SR){ if(micBtn) micBtn.style.display='none'; return; }   // 瀏覽器不支援就隱藏
+    var recog=new SR(), listening=false;
+    recog.lang='en-US';           // 歌名以英文為主
+    recog.interimResults=true;    // 邊說邊帶入
+    recog.maxAlternatives=1;
+    recog.continuous=false;
+    recog.onresult=function(e){
+      var txt='';
+      for(var i=e.resultIndex;i<e.results.length;i++){ txt+=e.results[i][0].transcript; }
+      $('guessInput').value=txt;
+    };
+    var stop=function(){ listening=false; micBtn.classList.remove('listening'); };
+    recog.onend=stop; recog.onerror=stop;
+    micBtn.addEventListener('click', function(){
+      if($('submitGuess').disabled) return;   // 已作答／揭曉時不啟用
+      if(listening){ try{ recog.stop(); }catch(_){} return; }
+      try{ $('guessInput').value=''; recog.start(); listening=true; micBtn.classList.add('listening'); }
+      catch(_){ stop(); }
+    });
+  })();
 
   // ---------- 作答：多人 ----------
   // 主持人選擇得分玩家（尚未計分，按「下一回合」才提交）

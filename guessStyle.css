@@ -237,6 +237,9 @@
   .guess-row{ display:flex; gap:8px; }
   .guess-row input{ flex:1; }
   .guess-row .btn{ width:auto; margin-top:0; padding:12px 20px; }
+  .guess-row .btn.mic{ padding:12px 14px; background:#fff; color:var(--deep); border:2px solid var(--line); box-shadow:none; }
+  .guess-row .btn.mic:hover{ background:var(--tint); }
+  .guess-row .btn.mic.listening{ background:linear-gradient(135deg,var(--pink),var(--coral)); color:#fff; border-color:transparent; animation:pulse .8s infinite; }
 
   .pbtns{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
   .pbtns.solo{ grid-template-columns:1fr; }
