@@ -9,6 +9,8 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <link rel="stylesheet" href="guessStyle.css" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1914398977384746"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="app">
@@ -453,7 +455,7 @@
   // 編輯距離（Levenshtein）；用來容許一個字的拼字錯誤
   function editDist(a,b){
     var m=a.length, n=b.length;
-    if(Math.abs(m-n)>1) return 2;   // 只在意是否 <=1，差超過 1 個字直接回傳大值
+    if(Math.abs(m-n)>2) return 3;   // 只在意是否 <=2，長度差超過 2 直接回傳大值
     var prev=[], cur=[], i, j;
     for(j=0;j<=n;j++) prev[j]=j;
     for(i=1;i<=m;i++){
@@ -487,7 +489,9 @@
     if(g.length<2) return false;
     return answerKeys(answer).some(function(a){
       if(g===a || a.indexOf(g)!==-1 || g.indexOf(a)!==-1) return true;
-      return a.length>=4 && editDist(g,a)<=1;   // 容許一個字的拼字錯誤（僅較長答案，避免短字誤判）
+      // 容許拼字錯誤：較長答案放寬到 2 個字，中等長度 1 個字，短字則不套用（避免誤判）
+      var maxEdits = a.length>=6 ? 2 : (a.length>=4 ? 1 : 0);
+      return maxEdits>0 && editDist(g,a)<=maxEdits;
     });
   }
   function answerSolo(guessOrNull){
