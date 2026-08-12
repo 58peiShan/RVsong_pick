@@ -151,6 +151,12 @@ window.APP_DATA = {
             "name": "Cosmic",
             "year": 2024,
             "cover": "covers/Cosmic.jpeg"
+        },
+        {
+            "id": "VelvetSummer",
+            "name": "Velvet Summer",
+            "year": 2026,
+            "cover": "covers/VelvetSummer.jpg"
         }
     ],
     "songs": [
@@ -1171,6 +1177,46 @@ window.APP_DATA = {
             "audio": "",
             "ytId": "jv-UAioFOW0",
             "isTitleSong": false
+        },
+        {
+            "id": 1,
+            "title": "Surfin' Boy",
+            "albumId": "VelvetSummer",
+            "audio": "",
+            "ytId": "NZP153MUpHY",
+            "isTitleSong": true
+        },
+        {
+            "id": 2,
+            "title": "Hot Girls Cold Vibe",
+            "albumId": "VelvetSummer",
+            "audio": "",
+            "ytId": "6_Nx1szSyeY",
+            "isTitleSong": false
+        },
+        {
+            "id": 3,
+            "title": "Hula Hoop",
+            "albumId": "VelvetSummer",
+            "audio": "",
+            "ytId": "eyVNYAf6vsw",
+            "isTitleSong": false
+        },
+        {
+            "id": 4,
+            "title": "Orchestra",
+            "albumId": "VelvetSummer",
+            "audio": "",
+            "ytId": "sUjhPLauVE4",
+            "isTitleSong": false
+        },
+        {
+            "id": 5,
+            "title": "Hawaii",
+            "albumId": "VelvetSummer",
+            "audio": "",
+            "ytId": "jrxiDn531ks",
+            "isTitleSong": false
         }
     ]
 },
@@ -1363,7 +1409,9 @@ window.APP_DATA = {
         "Wild Side": ["嗷嗷嗷🐶"],
         "Swimming Pool": ["Hey hey you! So whatcha gonna do?"],
         "여름빛 Mojito": ["你是我的Mojito🍸"],
-        "Mosquito":["夏天也要小心蚊子🦟","Mosquito zzzzzz"]
+        "Mosquito":["夏天也要小心蚊子🦟","Mosquito zzzzzz"],
+        "Surfin' Boy": ["🏄‍♂️","LALA~~~"],
+        "Hula Hoop": ["cha-cha-cha~~","Hula Hula Hoop~"]
     }
 }
 };
