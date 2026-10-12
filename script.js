@@ -310,6 +310,9 @@ function restoreProgress(saved) {
 
 function continueComparison() {
     undoState = null;
+    lastStageIndex = -1;
+    resetMoodOrbs();
+    document.body.classList.add('comparing');
     document.getElementById('undo-btn').style.display = 'none';
     const saved = getSavedProgress();
     if (!saved) { beginComparison(); return; }
@@ -349,6 +352,7 @@ function updateModeHint() {
 
 function beginComparison() {
     undoState = null;
+    lastStageIndex = -1;
     choicesSinceFeedback = 0;
     nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
     shownSpecialFeedback = new Set();
@@ -361,6 +365,8 @@ function beginComparison() {
     currentPairIndex = 0;
     comparisonHistory = {};
     songs.forEach(song => song.rating = 1200);
+    resetMoodOrbs();
+    document.body.classList.add('comparing');
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('ranking-view').classList.add('hidden');
     showScreen(document.getElementById('comparison-view'));
@@ -402,6 +408,112 @@ function init() {
 
 let undoState = null;
 
+// Tournament framing for the comparison progress bar — purely cosmetic staging
+// over the same Elo pairwise engine, not a real elimination bracket.
+const TOURNAMENT_STAGES = [
+    { icon: '🏁', label: '資格賽',  threshold: 0 },
+    { icon: '🔥', label: '16強賽', threshold: 0.25 },
+    { icon: '⚔️', label: '8強賽',  threshold: 0.5 },
+    { icon: '🏆', label: '準決賽', threshold: 0.75 },
+    { icon: '👑', label: '冠軍戰', threshold: 0.95 },
+];
+let lastStageIndex = -1;
+
+function getStageIndex(progressFraction) {
+    let idx = 0;
+    for (let i = 0; i < TOURNAMENT_STAGES.length; i++) {
+        if (progressFraction >= TOURNAMENT_STAGES[i].threshold) idx = i;
+    }
+    return idx;
+}
+
+function updateStageUI(progressFraction) {
+    const idx = getStageIndex(progressFraction);
+    const stage = TOURNAMENT_STAGES[idx];
+
+    const badge = document.getElementById('stage-badge');
+    if (badge) badge.textContent = `${stage.icon} ${stage.label}`;
+
+    const track = document.getElementById('stage-tracker');
+    if (track) {
+        const fillPercent = (idx / (TOURNAMENT_STAGES.length - 1)) * 100;
+        track.innerHTML = `
+            <div class="stage-track-line-bg"></div>
+            <div class="stage-track-line-fill" style="width:${fillPercent}%"></div>
+            ${TOURNAMENT_STAGES.map((s, i) => {
+                const state = i < idx ? 'done' : i === idx ? 'active' : 'upcoming';
+                return `
+                    <div class="stage-node ${state}">
+                        <span class="stage-node-icon">${i < idx ? '&#10003;' : s.icon}</span>
+                        <span class="stage-node-label">${s.label}</span>
+                    </div>
+                `;
+            }).join('')}
+        `;
+    }
+
+    if (lastStageIndex === -1) {
+        lastStageIndex = idx;
+    } else if (idx > lastStageIndex) {
+        lastStageIndex = idx;
+        announceStageAdvance(stage);
+    }
+}
+
+const CONFETTI_EMOJIS = ['🎉', '✨', '⭐', '🔥'];
+
+function spawnConfetti() {
+    for (let i = 0; i < 12; i++) {
+        const span = document.createElement('span');
+        span.className = 'confetti-particle';
+        span.textContent = CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 90;
+        span.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        span.style.setProperty('--dy', Math.sin(angle) * dist - 40 + 'px');
+        span.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+        span.style.animationDelay = (Math.random() * 0.15) + 's';
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 1600);
+    }
+}
+
+function announceStageAdvance(stage) {
+    const el = document.getElementById('stage-announce');
+    if (!el) return;
+    el.textContent = `${stage.icon} 晉級 ${stage.label}！`;
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.classList.add('show');
+    spawnConfetti();
+}
+
+// Live background mood (desktop only — the orb layer this drives is hidden
+// on mobile via CSS). moodBalance drifts from +1 (Red) to -1 (Velvet) as an
+// exponential moving average of each pick's side, so the tint eases in/out
+// instead of snapping.
+let moodBalance = 0;
+
+function sideBias(songName) {
+    const side = songMeta[songName] && songMeta[songName].side;
+    if (side === 'Red') return 1;
+    if (side === 'Velvet') return -1;
+    return 0;
+}
+
+function updateMoodOrbs(delta) {
+    moodBalance = moodBalance * 0.85 + delta * 0.15;
+    const velvetMix = Math.min(1, Math.max(0, -moodBalance));
+    const orbs = document.getElementById('bg-orbs');
+    if (orbs) orbs.style.setProperty('--velvet-mix', velvetMix.toFixed(3));
+}
+
+function resetMoodOrbs() {
+    moodBalance = 0;
+    const orbs = document.getElementById('bg-orbs');
+    if (orbs) orbs.style.setProperty('--velvet-mix', 0);
+}
+
 function renderPair() {
     currentSongs = [activeSongs[currentIdx1], activeSongs[currentIdx2]];
 
@@ -412,6 +524,7 @@ function renderPair() {
     document.getElementById('progress-text').textContent = `${currentPairIndex + 1} / ${maxComparisons}`;
     const progressPercent = ((currentPairIndex + 1) / maxComparisons) * 100;
     document.getElementById('progress-fill').style.width = progressPercent + '%';
+    updateStageUI(progressPercent / 100);
 
     for (let i = 0; i < 2; i++) {
         const song = currentSongs[i];
@@ -441,51 +554,103 @@ function loadPair() {
     renderPair();
 }
 
-function selectSong(index) {
-    const winnerIdx = index === 0 ? currentIdx1 : currentIdx2;
-    const loserIdx  = index === 0 ? currentIdx2 : currentIdx1;
-    const pairKey   = Math.min(winnerIdx, loserIdx) + '-' + Math.max(winnerIdx, loserIdx);
+// result: 'song1' (left wins), 'song2' (right wins), or 'tie' (both loved, skip)
+function applyComparison(result) {
+    const idx1 = currentIdx1, idx2 = currentIdx2;
+    const pairKey = Math.min(idx1, idx2) + '-' + Math.max(idx1, idx2);
 
     // Save snapshot for undo (before any mutation)
     undoState = {
-        idx1: currentIdx1,
-        idx2: currentIdx2,
-        rating1: activeSongs[currentIdx1].rating,
-        rating2: activeSongs[currentIdx2].rating,
+        idx1, idx2,
+        rating1: activeSongs[idx1].rating,
+        rating2: activeSongs[idx2].rating,
         pairKey,
         prevPairCount: comparisonHistory[pairKey] || 0,
-        prevPairIndex: currentPairIndex
+        prevPairIndex: currentPairIndex,
+        prevMoodBalance: moodBalance
     };
     document.getElementById('undo-btn').style.display = '';
 
     comparisonHistory[pairKey] = (comparisonHistory[pairKey] || 0) + 1;
 
-    const winner = activeSongs[winnerIdx];
-    const loser  = activeSongs[loserIdx];
-    const expectedWinner = 1 / (1 + Math.pow(10, (loser.rating - winner.rating) / 400));
-    const expectedLoser  = 1 - expectedWinner;
+    const song1 = activeSongs[idx1];
+    const song2 = activeSongs[idx2];
+    const expected1 = 1 / (1 + Math.pow(10, (song2.rating - song1.rating) / 400));
+    const expected2 = 1 - expected1;
+    const actual1 = result === 'song1' ? 1 : result === 'song2' ? 0 : 0.5;
+    const actual2 = 1 - actual1;
     const k = 64 - (currentPairIndex / maxComparisons) * 48;
-    winner.rating += k * (1 - expectedWinner);
-    loser.rating  += k * (0 - expectedLoser);
+    song1.rating += k * (actual1 - expected1);
+    song2.rating += k * (actual2 - expected2);
 
     currentPairIndex++;
-    const winnerName = activeSongs[winnerIdx].name;
-    const specialMsgs = specialFeedback[winnerName];
-    if (songMode === 'all' && specialMsgs?.length && !shownSpecialFeedback.has(winnerName)) {
-        showFeedback(specialMsgs[Math.floor(Math.random() * specialMsgs.length)]);
-        shownSpecialFeedback.add(winnerName);
-    } else if (songMode === 'all') {
-        choicesSinceFeedback++;
-        if (choicesSinceFeedback >= nextFeedbackAt && feedbackMessages.length > 0) {
-            showFeedback(feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)]);
-            choicesSinceFeedback = 0;
-            nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
+
+    if (result === 'tie') {
+        updateMoodOrbs(0);
+        showFeedback('都很棒，先讓它們平手繼續比！');
+    } else {
+        const winnerIdx = result === 'song1' ? idx1 : idx2;
+        const winnerName = activeSongs[winnerIdx].name;
+        updateMoodOrbs(sideBias(winnerName));
+        const specialMsgs = specialFeedback[winnerName];
+        if (songMode === 'all' && specialMsgs?.length && !shownSpecialFeedback.has(winnerName)) {
+            showFeedback(specialMsgs[Math.floor(Math.random() * specialMsgs.length)]);
+            shownSpecialFeedback.add(winnerName);
+        } else if (songMode === 'all') {
+            choicesSinceFeedback++;
+            if (choicesSinceFeedback >= nextFeedbackAt && feedbackMessages.length > 0) {
+                showFeedback(feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)]);
+                choicesSinceFeedback = 0;
+                nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
+            }
         }
     }
     stopAllVideos();
     saveProgress();
     loadPair();
 }
+
+function selectSong(index) {
+    applyComparison(index === 0 ? 'song1' : 'song2');
+}
+
+function skipPair() {
+    applyComparison('tie');
+}
+
+// Keyboard shortcuts for comparison view: arrows/AD to pick, S/down to skip, Backspace to undo
+function handleComparisonKeydown(e) {
+    const view = document.getElementById('comparison-view');
+    if (!view || view.style.display === 'none') return;
+    const tag = document.activeElement && document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+    switch (e.key) {
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            e.preventDefault();
+            selectSong(0);
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            e.preventDefault();
+            selectSong(1);
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            e.preventDefault();
+            skipPair();
+            break;
+        case 'Backspace':
+            e.preventDefault();
+            undoLastChoice();
+            break;
+    }
+}
+document.addEventListener('keydown', handleComparisonKeydown);
 
 function showScreen(el) {
     el.classList.remove('hidden');
@@ -497,6 +662,7 @@ function showScreen(el) {
 
 function goToStart() {
     stopAllVideos();
+    document.body.classList.remove('comparing');
     document.getElementById('comparison-view').style.display = 'none';
     document.getElementById('ranking-view').classList.add('hidden');
     showScreen(document.getElementById('start-screen'));
@@ -569,6 +735,9 @@ function undoLastChoice() {
     currentIdx1 = undoState.idx1;
     currentIdx2 = undoState.idx2;
     currentPairIndex = undoState.prevPairIndex;
+    moodBalance = undoState.prevMoodBalance;
+    const orbs = document.getElementById('bg-orbs');
+    if (orbs) orbs.style.setProperty('--velvet-mix', Math.min(1, Math.max(0, -moodBalance)).toFixed(3));
     undoState = null;
 
     document.getElementById('undo-btn').style.display = 'none';
@@ -632,6 +801,7 @@ function togglePlay(index, event) {
 
 function finishRanking() {
     clearProgress();
+    document.body.classList.remove('comparing');
     const ranked = activeSongs.slice().sort((a, b) => b.rating - a.rating);
     localStorage.setItem('rv_ranking', JSON.stringify(ranked));
     displayRanking(ranked);
@@ -736,6 +906,8 @@ function restart() {
     comparisonHistory = {};
     rebuildSongPool();
     setTheme(null);
+    resetMoodOrbs();
+    document.body.classList.add('comparing');
     stopAllVideos();
     document.getElementById('start-screen').classList.add('hidden');
     document.getElementById('ranking-view').classList.add('hidden');
@@ -747,6 +919,18 @@ async function exportImage() {
     const btn = document.getElementById('export-btn');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 生成中...';
+
+    // Phones can't reliably download via <a download> on a data: URL (iOS
+    // Safari ignores it outright, mobile Chrome is inconsistent) — open the
+    // image in a new tab instead so the user can long-press it and choose
+    // "Save Image". The tab must be opened synchronously inside this click
+    // handler, or Safari blocks it as a popup once the async render below
+    // finishes.
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const mobileWin = isMobile ? window.open('', '_blank') : null;
+    if (mobileWin) {
+        mobileWin.document.write('<title>產生圖片中…</title><body style="margin:0;background:#111;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;">圖片生成中…</body>');
+    }
 
     const ranked = (JSON.parse(localStorage.getItem('rv_ranking')) || []).slice(0, 15);
     const isVelvet = document.body.classList.contains('theme-velvet');
@@ -813,11 +997,20 @@ async function exportImage() {
     document.body.appendChild(card);
     try {
         const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: null });
-        const link = document.createElement('a');
+        const dataUrl = canvas.toDataURL('image/png');
         const filePrefix = nickname.replace(/[^\w一-龥-]/g, '_').slice(0, 20);
-        link.download = (filePrefix ? filePrefix + '_' : '') + 'rv_ranking.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        const fileName = (filePrefix ? filePrefix + '_' : '') + 'rv_ranking.png';
+
+        if (mobileWin && !mobileWin.closed) {
+            mobileWin.document.open();
+            mobileWin.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${escapeHtml(fileName)}</title><style>body{margin:0;background:#111;display:flex;flex-direction:column;align-items:center;font-family:Arial,sans-serif;}img{width:100%;max-width:480px;display:block;}p{color:#fff;text-align:center;padding:14px 20px;margin:0;font-size:14px;line-height:1.6;}</style></head><body><img src="${dataUrl}" alt="${escapeHtml(fileName)}"><p>長按圖片選擇「儲存圖片」即可下載<br>Long-press the image and choose "Save Image"</p></body></html>`);
+            mobileWin.document.close();
+        } else {
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = dataUrl;
+            link.click();
+        }
     } finally {
         document.body.removeChild(card);
         btn.disabled = false;
