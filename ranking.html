@@ -26,6 +26,11 @@
             <div class="orb orb-a"></div>
             <div class="orb orb-b"></div>
             <div class="orb orb-c"></div>
+            <!-- Mood tint layer: fades in over the base orbs as picks lean
+                 Velvet during comparison (see updateMoodOrbs in script.js). -->
+            <div class="orb orb-a mood-tint"></div>
+            <div class="orb orb-b mood-tint"></div>
+            <div class="orb orb-c mood-tint"></div>
             <div class="orb orb-cursor"></div>
         </div>
 
@@ -135,13 +140,15 @@
         <div id="comparison-view">
             <div class="progress-container">
                 <div>
-                    <div></div>
+                    <div id="stage-badge" class="stage-badge"></div>
                     <div class="progress-text" id="progress-text">1 / 6</div>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
+                <div id="stage-tracker" class="stage-tracker"></div>
             </div>
+            <div id="stage-announce" class="stage-announce" aria-hidden="true"></div>
             <div class="container">
                 <div class="song-card" id="song1" onclick="selectSong(0)">
                     <div class="cover-box">
@@ -182,7 +189,14 @@
                     <i class="fas fa-rotate-left"></i>
                     回上一選擇 | Choose Again
                 </button>
+                <button id="skip-btn" class="skip-btn" onclick="skipPair()">
+                    <i class="fas fa-heart"></i>
+                    都愛，跳過 | Skip
+                </button>
             </div>
+            <p class="kbd-hint">
+                <kbd>←</kbd> / <kbd>A</kbd> 選左邊　<kbd>→</kbd> / <kbd>D</kbd> 選右邊　<kbd>↓</kbd> / <kbd>S</kbd> 都愛跳過　<kbd>Backspace</kbd> 回上一步
+            </p>
         </div>
 
         <!-- Off-screen YouTube players (rendered but not visible) -->

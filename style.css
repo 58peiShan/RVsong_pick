@@ -259,6 +259,8 @@ body {
     /* 滑鼠座標（由 JS 更新），預設置中 */
     --mx: 50vw;
     --my: 50vh;
+    /* 0 = 暖色 Red 氛圍, 1 = 冷色 Velvet 氛圍；由比較時的選擇即時更新 */
+    --velvet-mix: 0;
 }
 
 .orb {
@@ -345,7 +347,29 @@ body.theme-velvet .orb-cursor {
     .orb { animation: none; }
 }
 
-/* 手機版：只保留 body 的靜態漸層背景，隱藏互動色塊 */
+/* 比較過程中依選擇即時變化的氛圍色塊：疊在原本的暖色色塊上，
+   隨 --velvet-mix（由 script.js 的 updateMoodOrbs 更新）淡入淡出，
+   只有在 body.comparing（正在比較歌曲）時才會顯示。 */
+.orb.mood-tint {
+    /* Page background stays light during comparison (the dark velvet theme
+       only kicks in on the results page), so multiply — same as the base
+       orbs use — actually tints it; screen would just wash out to white. */
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+}
+body.comparing .orb.mood-tint {
+    opacity: calc(var(--velvet-mix, 0) * 0.75);
+}
+.mood-tint.orb-a { background: radial-gradient(circle at 35% 35%, #8a4fd0, transparent 68%); }
+.mood-tint.orb-b { background: radial-gradient(circle at 50% 50%, #c060a0, transparent 66%); }
+.mood-tint.orb-c { background: radial-gradient(circle at 50% 50%, #5a78e0, transparent 66%); }
+
+@media (prefers-reduced-motion: reduce) {
+    .orb.mood-tint { transition: none; }
+}
+
+/* 手機版：只保留 body 的靜態漸層背景，隱藏互動色塊（氛圍色塊也一併隱藏） */
 @media (max-width: 768px) {
     #bg-orbs { display: none; }
 }
@@ -700,14 +724,6 @@ h1 > span {
 .undo-area {
     text-align: center;
     margin-top: 14px;
-    height: 36px;
-}
-@media (max-width: 880px) {
-    .undo-area {
-        position: absolute;
-        top: 0;
-        left:-5px;
-    }
 }
 
 .undo-btn {
@@ -724,6 +740,48 @@ h1 > span {
     background: white;
     color: #ff9797;
     border-color: #ff9797;
+}
+.undo-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.skip-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid #e0e0e0;
+    border-radius: 999px;
+    padding: 7px 20px;
+    font-size: 13px;
+    color: #aaa;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.skip-btn:hover {
+    background: white;
+    color: #b48cff;
+    border-color: #b48cff;
+}
+.kbd-hint {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #aaa;
+}
+.kbd-hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-family: inherit;
+    color: #888;
+}
+@media (max-width: 600px) {
+    .kbd-hint {
+        display: none;
+    }
 }
 .container {
     display: flex;
@@ -824,6 +882,138 @@ h1 > span {
     width: fit-content;
     text-align: center;
     border-radius: 40px;
+}
+.stage-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ac4242;
+    background-color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 40px;
+    white-space: nowrap;
+}
+.stage-tracker {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 420px;
+    margin: 4px auto 0;
+    padding: 6px 4px 0;
+}
+.stage-track-line-bg,
+.stage-track-line-fill {
+    position: absolute;
+    top: 19px;
+    left: 8%;
+    right: 8%;
+    height: 3px;
+    border-radius: 3px;
+}
+.stage-track-line-bg {
+    background: rgba(255, 255, 255, 0.6);
+}
+.stage-track-line-fill {
+    right: auto;
+    background: linear-gradient(to right, #ff9797, #b48cff);
+    transition: width 0.5s ease;
+}
+.stage-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+.stage-node-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.stage-node-label {
+    font-size: 10px;
+    color: #c9a9a9;
+    white-space: nowrap;
+}
+.stage-node.done .stage-node-icon {
+    background: #ffd6d6;
+    color: #ac4242;
+}
+.stage-node.done .stage-node-label {
+    color: #d99;
+}
+.stage-node.active .stage-node-icon {
+    border-color: #b48cff;
+    box-shadow: 0 0 0 4px rgba(180, 140, 255, 0.25);
+    transform: scale(1.15);
+    animation: stagePulse 1.6s ease-in-out infinite;
+}
+.stage-node.active .stage-node-label {
+    color: #ac4242;
+    font-weight: 700;
+}
+@keyframes stagePulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(180, 140, 255, 0.25); }
+    50% { box-shadow: 0 0 0 8px rgba(180, 140, 255, 0.12); }
+}
+@media (max-width: 520px) {
+    .stage-node-label { display: none; }
+    .stage-track-line-bg,
+    .stage-track-line-fill { top: 15px; }
+}
+.stage-announce {
+    position: fixed;
+    left: 50%;
+    top: 28%;
+    transform: translate(-50%, -50%) scale(0.8);
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ac4242;
+    text-shadow: 0 2px 14px rgba(255, 255, 255, 0.95);
+    text-align: center;
+    white-space: nowrap;
+}
+.stage-announce.show {
+    animation: stageAnnouncePop 1.8s ease forwards;
+}
+@keyframes stageAnnouncePop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+    25%  { transform: translate(-50%, -50%) scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05) translateY(-10px); }
+}
+.confetti-particle {
+    position: fixed;
+    top: 28%;
+    left: 50%;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 49;
+    animation: confettiBurst 1.4s ease-out forwards;
+}
+@keyframes confettiBurst {
+    0%   { transform: translate(-50%, -50%) translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .stage-node.active .stage-node-icon { animation: none; }
+    .stage-announce.show { animation-duration: 0.4s; }
+    .confetti-particle { display: none; }
 }
 .ranking {
     z-index: 1;
