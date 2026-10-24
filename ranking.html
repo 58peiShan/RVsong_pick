@@ -15,7 +15,6 @@
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1914398977384746"
             crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-        <script src="https://www.youtube.com/iframe_api"></script>
         <script src="config.js"></script>
         <!-- Embedded song data so the app also works when opening index.html directly (file://). -->
         <script src="data.js"></script>
@@ -140,7 +139,6 @@
         <div id="comparison-view">
             <div class="progress-container">
                 <div>
-                    <div id="stage-badge" class="stage-badge"></div>
                     <div class="progress-text" id="progress-text">1 / 6</div>
                 </div>
                 <div class="progress-bar">
@@ -191,11 +189,11 @@
                 </button>
                 <button id="skip-btn" class="skip-btn" onclick="skipPair()">
                     <i class="fas fa-heart"></i>
-                    都愛，跳過 | Skip
+                    Skip
                 </button>
             </div>
             <p class="kbd-hint">
-                <kbd>←</kbd> / <kbd>A</kbd> 選左邊　<kbd>→</kbd> / <kbd>D</kbd> 選右邊　<kbd>↓</kbd> / <kbd>S</kbd> 都愛跳過　<kbd>Backspace</kbd> 回上一步
+                <kbd>←</kbd> / <kbd>A</kbd> 選左邊　<kbd>→</kbd> / <kbd>D</kbd> 選右邊　<kbd>↓</kbd> / <kbd>S</kbd> 跳過　<kbd>Backspace</kbd> 回上一步
             </p>
         </div>
 
@@ -219,6 +217,7 @@
         </div>
 
         <script src="script.js"></script>
+        <script src="https://www.youtube.com/iframe_api"></script>
         <script>
             // 讓其中一顆漸層色塊平滑跟隨滑鼠（lerp 緩動）
             (function () {
