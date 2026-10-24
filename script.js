@@ -39,6 +39,7 @@ let audios = [null, null];
 let ytPlayers = [null, null];
 let ytPlayerReady = [false, false];
 let ytPendingVideoId = [null, null];
+let ytPendingPlay = [false, false];
 let ytIdCache = {};
 
 // Extract YouTube video ID from a URL or plain 11-char ID
@@ -84,6 +85,10 @@ function onYouTubeIframeAPIReady() {
                         ytPlayers[idx].cueVideoById(ytPendingVideoId[idx]);
                         ytPendingVideoId[idx] = null;
                     }
+                    if (ytPendingPlay[idx]) {
+                        ytPendingPlay[idx] = false;
+                        togglePlay(idx, { stopPropagation() {} });
+                    }
                 },
                 onStateChange: (e) => handleYtStateChange(idx, e),
                 onError: (e) => handleYtError(idx, e.data)
@@ -126,6 +131,7 @@ function cueVideo(playerIndex, videoId) {
 
 function stopAllVideos() {
     for (let i = 0; i < 2; i++) {
+        ytPendingPlay[i] = false;
         if (slotMode[i] === 'local') {
             audios[i].pause();
             audios[i].currentTime = 0;
@@ -140,6 +146,7 @@ function stopAllVideos() {
 
 function pauseOther(activeIndex) {
     const other = 1 - activeIndex;
+    ytPendingPlay[other] = false;
     if (slotMode[other] === 'local') {
         audios[other].pause();
     } else if (ytPlayers[other] && ytPlayerReady[other]) {
@@ -411,11 +418,11 @@ let undoState = null;
 // Tournament framing for the comparison progress bar — purely cosmetic staging
 // over the same Elo pairwise engine, not a real elimination bracket.
 const TOURNAMENT_STAGES = [
-    { icon: '🏁', label: '資格賽',  threshold: 0 },
-    { icon: '🔥', label: '16強賽', threshold: 0.25 },
-    { icon: '⚔️', label: '8強賽',  threshold: 0.5 },
-    { icon: '🏆', label: '準決賽', threshold: 0.75 },
-    { icon: '👑', label: '冠軍戰', threshold: 0.95 },
+    { icon: 'fa-flag-checkered', label: '資格賽',  threshold: 0 },
+    { icon: 'fa-fire', label: '16強賽', threshold: 0.25 },
+    { icon: 'fa-bolt', label: '8強賽',  threshold: 0.5 },
+    { icon: 'fa-trophy', label: '準決賽', threshold: 0.75 },
+    { icon: 'fa-crown', label: '冠軍戰', threshold: 0.95 },
 ];
 let lastStageIndex = -1;
 
@@ -432,7 +439,7 @@ function updateStageUI(progressFraction) {
     const stage = TOURNAMENT_STAGES[idx];
 
     const badge = document.getElementById('stage-badge');
-    if (badge) badge.textContent = `${stage.icon} ${stage.label}`;
+    if (badge) badge.innerHTML = `<i class="fas ${stage.icon} fa-fw" aria-hidden="true"></i> ${stage.label}`;
 
     const track = document.getElementById('stage-tracker');
     if (track) {
@@ -444,7 +451,7 @@ function updateStageUI(progressFraction) {
                 const state = i < idx ? 'done' : i === idx ? 'active' : 'upcoming';
                 return `
                     <div class="stage-node ${state}">
-                        <span class="stage-node-icon">${i < idx ? '&#10003;' : s.icon}</span>
+                        <span class="stage-node-icon"><i class="fas ${i < idx ? 'fa-check' : s.icon}" aria-hidden="true"></i></span>
                         <span class="stage-node-label">${s.label}</span>
                     </div>
                 `;
@@ -481,7 +488,7 @@ function spawnConfetti() {
 function announceStageAdvance(stage) {
     const el = document.getElementById('stage-announce');
     if (!el) return;
-    el.textContent = `${stage.icon} 晉級 ${stage.label}！`;
+    el.innerHTML = `<i class="fas ${stage.icon} fa-fw" aria-hidden="true"></i> 晉級 ${stage.label}！`;
     el.classList.remove('show');
     void el.offsetWidth;
     el.classList.add('show');
@@ -769,12 +776,15 @@ function togglePlay(index, event) {
         if (!videoId) return;
 
         const player = ytPlayers[index];
-        // Inline YouTube playback only works over http(s). When the page is
-        // opened directly from disk (file://) the embed can't play, and if the
-        // player isn't ready yet there's nothing to toggle — in both cases fall
-        // back to opening the song on YouTube in a new tab so Play still works.
-        if (location.protocol === 'file:' || !player || !ytPlayerReady[index]) {
-            window.open('https://www.youtube.com/watch?v=' + videoId, '_blank');
+        // Keep playback in this page, including clicks made while the API loads.
+        if (!player || !ytPlayerReady[index]) {
+            const shouldPlay = !ytPendingPlay[index];
+            pauseOther(index);
+            ytPendingVideoId[index] = videoId;
+            ytPendingPlay[index] = shouldPlay;
+            btn.innerHTML = shouldPlay
+                ? '<i class="fas fa-spinner fa-spin"></i>'
+                : '<i class="fas fa-play"></i>';
             return;
         }
 
