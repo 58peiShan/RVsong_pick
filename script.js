@@ -435,13 +435,25 @@ function getStageIndex(progressFraction) {
 }
 
 function updateStageUI(progressFraction) {
+    const showStages = songMode !== 'title';
+    const badge = document.getElementById('stage-badge');
+    const track = document.getElementById('stage-tracker');
+    const announcement = document.getElementById('stage-announce');
+    [badge, track, announcement].forEach(el => {
+        if (el) el.style.display = showStages ? '' : 'none';
+    });
+    if (!showStages) {
+        lastStageIndex = -1;
+        if (announcement) announcement.classList.remove('show');
+        document.querySelectorAll('.confetti-particle').forEach(el => el.remove());
+        return;
+    }
+
     const idx = getStageIndex(progressFraction);
     const stage = TOURNAMENT_STAGES[idx];
 
-    const badge = document.getElementById('stage-badge');
     if (badge) badge.innerHTML = `<i class="fas ${stage.icon} fa-fw" aria-hidden="true"></i> ${stage.label}`;
 
-    const track = document.getElementById('stage-tracker');
     if (track) {
         const fillPercent = (idx / (TOURNAMENT_STAGES.length - 1)) * 100;
         track.innerHTML = `
@@ -625,14 +637,27 @@ function skipPair() {
     applyComparison('tie');
 }
 
-// Keyboard shortcuts for comparison view: arrows/AD to pick, S/down to skip, Backspace to undo
+// Keyboard shortcuts: left/right/AD to pick, ZX to toggle playback, S/down to skip, W/up to undo
 function handleComparisonKeydown(e) {
     const view = document.getElementById('comparison-view');
     if (!view || view.style.display === 'none') return;
     const tag = document.activeElement && document.activeElement.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || document.activeElement?.isContentEditable) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
 
     switch (e.key) {
+        case 'z':
+        case 'Z':
+        case 'x':
+        case 'X': {
+            if (e.repeat) return;
+            const index = e.key.toLowerCase() === 'z' ? 0 : 1;
+            const btn = document.getElementById('play' + (index + 1));
+            if (!currentSongs[index] || !btn || btn.disabled || btn.style.display === 'none') return;
+            e.preventDefault();
+            togglePlay(index, e);
+            break;
+        }
         case 'ArrowLeft':
         case 'a':
         case 'A':
@@ -651,7 +676,9 @@ function handleComparisonKeydown(e) {
             e.preventDefault();
             skipPair();
             break;
-        case 'Backspace':
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
             e.preventDefault();
             undoLastChoice();
             break;

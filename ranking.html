@@ -59,6 +59,25 @@
             </h1>
             <div class="header-right">
                 <a href="privacy.html" class="privacy-btn">隱私權政策 | Privacy</a>
+                <div class="keyboard-help">
+                    <button type="button" class="keyboard-help-btn" aria-label="鍵盤快捷鍵說明" aria-describedby="keyboard-help-panel">
+                        <i class="fas fa-question" aria-hidden="true"></i>
+                    </button>
+                    <div id="keyboard-help-panel" class="keyboard-help-panel" role="tooltip">
+                        <strong>鍵盤快捷鍵</strong>
+                        <p>比較歌曲時使用 · 方向鍵或 WASD</p>
+                        <div class="keyboard-direction-pad">
+                            <div class="keyboard-action key-up"><kbd>↑ <small>W</small></kbd><span>回上一步</span></div>
+                            <div class="keyboard-action key-left"><kbd>← <small>A</small></kbd><span>選左邊</span></div>
+                            <div class="keyboard-action key-down"><kbd>↓ <small>S</small></kbd><span>跳過</span></div>
+                            <div class="keyboard-action key-right"><kbd>→ <small>D</small></kbd><span>選右邊</span></div>
+                        </div>
+                        <div class="keyboard-playback-keys">
+                            <div class="keyboard-action"><kbd>Z</kbd><span>左邊播放／暫停</span></div>
+                            <div class="keyboard-action"><kbd>X</kbd><span>右邊播放／暫停</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -66,11 +85,13 @@
             <div class="about-card">
                 <h2>
                     Are you ready for this?
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
-                    <span>．</span>
+                    <span class="ready-dots">
+                        <span>．</span>
+                        <span>．</span>
+                        <span>．</span>
+                        <span>．</span>
+                        <span>．</span>
+                    </span>
                 </h2>
                 <div id="continue-area" class="hidden">
                     <button class="continue-btn" onclick="continueComparison()">
@@ -192,9 +213,6 @@
                     Skip
                 </button>
             </div>
-            <p class="kbd-hint">
-                <kbd>←</kbd> / <kbd>A</kbd> 選左邊　<kbd>→</kbd> / <kbd>D</kbd> 選右邊　<kbd>↓</kbd> / <kbd>S</kbd> 跳過　<kbd>Backspace</kbd> 回上一步
-            </p>
         </div>
 
         <!-- Off-screen YouTube players (rendered but not visible) -->
