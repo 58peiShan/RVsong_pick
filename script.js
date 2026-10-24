@@ -317,7 +317,7 @@ function restoreProgress(saved) {
 
 function continueComparison() {
     undoState = null;
-    lastStageIndex = -1;
+    resetComparisonEffects();
     resetMoodOrbs();
     document.body.classList.add('comparing');
     document.getElementById('undo-btn').style.display = 'none';
@@ -359,7 +359,7 @@ function updateModeHint() {
 
 function beginComparison() {
     undoState = null;
-    lastStageIndex = -1;
+    resetComparisonEffects();
     choicesSinceFeedback = 0;
     nextFeedbackAt = Math.floor(Math.random() * 3) + 4;
     shownSpecialFeedback = new Set();
@@ -425,6 +425,21 @@ const TOURNAMENT_STAGES = [
     { icon: 'fa-crown', label: '冠軍戰', threshold: 0.95 },
 ];
 let lastStageIndex = -1;
+
+function resetComparisonEffects() {
+    lastStageIndex = -1;
+    const feedback = document.getElementById('feedback-msg');
+    if (feedback) {
+        feedback.classList.remove('active');
+        feedback.textContent = '';
+    }
+    const announcement = document.getElementById('stage-announce');
+    if (announcement) {
+        announcement.classList.remove('show');
+        announcement.textContent = '';
+    }
+    document.querySelectorAll('.confetti-particle').forEach(el => el.remove());
+}
 
 function getStageIndex(progressFraction) {
     let idx = 0;
@@ -696,6 +711,7 @@ function showScreen(el) {
 
 function goToStart() {
     stopAllVideos();
+    resetComparisonEffects();
     document.body.classList.remove('comparing');
     document.getElementById('comparison-view').style.display = 'none';
     document.getElementById('ranking-view').classList.add('hidden');
@@ -936,6 +952,7 @@ function displayRanking(ranked) {
 
 function restart() {
     undoState = null;
+    resetComparisonEffects();
     clearProgress();
     localStorage.removeItem('rv_ranking');
     songs.forEach(song => song.rating = 1200);
